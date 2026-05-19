@@ -1,0 +1,17 @@
+{
+  "name": "DfolgaBet Oficial",
+  "short_name": "DfolgaBet",
+  "description": "Guias, Análises e Dicas de Apostas com Odds em Tempo Real.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A051A",
+  "theme_color": "#0A051A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/dfolgabet-logo-oficial-transparente.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

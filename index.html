@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <title>DfolgaBet Oficial</title>
+    <meta name="description" content="O melhor portal de análises, palpites e odds em tempo real para apostas esportivas no Brasil." />
+    <!-- PWA & Mobile Optimization -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0A051A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DfolgaBet" />
+    <link rel="apple-touch-icon" href="/assets/dfolgabet-logo-oficial-transparente.png" />
+
+    <link rel="preconnect" href="https://dfolga.com" />
+    <link rel="dns-prefetch" href="https://dfolga.com" />
+    
+    <script>
+      window.addEventListener('error', function(event) {
+        if (event.message === 'Script error.') {
+          event.stopImmediatePropagation();
+        }
+      }, true);
+
+      window.onerror = function(message, source, lineno, colno, error) {
+        if (message === 'Script error.') {
+          console.warn('Suppressed cross-origin script error. This is common with external widgets/ads.');
+          return true; 
+        }
+        console.error('Global error:', message, 'at', source, ':', lineno, ':', colno, error);
+        return false;
+      };
+
+      window.onunhandledrejection = function(event) {
+        console.error('Unhandled promise rejection:', event.reason);
+      };
+    </script>
+  </head>
+  <body>
+    <!-- Enterprise SEO Schema Markup -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SportsOrganization",
+        "name": "DfolgaBet Oficial",
+        "url": "https://dfolga.com",
+        "logo": "https://dfolga.com/assets/dfolgabet-logo-oficial-transparente.png",
+        "description": "O melhor portal de análises, palpites e odds em tempo real para apostas esportivas no Brasil.",
+        "sameAs": [
+          "https://youtube.com/@DfolgaTube"
+        ]
+      }
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
