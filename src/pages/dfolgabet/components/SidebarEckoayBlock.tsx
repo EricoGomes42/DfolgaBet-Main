@@ -37,7 +37,7 @@ export default function SidebarEckoayBlock() {
             <span className="text-gray-500 group-hover/item:text-[#50C0CC] transition-transform group-hover/item:translate-x-1">▶</span>
           </a>
 
-          <a href="https://dfolgashop.com.br" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-[#0A051A]/80 border border-[#311B92]/50 hover:border-[#F37021] transition-all group/item hover:scale-[1.03] shadow-lg">
+          <a href="https://dfolga.com/dfolgashop/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-[#0A051A]/80 border border-[#311B92]/50 hover:border-[#F37021] transition-all group/item hover:scale-[1.03] shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl flex justify-center items-center p-1 shrink-0 border border-[#311B92]/20">
               <img src="/assets/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = "/assets/dfolgashop-bg.png"; }} />
             </div>
