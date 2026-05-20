@@ -25,6 +25,10 @@ export default function OddsHeroBanner() {
 
   const pred = MOCK_PREDICTIONS[currentIndex];
 
+  if (!pred) {
+  return null;
+  }
+
   return (
     <div className="bg-gradient-to-br from-[#120826] to-[#311B92] rounded-[32px] p-6 md:p-12 mb-8 flex flex-col lg:flex-row justify-between items-center gap-10 border border-[#50C0CC]/20 overflow-hidden relative shadow-[0_20px_60px_-15px_rgba(10,5,26,0.8)]">
       {/* Dynamic Background Patterns */}
