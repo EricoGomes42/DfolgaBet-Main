@@ -88,10 +88,40 @@ export default function DfolgaBetHome() {
         // Limit to desired number of posts (e.g. 12)
         setPosts(combined.slice(0, 12));
       } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
+  console.error("Error fetching posts:", error);
+
+  setPosts([
+    {
+      _id: 'local-alice-vs-polyana',
+      title: 'Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night',
+      slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
+      mainImage: null,
+      publishedAt: '2026-05-13T12:00:00Z',
+      _createdAt: '2026-05-13T12:00:00Z',
+      categoryName: 'MMA'
+    },
+    {
+      _id: 'local-flamengo-vs-fluminense-fem',
+      title: 'Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026',
+      slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
+      mainImage: null,
+      publishedAt: '2026-05-13T10:00:00Z',
+      _createdAt: '2026-05-13T10:00:00Z',
+      categoryName: 'Futebol Feminino'
+    },
+    {
+      _id: 'local-caliari-vs-bannon',
+      title: 'Palpites UFC: Nicolle Caliari vs. Shauna Bannon',
+      slug: { current: 'ufc-caliari-vs-bannon' },
+      mainImage: null,
+      publishedAt: '2026-05-12T00:00:00Z',
+      _createdAt: '2026-05-12T00:00:00Z',
+      categoryName: 'MMA'
+    }
+  ]);
+} finally {
+  setLoading(false);
+}
     }
     fetchPosts();
   }, []);
