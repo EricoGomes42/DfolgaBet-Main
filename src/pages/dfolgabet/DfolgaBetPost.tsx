@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { client, urlFor } from '../../lib/sanity';
 import { 
   Calendar, ArrowLeft, Home, Zap, Clock, MessageCircle, Eye, Bookmark,
-  Facebook, Linkedin, Twitter, Send, Info, ShieldCheck
+  Facebook, Linkedin, Twitter, Send, Info, ShieldCheck, Star
 } from 'lucide-react';
 import DfolgaBetSidebar from './components/DfolgaBetSidebar';
 import RelatedPosts from './components/RelatedPosts';
