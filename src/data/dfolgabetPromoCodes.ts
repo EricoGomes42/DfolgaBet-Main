@@ -1,3 +1,4 @@
+// src/data/dfolgabetPromoCodes.ts
 export interface PromoCode {
   bookmakerSlug: string;
   bookmakerName: string;

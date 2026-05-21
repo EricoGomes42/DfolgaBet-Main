@@ -1,34 +1,42 @@
-const affiliateLinks = {
-  lottoland: "https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland",
-  sorteOnline: "https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline",
-};
+// src/pages/dfolgabet/components/AffiliateArticleBanners.tsx
+import React from 'react';
 
-export default function AffiliateArticleBanners() {
+export function LottolandBanner() {
   return (
-    <div className="my-8 space-y-5">
-      <a
-        href={affiliateLinks.lottoland}
-        target="_blank"
+    <div className="flex justify-center w-full my-6">
+      <a 
+        href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland" 
+        target="_blank" 
         rel="nofollow sponsored noopener noreferrer"
-        className="block"
+        title="Apostar na Lottoland"
+        className="block transition-transform hover:scale-[1.02] w-full max-w-[728px]"
       >
-        <img
-          src="/assets/banners/banner_lottoland_728x90.png"
-          alt="Lottoland - publicidade para maiores de 18 anos"
-          className="w-full max-w-[728px] mx-auto rounded-xl shadow-lg hover:scale-[1.01] transition-transform duration-300"
+        <img 
+          src="/assets/banner/banner_lottoland_728x90.png" 
+          alt="Aposte na Lottoland - Plataforma Registrada - Para maiores de 18 anos" 
+          className="w-full h-auto rounded-lg shadow-lg border border-[#311B92]/30"
+          loading="lazy"
         />
       </a>
+    </div>
+  );
+}
 
-      <a
-        href={affiliateLinks.sorteOnline}
-        target="_blank"
+export function SorteOnlineBanner() {
+  return (
+    <div className="flex justify-center w-full my-6">
+      <a 
+        href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline" 
+        target="_blank" 
         rel="nofollow sponsored noopener noreferrer"
-        className="block"
+        title="Apostar na Sorte Online"
+        className="block transition-transform hover:scale-[1.02] w-full max-w-[728px]"
       >
-        <img
-          src="/assets/banners/banner_sorte_online_728x90.png"
-          alt="Sorte Online - publicidade para maiores de 18 anos"
-          className="w-full max-w-[728px] mx-auto rounded-xl shadow-lg hover:scale-[1.01] transition-transform duration-300"
+        <img 
+          src="/assets/banner/banner_sorte_online_728x90.png" 
+          alt="Aposte na Sorte Online - Plataforma Registrada - Para maiores de 18 anos" 
+          className="w-full h-auto rounded-lg shadow-lg border border-[#311B92]/30"
+          loading="lazy"
         />
       </a>
     </div>
