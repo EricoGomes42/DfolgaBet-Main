@@ -21,7 +21,6 @@ export default function DfolgaBetLayout() {
       <DfolgaBetFooter />
       <CookieConsentModal />
       <AgeVerificationModal />
-      <AdBlockWarningModal />
     </div>
   );
 }
