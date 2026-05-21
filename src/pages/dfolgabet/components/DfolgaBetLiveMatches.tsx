@@ -1,4 +1,3 @@
-// src/pages/dfolgabet/components/DfolgaBetLiveMatches.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Trophy, Search, Star, Clock, AlertTriangle, ShieldCheck, Zap, ChevronRight, ChevronLeft, Calendar, Info, BarChart3, MessageSquare, ArrowRight, ChevronDown, Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -110,6 +109,8 @@ function DfolgaBetLiveMatchesContent() {
       );
     }
 
+    // Only apply timePeriod filter if we are not explicitly asking for 'Ao Vivo' events
+    // Because live events might have started yesterday late night, bypassing standard date logic
     if (!isAoVivoMode) {
       if (filters.timePeriod === 'Hoje') {
         filtered = filtered.filter((m: any) => m.time && isToday(new Date(m.time)));
@@ -118,7 +119,7 @@ function DfolgaBetLiveMatchesContent() {
       } else if (filters.timePeriod === 'Próximos 7 dias') {
         const in7days = new Date();
         in7days.setDate(in7days.getDate() + 7);
-        filtered = filtered.filter((m: any) => m.time && new Date(m.time) <= in7days && new Date(m.time) >= new Date(Date.now() - 3600000));
+        filtered = filtered.filter((m: any) => m.time && new Date(m.time) <= in7days && new Date(m.time) >= new Date(Date.now() - 3600000)); // Allow slightly passed if they are grouped here
       }
     }
 
@@ -175,8 +176,8 @@ function DfolgaBetLiveMatchesContent() {
   );
 
   const bookmakers = [
-    { name: 'Lottoland', bg: 'bg-[#F37021]', outerBg: 'from-[#1B3213] to-[#2B4B1E]', logoBg: 'bg-[#0A1C07]', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland', promo: 'BÔNUS EXCLUSIVO DE BOAS-VINDAS', sponsorLogo: 'Lottoland', code: 'LOTTOPLAY' },
-    { name: 'Sorte Online', bg: 'bg-[#50C0CC]', outerBg: 'from-[#0F1E3A] to-[#1E3A6E]', logoBg: 'bg-[#060C18]', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline', promo: 'A MELHOR COTAÇÃO DO MERCADO', sponsorLogo: 'Sorte Online', code: 'SORTEVIP' },
+    { name: 'Lottoland', bg: 'bg-[#F37021]', outerBg: 'from-[#1B3213] to-[#2B4B1E]', logoBg: 'bg-[#0A1C07]', link: 'https://www.lottoland.bet.br/', promo: 'BÔNUS EXCLUSIVO DE BOAS-VINDAS', sponsorLogo: 'Lottoland', code: 'LOTTOPLAY' },
+    { name: 'Sorte Online', bg: 'bg-[#50C0CC]', outerBg: 'from-[#0F1E3A] to-[#1E3A6E]', logoBg: 'bg-[#060C18]', link: 'https://www.sorteonline.bet.br/', promo: 'A MELHOR COTAÇÃO DO MERCADO', sponsorLogo: 'Sorte Online', code: 'SORTEVIP' },
     { name: 'Bet365', bg: 'bg-[#007A56]', outerBg: 'from-[#0E2319] to-[#19402E]', logoBg: 'bg-[#0A1612]', link: '#', promo: 'PROTEÇÃO EXTRA NAS SUAS APOSTAS COM PAGAMENTO ANTECIPADO', sponsorLogo: 'bet365', code: 'OP365' },
     { name: 'Betano', bg: 'bg-[#FF5A00]', outerBg: 'from-[#3A1604] to-[#602306]', logoBg: 'bg-[#190902]', link: '#', promo: 'SUPER ODDS, PAGAMENTOS VIA PIX E JOGOS AO VIVO', sponsorLogo: 'Betano', code: 'BETMAX' },
     { name: 'Stake', bg: 'bg-[#1A2C38]', outerBg: 'from-[#131F2A] to-[#21374A]', logoBg: 'bg-[#0B1218]', link: '#', promo: 'OBTENHA ODDS AUMENTADAS EM APOSTAS SELECIONADAS', sponsorLogo: 'Stake', code: 'ODDSMAX' },
@@ -229,12 +230,13 @@ function DfolgaBetLiveMatchesContent() {
         let totalEvents = 0;
         let debugInfo: any = {};
         
+        // 1. Fetch debug info first
         try {
            const debugRes = await fetch('/api/odds/debug');
            debugInfo = await debugRes.json();
            
            if (!debugInfo.hasApiKey) {
-              setError("NEW_ODDS_API_KEY não carregada");
+              setError("ODDS_API_KEY não carregada");
               setLoading(false);
               return;
            }
@@ -328,6 +330,7 @@ function DfolgaBetLiveMatchesContent() {
                 if (arrayData.length > 0) {
                    hasData = true;
                    totalEvents += arrayData.length;
+                   // Use regex to extract sport from url for diagnostics
                    const sportMatch = ep.url.match(/sport=([^&]+)/);
                    if (sportMatch) loadedSports.push(sportMatch[1]);
 
@@ -392,7 +395,7 @@ function DfolgaBetLiveMatchesContent() {
                  } else if (res.status === 500) {
                     try {
                        const errData = await res.json();
-                       setError(`The Odds API: Erro (500) - ${errData.error || 'Verifique se a variável NEW_ODDS_API_KEY está definida'}`);
+                       setError(`The Odds API: Erro (500) - ${errData.error || 'Verifique se a variável ODDS_API_KEY está definida'}`);
                     } catch(e) {
                        setError(`The Odds API: Erro técnico (500).`);
                     }
@@ -411,6 +414,7 @@ function DfolgaBetLiveMatchesContent() {
            setError("Nenhum evento disponível para os filtros atuais.");
         }
 
+        // Attach some debug info to the aggregated payload if we want
         payloadAggregated['_debug'] = [{
            dataSource: _currentDataSource,
            apiQuotaLeft: debugInfo.headers?.['x-requests-remaining'] || apiQuotaLeft || 'N/A',
@@ -507,6 +511,7 @@ function DfolgaBetLiveMatchesContent() {
         }
       `}</style>
       
+      {/* Toast Popup */}
       {popupMessage && (
          <div className="fixed bottom-4 right-4 bg-[#1A0D35] border border-[#50C0CC] text-white px-6 py-4 rounded-lg shadow-[0_10px_30px_rgba(80,192,204,0.3)] z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
            <div className="flex items-center gap-3">
@@ -516,6 +521,7 @@ function DfolgaBetLiveMatchesContent() {
          </div>
       )}
 
+      {/* Top Banner similar to print header */}
       <div className="bg-[#120826] border-b border-[#311B92] px-4 py-3 flex items-center justify-between">
          <div className="flex items-center gap-2 flex-1 min-w-0">
             <div className="flex-1 overflow-x-auto hide-scrollbar">
@@ -580,8 +586,10 @@ function DfolgaBetLiveMatchesContent() {
       </div>
 
       <div className="dfolgabet-feed-layout border-t border-[#311B92]">
+        {/* Left Sidebar (Ligas Populares) */}
         <LeftSidebar />
 
+        {/* Center Content (Matches Feed) */}
         <div className="dfolgabet-main-feed bg-[#0A051A] order-1 lg:order-2 flex flex-col">
            <div className="p-4 border-b border-[#311B92] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sticky top-0 bg-[#0A051A]/95 backdrop-blur z-20">
               <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
@@ -604,6 +612,7 @@ function DfolgaBetLiveMatchesContent() {
            </div>
 
            <div className="p-4 space-y-6">
+              {/* Safe Betting Block */}
               {!loading && Object.keys(data).length > 0 && (
                  <div className="mb-6 p-4 bg-[#0A051A]/80 border-l-4 border-l-[#50C0CC] border-y border-r border-y-[#311B92] border-r-[#311B92] rounded-r-xl">
                     <h4 className="text-[#50C0CC] text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
@@ -687,6 +696,7 @@ function DfolgaBetLiveMatchesContent() {
                         const sportInfo = [...sportsMain, ...sportsMore].find(s => s.label === sportName);
                         const sportIcon = sportInfo ? sportInfo.icon : '🏅';
                         
+                        // Use our helper to get filtered elements 
                         const matches = filterMatches(data[sportName] || []);
 
                         if (matches.length === 0) return null;
@@ -713,6 +723,7 @@ function DfolgaBetLiveMatchesContent() {
                            </span>
                         </div>
                         
+                        {/* Group matches by tournament to replicate UI */}
                         {Object.entries(groupByTournament(matches)).map(([tournament, tournMatches]: [string, any], idx) => (
                            <div key={idx} className="mb-4 bg-[#120826] border border-[#311B92] rounded-lg overflow-hidden shadow-sm hover:border-[#50C0CC]/50 transition-colors">
                               <div className="bg-[#1A0D35] border-b border-[#311B92] px-3 sm:px-4 py-2.5 flex items-center justify-between">
@@ -732,7 +743,8 @@ function DfolgaBetLiveMatchesContent() {
                               <div className="divide-y divide-[#311B92]/50">
                                  {tournMatches.map((m: any, mIdx: number) => {
                                     const isLive = m.status === 'Ao Vivo' || (m.time && new Date(m.time) <= new Date());
-                                    
+                                    const bestOddKey = m.odds ? Object.entries(m.odds).reduce((a, b) => parseFloat(a[1] as string) > parseFloat(b[1] as string) ? a : b)[0] : null;
+
                                     return (
                                     <div key={mIdx} className="p-3 flex flex-col sm:flex-row hover:bg-[#1A0D35]/80 transition-all gap-3 sm:gap-4 relative group cursor-pointer hover:shadow-[inset_4px_0_0_#50c0cc,0_0_15px_rgba(80,192,204,0.1)]" onClick={() => setSelectedEvent({...m, tournament})}>
                                        {/* Star & Status */}
@@ -770,10 +782,7 @@ function DfolgaBetLiveMatchesContent() {
                                           </div>
                                        </div>
 
-                                       <div className="hidden">
-                                          {showOdds} 
-                                       </div>
-
+                                       {/* Actions & Odds */}
                                        {showOdds && (
                                           <div className="flex flex-col items-stretch sm:items-end justify-center w-full sm:w-[220px] shrink-0 border-t sm:border-t-0 sm:border-l border-[#311B92]/50 pt-3 sm:pt-0 sm:pl-4 transition-all overflow-hidden duration-300 transform sm:origin-right mt-2 sm:mt-0">
                                              <div className="flex justify-between sm:justify-start sm:gap-3 mb-2 px-1 sm:px-0">
@@ -817,14 +826,17 @@ function DfolgaBetLiveMatchesContent() {
                   return foundAny ? content : (
                      <div className="py-10 text-center text-gray-500 font-bold bg-[#120826] border border-[#311B92] rounded-xl shadow-lg">
                         <div className="flex justify-center mb-4 text-[#50C0CC] opacity-50"><Search size={48} /></div>
-                        {activeSportFilter === 'Ao Vivo' ? 'Nenhum evento ao vivo no momento.' : 'Nenhuma partida encontrada com os filtros atuais.'}
+                        Sem eventos disponíveis agora
                      </div>
                   );
                   })()
               )}
            </div>
+
+
         </div>
 
+        {/* Right Sidebar (Offers & Blog) */}
         <RightSidebar />
       </div>
 
@@ -838,6 +850,7 @@ function DfolgaBetLiveMatchesContent() {
   );
 }
 
+// Helper to group matches by tournament
 function groupByTournament(matches: any[]) {
    if (!matches || matches.length === 0) return {};
    return matches.reduce((acc, match) => {
@@ -847,3 +860,4 @@ function groupByTournament(matches: any[]) {
       return acc;
    }, {});
 }
+

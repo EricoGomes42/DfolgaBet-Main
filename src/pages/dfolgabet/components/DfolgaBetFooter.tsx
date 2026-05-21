@@ -92,7 +92,7 @@ export default function DfolgaBetFooter() {
               <li><Link to="/sobre" className="hover:text-white hover:translate-x-1 inline-block transition-all duration-300">Sobre o DfolgaBet</Link></li>
               <li><button onClick={() => setIsContactModalOpen(true)} className="hover:text-white hover:translate-x-1 inline-block transition-all duration-300 text-left cursor-pointer">Fale com a gente</button></li>
               <li><button onClick={() => setIsCareerModalOpen(true)} className="hover:text-white hover:translate-x-1 inline-block transition-all duration-300 text-left cursor-pointer">Trabalhe Conosco</button></li>
-              <li><a href="https://dfolgabet-cms.sanity.studio/" target="_blank" rel="noopener noreferrer" className="hover:text-[#50C0CC] hover:translate-x-1 inline-block transition-all duration-300 flex items-center gap-2">Área do Colaborador</a></li>
+              <li><a href="/studio" target="_blank" rel="noopener noreferrer" className="hover:text-[#50C0CC] hover:translate-x-1 inline-block transition-all duration-300 flex items-center gap-2">Área do Colaborador</a></li>
             </ul>
           </div>
 

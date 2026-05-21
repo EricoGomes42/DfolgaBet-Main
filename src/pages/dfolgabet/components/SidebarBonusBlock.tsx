@@ -1,4 +1,3 @@
-// src/pages/dfolgabet/components/SidebarBonusBlock.tsx
 import { Tag, Star, ChevronDown } from 'lucide-react';
 import React from 'react';
 import { showToast } from '../../../lib/toast';
@@ -13,14 +12,14 @@ export default function SidebarBonusBlock() {
         </h3>
         
         <div className="space-y-3">
-          <a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland" target="_blank" rel="nofollow sponsored noopener noreferrer" className="flex items-center justify-between group cursor-pointer">
+          <div onClick={() => showToast('Conteúdo em desenvolvimento. Em breve esta área terá guias e análises completas.')} className="flex items-center justify-between group cursor-pointer">
             <span className="text-gray-400 text-xs font-bold w-[60%] truncate group-hover:text-white transition-colors">Lottoland</span>
             <span className="bg-[#311B92] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider shadow-inner group-hover:bg-[#50C0CC] transition-colors">LOTTOPLAY</span>
-          </a>
-          <a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline" target="_blank" rel="nofollow sponsored noopener noreferrer" className="flex items-center justify-between group cursor-pointer">
+          </div>
+          <div onClick={() => showToast('Conteúdo em desenvolvimento. Em breve esta área terá guias e análises completas.')} className="flex items-center justify-between group cursor-pointer">
             <span className="text-gray-400 text-xs font-bold w-[60%] truncate group-hover:text-white transition-colors">Sorte Online</span>
             <span className="bg-[#311B92] text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider shadow-inner group-hover:bg-[#50C0CC] transition-colors">SORTEVIP</span>
-          </a>
+          </div>
         </div>
       </div>
 
@@ -31,10 +30,10 @@ export default function SidebarBonusBlock() {
         </h3>
         
         <div className="space-y-4">
-          <a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland" target="_blank" rel="nofollow sponsored noopener noreferrer" className="block border-l-2 border-[#311B92] pl-3 py-1 hover:border-[#50C0CC] transition-colors group cursor-pointer">
+          <div onClick={() => showToast('Conteúdo em desenvolvimento. Em breve esta área terá guias e análises completas.')} className="block border-l-2 border-[#311B92] pl-3 py-1 hover:border-[#50C0CC] transition-colors group cursor-pointer">
             <h4 className="text-white text-[11px] font-black group-hover:text-[#50C0CC] transition-colors leading-tight">Bônus de Boas-Vindas Lottoland</h4>
             <span className="text-gray-500 text-[10px] uppercase font-bold">Aposta Segura</span>
-          </a>
+          </div>
 
           <div onClick={() => showToast('Conteúdo em desenvolvimento. Em breve esta área terá guias e análises completas.')} className="block border-l-2 border-[#311B92] pl-3 py-1 hover:border-[#50C0CC] transition-colors group cursor-pointer">
             <h4 className="text-white text-[11px] font-black group-hover:text-[#50C0CC] transition-colors leading-tight">Créditos de Aposta</h4>

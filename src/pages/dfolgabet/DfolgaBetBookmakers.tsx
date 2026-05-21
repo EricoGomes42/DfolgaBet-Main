@@ -1,10 +1,9 @@
-// src/pages/dfolgabet/DfolgaBetBookmakers.tsx
 import { Trophy, ShieldCheck, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const bookmakers = [
-  { name: 'Lottoland', image: '/assets/lottoland_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland' },
-  { name: 'Sorte Online', image: '/assets/sorte-online_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline' },
+  { name: 'Lottoland', image: '/assets/lottoland_banner.png', link: '#' },
+  { name: 'Sorte Online', image: '/assets/sorte-online_banner.png', link: '#' },
   { name: 'bet365', image: '/assets/bet365_banner.png', link: '#' },
   { name: 'EstrelaBet', image: '/assets/estrelabet_banner.png', link: '#' },
   { name: 'Esportes da Sorte', image: '/assets/esportes-da-sorte_banner.png', link: '#' },

@@ -1,4 +1,3 @@
-// src/config/dfolgabetBookmakers.ts
 export interface BookmakerConfig {
   key: string;
   label: string;
@@ -9,12 +8,12 @@ export interface BookmakerConfig {
   enabled: boolean;
   bonus?: string;
   rating?: number;
-  hasOddsAPI: boolean;
+  hasOddsAPI: boolean; // Indicates if it's expected to have odds from the API
 }
 
 export const DFOLOGABET_PRIORITY_BOOKMAKERS: BookmakerConfig[] = [
-  { key: 'lottoland', label: 'Lottoland', slug: 'lottoland', priority: 200, affiliateUrl: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland', logo: '/assets/lottoland_logo_cinematic-1.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: false },
-  { key: 'sorteonline', label: 'Sorte Online', slug: 'sorteonline', priority: 199, affiliateUrl: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline', logo: '/assets/sorte-online_logo_cinematic-1.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: false },
+  { key: 'lottoland', label: 'Lottoland', slug: 'lottoland', priority: 200, affiliateUrl: 'https://www.lottoland.bet.br/', logo: '/assets/lottoland_logo_cinematic-1.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: false },
+  { key: 'sorteonline', label: 'Sorte Online', slug: 'sorteonline', priority: 199, affiliateUrl: 'https://www.sorteonline.bet.br/', logo: '/assets/sorte-online_logo_cinematic-1.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: false },
   { key: 'bet365', label: 'bet365', slug: 'bet365', priority: 198, affiliateUrl: 'https://www.bet365.bet.br/', logo: '/assets/bet365_logo_cinematic.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: true },
   { key: 'estrelabet', label: 'EstrelaBet', slug: 'estrelabet', priority: 197, affiliateUrl: 'https://www.estrelabet.bet.br/', logo: '/assets/estrelabet_logo_cinematic-1.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: false },
   { key: 'esportesdasorte', label: 'Esportes da Sorte', slug: 'esportesdasorte', priority: 196, affiliateUrl: 'https://esportesdasorte.bet.br/', logo: '/assets/esportes-da-sorte_logo_cinematic-1.png', enabled: true, bonus: 'Oferta Especial', rating: 4.8, hasOddsAPI: false },
@@ -65,10 +64,12 @@ export const normalizeBookmakerName = (rawName: string): string | null => {
   };
 
   const matchedKey = aliases[norm] || norm;
+  
+  // Find in our priority list
   const priorityMatch = DFOLOGABET_PRIORITY_BOOKMAKERS.find(b => b.key === matchedKey);
   if (priorityMatch) return priorityMatch.label;
 
-  return null;
+  return null; // Return null to filter out irrelevant ones
 };
 
 export const getAffiliateLink = (bookmakerLabel: string): string => {
@@ -78,7 +79,7 @@ export const getAffiliateLink = (bookmakerLabel: string): string => {
     const separator = config.affiliateUrl.includes('?') ? '&' : '?';
     return `${config.affiliateUrl}${separator}utm_source=dfolgabet`;
   }
-  return '#'; 
+  return '#'; // Fallback
 };
 
 export const getBookmakerConfig = (bookmakerLabel: string): BookmakerConfig | undefined => {

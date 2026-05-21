@@ -1,4 +1,3 @@
-// src/data/dfolgabetBookmakers.ts
 export interface Bookmaker {
   name: string;
   slug: string;
@@ -16,7 +15,7 @@ export const dfolgabetBookmakers: Bookmaker[] = [
     slug: 'lottoland',
     status: 'active_partner',
     reviewUrl: '/dfolgabet/casas-de-apostas/lottoland',
-    affiliateUrl: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland',
+    affiliateUrl: 'https://www.lottoland.bet.br/',
     bonusLabel: 'Bônus Exclusivo de Boas-Vindas',
     logoBg: 'bg-[#F37021]',
     score: 9.8
@@ -26,7 +25,7 @@ export const dfolgabetBookmakers: Bookmaker[] = [
     slug: 'sorte-online',
     status: 'active_partner',
     reviewUrl: '/dfolgabet/casas-de-apostas/sorte-online',
-    affiliateUrl: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline',
+    affiliateUrl: 'https://www.sorteonline.bet.br/',
     bonusLabel: 'Loterias e Super Cotações',
     logoBg: 'bg-[#50C0CC]',
     score: 9.5

@@ -1,4 +1,3 @@
-// src/pages/dfolgabet/DfolgaBetPost.tsx
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PortableText } from '@portabletext/react';
@@ -13,7 +12,6 @@ import RelatedPosts from './components/RelatedPosts';
 import ResponsibleGamingNotice from './components/ResponsibleGamingNotice';
 import AuthorBox from './components/AuthorBox';
 import SocialShareRibbon from './components/SocialShareRibbon';
-import { LottolandBanner, SorteOnlineBanner } from './components/AffiliateArticleBanners';
 import { YouTubeEmbed } from './components/YouTubeEmbed';
 
 interface Post {
@@ -40,10 +38,11 @@ export default function DfolgaBetPost() {
   useEffect(() => {
     async function fetchPost() {
       if (slug?.startsWith('fake-news-')) {
+        // Generate a fake post
         setPost({
           _id: 'fake-1',
           title: 'BetMGM chegou ao Brasil: Vale a pena apostar na plataforma?',
-          mainImage: null,
+          mainImage: null, // We'll handle this in rendering
           publishedAt: new Date().toISOString(),
           _createdAt: new Date().toISOString(),
           authorName: 'Equipe DfolgaBet',
@@ -106,6 +105,7 @@ export default function DfolgaBetPost() {
     }
   }, [slug]);
 
+  // Handle SEO Custom Code Injection
   useEffect(() => {
     if (post?.seoCustomCode) {
       const fragment = document.createRange().createContextualFragment(post.seoCustomCode);
@@ -162,7 +162,6 @@ export default function DfolgaBetPost() {
   const filteredBody = [];
   let inFaq = false;
   let currentTip: any = null;
-  let insertedSorteOnline = false;
   
   if (rawFilteredBody) {
     for (let i = 0; i < rawFilteredBody.length; i++) {
@@ -190,6 +189,7 @@ export default function DfolgaBetPost() {
                 let questionText = block.children.map((c: any) => c.text).join('');
                 let answerText = nextBlock.children.map((c: any) => c.text).join('');
                 
+                // Remove existing P: and R: from the UI 
                 questionText = questionText.replace(/^P:\s*/i, '');
                 answerText = answerText.replace(/^R:\s*/i, '');
                 
@@ -197,348 +197,298 @@ export default function DfolgaBetPost() {
                     _type: 'faqItem',
                     _key: block._key + '-faq',
                     question: questionText,
-                    answer: answerText
+                    answer: answerText,
                 });
-                i++; 
+                i++; // skip next block
                 continue;
             }
         }
-        
-        // --- 3. TIPS (H3) HANDLING ---
-        if (block._type === 'block' && block.style === 'h3') {
+
+        // --- 3. TIPS H3 HANDLING ---
+        if (!inFaq && block._type === 'block' && block.style === 'h3' && block.children) {
             const text = block.children.map((c: any) => c.text).join('').toLowerCase();
-            if (text.includes('palpite principal') || text.includes('dica')) {
+            const rawText = block.children.map((c: any) => c.text).join('');
+            
+            if (text.startsWith('palpite principal') || text.startsWith('dica')) {
                 if (currentTip) {
                     filteredBody.push(currentTip);
                 }
-                const isMainTip = text.includes('palpite principal');
                 currentTip = {
-                    _type: 'tipCard',
+                    _type: 'tipItem',
                     _key: block._key + '-tip',
-                    title: block.children.map((c: any) => c.text).join(''),
-                    isMain: isMainTip,
-                    content: []
+                    title: rawText,
+                    isPrincipal: text.startsWith('palpite principal'),
+                    contentBlocks: []
                 };
                 continue;
             }
         }
-        
-        // --- 4. COLLECTING TIP CONTENT ---
+
+        // --- 4. ACCUMULATING TIP CONTENT ---
         if (currentTip && block._type === 'block' && block.style === 'normal') {
-            currentTip.content.push(block);
+            currentTip.contentBlocks.push(block);
             continue;
         }
-
-        if (currentTip && block._type === 'block' && block.style !== 'normal') {
+        
+        // --- 5. ANYTHING ELSE: FLUSH TIP & PUSH NORMALLY ---
+        if (currentTip) {
             filteredBody.push(currentTip);
             currentTip = null;
         }
-
-        // --- 5. INJECT SORTE ONLINE BANNER ---
-        if (!insertedSorteOnline && block._type === 'block' && block.style === 'h2' && block.children) {
-             const text = block.children.map((c: any) => c.text).join('').toLowerCase();
-             if (text.includes('considerações finais') || text.includes('conclusão') || text.includes('veredito')) {
-                 filteredBody.push({
-                     _type: 'sorteOnlineBannerBlock',
-                     _key: 'sorte-online-banner-auto-injected'
-                 });
-                 insertedSorteOnline = true;
-             }
-        }
         
-        if (!inFaq && !currentTip) {
-            filteredBody.push(block);
-        }
+        filteredBody.push(block);
     }
 
     if (currentTip) {
         filteredBody.push(currentTip);
     }
-    
-    // Injeção de fallback caso o artigo não tenha 'Considerações Finais' explícito
-    if (!insertedSorteOnline) {
-       filteredBody.push({
-           _type: 'sorteOnlineBannerBlock',
-           _key: 'sorte-online-banner-fallback-injected'
-       });
-       insertedSorteOnline = true;
-    }
   }
-
-  const portableTextComponents = {
-    block: {
-      normal: ({children}: any) => <p className="mb-6 text-[#b0b0b0] text-[17px] leading-relaxed tracking-wide font-sans">{children}</p>,
-      h2: ({children, value}: any) => {
-         const icon = value.isFaqHeading ? <Info className="text-[#e67e22] mr-3" /> : (value.isTipsHeading ? <ShieldCheck className="text-[#e67e22] mr-3" /> : null);
-         return (
-           <div className="mt-12 mb-6">
-              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight flex items-center">
-                {icon} {children}
-              </h2>
-              <div className="h-[1px] w-full bg-[#311B92] mt-4 opacity-50"></div>
-           </div>
-         );
-      },
-      h3: ({children}: any) => <h3 className="text-xl md:text-2xl font-bold text-white mt-8 mb-4">{children}</h3>,
-      h4: ({children}: any) => <h4 className="text-lg font-bold text-white mt-6 mb-3">{children}</h4>,
-      blockquote: ({children}: any) => (
-        <blockquote className="my-8 border-l-4 border-l-[#e67e22] bg-[#e67e22] p-6 rounded-r-xl shadow-lg relative overflow-hidden group">
-          <div className="relative z-10 text-white text-lg md:text-xl font-medium italic leading-relaxed">
-            {children}
-          </div>
-          <Zap className="absolute right-0 bottom-4 text-white opacity-20 -mr-4 transform rotate-12 group-hover:scale-110 transition-transform duration-500" size={120} />
-        </blockquote>
-      ),
-    },
-    list: {
-      bullet: ({children}: any) => <ul className="list-disc pl-6 mb-6 space-y-3 marker:text-[#50C0CC] text-[#b0b0b0]">{children}</ul>,
-      number: ({children}: any) => <ol className="list-decimal pl-6 mb-6 space-y-3 marker:text-[#e67e22] marker:font-bold text-[#b0b0b0]">{children}</ol>,
-    },
-    listItem: {
-      bullet: ({children}: any) => <li className="text-[16px] leading-relaxed pl-2">{children}</li>,
-      number: ({children}: any) => <li className="text-[16px] leading-relaxed pl-2">{children}</li>,
-    },
-    marks: {
-      strong: ({children}: any) => <strong className="font-bold text-white tracking-wide">{children}</strong>,
-      em: ({children}: any) => <em className="italic text-gray-300">{children}</em>,
-      link: ({children, value}: any) => {
-        const isYoutubeUrl = (url: string) => {
-          if (!url) return false;
-          return url.includes('youtube.com') || url.includes('youtu.be');
-        };
-
-        if (value?.href && isYoutubeUrl(value.href)) {
-           return <YouTubeEmbed url={value.href} title={children[0]} />;
-        }
-
-        const rel = !value?.href?.startsWith('/') ? 'noreferrer noopener' : undefined;
-        const target = !value?.href?.startsWith('/') ? '_blank' : undefined;
-        return (
-          <a href={value?.href} rel={rel} target={target} className="text-[#50C0CC] font-bold hover:text-[#e67e22] hover:underline transition-colors underline-offset-4 decoration-2 decoration-[#50C0CC]/30 hover:decoration-[#e67e22]">
-            {children}
-          </a>
-        );
-      },
-    },
-    types: {
-      image: ({value}: any) => {
-        if (!value?.asset?._ref) return null;
-        return (
-          <figure className="my-10 w-full group">
-            <div className="relative overflow-hidden rounded-xl border border-[#311B92]/30 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-               <img 
-                 src={urlFor(value).url()} 
-                 alt={value.alt || 'Imagem do artigo'} 
-                 className="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-700 ease-out" 
-                 loading="lazy" 
-               />
-               <div className="absolute inset-0 bg-gradient-to-tr from-[#311B92]/10 to-transparent pointer-events-none"></div>
-            </div>
-            {value.caption && (
-              <figcaption className="text-center text-sm font-medium italic !text-[#8e8e8e] mt-3 tracking-wide">
-                {value.caption}
-              </figcaption>
-            )}
-          </figure>
-        );
-      },
-      faqItem: ({value}: any) => (
-         <div className="bg-[#120826] border border-[#311B92] rounded-xl p-5 md:p-6 mb-4 shadow-lg hover:border-[#50C0CC]/50 transition-colors">
-            <h4 className="text-white font-bold text-[17px] mb-3 flex items-start gap-2">
-               <span className="text-[#50C0CC] mt-1 shrink-0">•</span>
-               {value.question}
-            </h4>
-            <p className="text-[#b0b0b0] text-[15px] leading-relaxed ml-4">
-               {value.answer}
-            </p>
-         </div>
-      ),
-      tipCard: ({value}: any) => {
-         const isMain = value.isMain;
-         return (
-             <div className={`rounded-xl p-5 md:p-6 mb-5 shadow-lg border relative overflow-hidden ${isMain ? 'bg-[#0A051A]/80 border-[#311B92] border-l-4 border-l-[#e67e22]' : 'bg-[#120826] border-[#311B92]'}`}>
-                {isMain && (
-                   <div className="absolute top-0 right-0 bg-gradient-to-r from-[#e67e22] to-[#f5b041] px-4 py-1 rounded-bl-lg text-[10px] font-black uppercase text-white tracking-widest shadow-md">
-                      Dica Master
-                   </div>
-                )}
-                <h4 className={`font-bold text-lg mb-4 flex items-center gap-2 ${isMain ? 'text-white' : 'text-gray-200'}`}>
-                   {isMain && <Star size={18} className="text-[#e67e22]" fill="currentColor" />}
-                   {value.title}
-                </h4>
-                <div className="text-[#b0b0b0] text-[15px] leading-relaxed space-y-4">
-                   {value.content.map((block: any, idx: number) => (
-                       <p key={idx}>{block.children.map((c: any) => c.text).join('')}</p>
-                   ))}
-                </div>
-             </div>
-         );
-      },
-      sorteOnlineBannerBlock: () => (
-         <SorteOnlineBanner />
-      )
-    }
-  };
 
   return (
     <>
       <Helmet>
-        <title>{post.seoTitle || `${post.title} | DfolgaBet`}</title>
+        <title>{post.seoTitle || post.title} | DfolgaBet</title>
         <meta name="description" content={post.seoDescription || post.excerpt || ''} />
       </Helmet>
-
-      <div className="max-w-[1240px] mx-auto px-4 py-8 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="pt-8 pb-16 bg-[#0A051A]">
+        <div className="max-w-[1024px] mx-auto px-4 lg:px-8 mb-4">
           
-          {/* Main Article Content */}
-          <article className="lg:col-span-8 overflow-hidden rounded-2xl bg-[#0A051A] border border-[#311B92]/30 shadow-[0_0_40px_rgba(10,5,26,0.8)] relative">
-            
-            {/* Breadcrumb Layer */}
-            <div className="absolute top-4 left-6 z-20 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#b0b0b0]/80">
-               <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><Home size={12}/> Home</Link>
-               <span>/</span>
-               <Link to="/dfolgabet" className="hover:text-white transition-colors">Notícias</Link>
-               <span>/</span>
-               <span className="text-[#50C0CC] truncate max-w-[150px] md:max-w-[300px]">{post.title}</span>
+          {/* Breadcrumbs */}
+          <div className="flex items-center gap-2 text-xs text-gray-400 mb-6 flex-wrap">
+            <Home size={12} />
+            <Link to="/dfolgabet" className="hover:text-[#50C0CC] transition-colors">Início</Link>
+            <span>/</span>
+            <span className="hover:text-[#50C0CC] cursor-pointer transition-colors">Notícias</span>
+            <span>/</span>
+            <span className="hover:text-[#50C0CC] cursor-pointer transition-colors">{post.categoryName || 'Atualidades'}</span>
+            <span>/</span>
+            <span className="text-gray-300">{post.title}</span>
+          </div>
+
+          {post.mainImage && (
+            <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
+              <img 
+                src={urlFor(post.mainImage).width(1200).height(800).url()} 
+                alt={post.title}
+                className="w-full object-cover max-h-[600px]"
+              />
             </div>
-
-            {/* Hero Image - Moved UP */}
-            <div className="relative w-full aspect-video border-b border-[#311B92]/50 bg-[#120826] flex items-center justify-center overflow-hidden">
-              {post.mainImage ? (
-                <img 
-                  src={urlFor(post.mainImage).url()} 
-                  alt={post.title} 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Zap size={64} className="text-[#311B92]/50" />
-              )}
-              {/* Gradient overlay for blending */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A051A] via-transparent to-[#0A051A]/30"></div>
-            </div>
-
-            {/* Article Header (Below Image) */}
-            <header className="px-6 md:px-10 pt-8 pb-6 relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="px-3 py-1 text-xs font-black uppercase tracking-widest text-[#0A051A] bg-[#50C0CC] rounded-full shadow-[0_0_15px_rgba(80,192,204,0.4)]">
-                  {post.categoryName || 'Notícia'}
-                </span>
-                <div className="flex items-center text-xs font-bold text-gray-500 uppercase tracking-widest bg-[#120826] px-3 py-1 rounded-full border border-[#311B92]/30">
-                  <Clock size={12} className="mr-1.5" />
-                  {post.publishedAt ? new Date(dateToUse).toLocaleDateString('pt-BR') : 'Hoje'}
-                </div>
-              </div>
-
-              <h1 className="text-3xl md:text-5xl font-black text-white mb-6 leading-[1.1] tracking-tight text-balance">
-                {post.title}
-              </h1>
-
-              {post.excerpt && (
-                <p className="text-lg md:text-xl text-[#a2d9ce] font-medium leading-relaxed mb-8 max-w-[95%]">
-                  {post.excerpt}
-                </p>
-              )}
-              
-              <div className="flex items-center gap-4 mt-8 pt-6 border-t border-[#311B92]/50">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#50C0CC] shadow-[0_0_10px_rgba(80,192,204,0.3)] bg-[#120826]">
-                  {post.authorImage ? (
-                    <img src={urlFor(post.authorImage).url()} alt={post.authorName} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full bg-[#120826] flex items-center justify-center text-[#50C0CC] font-bold text-lg">
-                      {post.authorName?.[0] || 'D'}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="font-bold text-white text-sm tracking-wide">{post.authorName || 'Equipe DfolgaBet'}</p>
-                  <p className="text-xs text-gray-400 font-medium tracking-wider">Especialista em Apostas</p>
-                </div>
-              </div>
-            </header>
-
-            {/* Social Share (Top) */}
-            <div className="px-6 md:px-10 mb-2">
-                <SocialShareRibbon />
-            </div>
-
-            {/* Lottoland Banner inserted immediately after Social Share */}
-            <div className="px-6 md:px-10">
-                <LottolandBanner />
-            </div>
-
-            {/* Article Content */}
-            <div className="px-6 md:px-10 pb-12 mt-6">
-              <div className="prose prose-invert max-w-none 
-                prose-p:text-[#b0b0b0] prose-p:leading-relaxed prose-p:text-[17px] prose-p:tracking-wide
-                prose-headings:text-white prose-headings:font-black prose-headings:tracking-tight
-                prose-a:text-[#50C0CC] prose-a:no-underline hover:prose-a:text-[#e67e22] prose-strong:text-white
-                prose-li:text-[#b0b0b0] marker:text-[#50C0CC]
-                selection:bg-[#50C0CC]/30 selection:text-white"
-              >
-                {filteredBody && filteredBody.length > 0 ? (
-                  <PortableText value={filteredBody} components={portableTextComponents} />
-                ) : (
-                  <p className="text-center text-gray-500 italic my-10">Conteúdo indisponível.</p>
-                )}
-              </div>
-              
-              {/* Avisos Legais - Forced at the end */}
-              <div className="mt-12 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 md:p-8 rounded-r-xl border border-[#311B92]/30 shadow-inner">
-                <h4 className="text-white font-black uppercase text-sm tracking-widest flex items-center gap-2 mb-3">
-                  <ShieldCheck size={16} className="text-[#e67e22]" /> Aviso Legal
-                </h4>
-                <p className="text-[#8e8e8e] text-xs leading-relaxed font-sans font-medium text-justify">
-                  As informações disponibilizadas no DfolgaBet são estritamente para fins informativos e jornalísticos. 
-                  Não garantimos lucros, resultados ou acertos, uma vez que apostas esportivas e jogos de cassino 
-                  envolvem risco financeiro inerente e imprevisibilidade. As odds (cotações) citadas em análises podem sofrer 
-                  alterações nas plataformas sem aviso prévio. Ao clicar nos links para casas de apostas parceiras, podemos receber 
-                  uma comissão, mas isso não influencia nossa independência editorial. Certifique-se de compreender as regras de 
-                  cada plataforma e a legislação vigente em sua jurisdição antes de jogar.
-                </p>
-              </div>
-
-              <div className="mt-4">
-                 <ResponsibleGamingNotice />
-              </div>
-
-              {/* Tag Cloud */}
-              <div className="mt-12 flex flex-wrap gap-2 pt-8 border-t border-[#311B92]/30">
-                <span className="px-4 py-2 bg-[#120826] text-gray-300 rounded-full text-xs font-bold uppercase tracking-widest hover:text-white hover:bg-[#311B92] transition-colors border border-[#311B92]/30 cursor-pointer">
-                  Apostas Esportivas
-                </span>
-                <span className="px-4 py-2 bg-[#120826] text-gray-300 rounded-full text-xs font-bold uppercase tracking-widest hover:text-white hover:bg-[#311B92] transition-colors border border-[#311B92]/30 cursor-pointer">
-                  Futebol
-                </span>
-                <span className="px-4 py-2 bg-[#120826] text-gray-300 rounded-full text-xs font-bold uppercase tracking-widest hover:text-white hover:bg-[#311B92] transition-colors border border-[#311B92]/30 cursor-pointer">
-                  Palpites
-                </span>
-              </div>
-              
-              <AuthorBox
-                 name={post.authorName || 'Erico Gomes'}
-                 role="Especialista em iGaming"
-                 bio="Jornalista apaixonado por esportes, cobre grandes eventos esportivos com análises detalhadas, estatísticas e odds de apostas."
-                 image={post.authorImage ? urlFor(post.authorImage).url() : "/assets/Erico_Gomes_Copywriter.jpg"}
-               />
-            </div>
-            
-            {/* Edge glow effect */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#50C0CC]/50 to-transparent"></div>
-          </article>
+          )}
           
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-6">
-            <div className="sticky top-24">
-              <DfolgaBetSidebar />
+          {slug?.startsWith('fake') && !post.mainImage && (
+            <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
+              <img 
+                src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=1200&q=80" 
+                alt={post.title}
+                className="w-full object-cover max-h-[600px]"
+              />
             </div>
-          </aside>
+          )}
+
+          {/* Full-width Centered Header for Layout 7 */}
+        <div className="flex flex-col items-center text-center mb-10 w-full">
+
+          {/* Category Badges */}
+          <div className="flex justify-center gap-2 mb-4">
+            <span className="bg-[#e67e22] text-white text-[11px] font-bold uppercase px-3 py-1 rounded-full">
+              {post.categoryName || 'Destaque'}
+            </span>
+          </div>
+
+          {/* Tendência Tag */}
+          <div className="flex items-center justify-center gap-1.5 text-sm font-bold text-white mb-4">
+            <div className="bg-[#e67e22] rounded-full w-5 h-5 flex items-center justify-center">
+              <Zap size={12} className="text-white fill-current" />
+            </div>
+            Tendência
+          </div>
+
+          {/* Title */}
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#e67e22] max-w-[1000px] leading-tight mb-6">
+            {post.title}
+          </h1>
+
+          {/* Excerpt */}
+          {post.excerpt && (
+            <p className="text-gray-300 text-lg md:text-xl max-w-4xl mb-6 leading-relaxed">
+              {post.excerpt}
+            </p>
+          )}
+
+          {/* Meta Information */}
+          <div className="flex flex-wrap items-center justify-center gap-y-3 text-xs md:text-sm font-medium text-gray-400 divide-x divide-gray-700">
+            <div className="flex items-center gap-2 px-4">
+              <img src="/assets/Erico_Gomes_Copywriter.jpg" alt={post.authorName || 'Erico Gomes'} className="w-6 h-6 rounded-full object-cover border border-[#50C0CC]" onError={(e) => { e.currentTarget.src = "/assets/dfolga-logo-novo.png"; }} />
+              <span className="text-white font-bold">{post.authorName || 'Erico Gomes'}</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-4 hidden sm:flex">
+              <Calendar size={14} />
+              <span>4 horas atrás</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-4">
+              <span>Última Atualização {new Date(dateToUse).toLocaleDateString('pt-BR')}</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-4">
+              <Bookmark size={14} />
+              <span>6 minutos de leitura</span>
+            </div>
+          </div>
         </div>
 
-        {/* Read Next / Related Sections */}
-        <div className="mt-16 border-t border-[#311B92]/30 pt-16">
-          <RelatedPosts currentPostId={post._id} categoryName={post.categoryName} />
-        </div>
+        <div className="category-sync-layout mt-4">
+        {/* Main Content Area */}
+        <main className="category-content-track">
+          <div className="category-content-sticky flex flex-col gap-8">
+            <div className="layout7-content-card border-[#311B92] bg-[#0A051A] shadow-[0_0_30px_rgba(49,27,146,0.15)] flex flex-col">
+              {/* Top Social Share Ribbon */}
+              <SocialShareRibbon />
+
+              <article>
+                <div className="prose prose-invert prose-lg max-w-none prose-a:text-[#50C0CC] prose-a:no-underline hover:prose-a:underline prose-headings:text-[#e67e22] prose-p:text-gray-300">
+                  <PortableText 
+                    value={filteredBody} 
+                    components={{
+                      block: {
+                        h2: ({children, value}: any) => (
+                          <div className="mt-10 mb-6">
+                            <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
+                              {value?.isFaqHeading ? <Info className="text-[#e67e22]" /> : value?.isTipsHeading ? <ShieldCheck className="text-[#e67e22]" /> : <Zap className="text-[#e67e22]" />} {children}
+                            </h2>
+                            <div className="h-[1px] w-full bg-[#311B92]"></div>
+                          </div>
+                        ),
+                        h3: ({children}) => <h3 className="text-xl font-bold text-white mt-8 mb-4">{children}</h3>,
+                        h4: ({children}) => <h4 className="text-lg font-bold text-white mt-6 mb-3">{children}</h4>,
+                        normal: ({children, value}: any) => {
+                          const textContent = (value?.children || []).map((c: any) => c.text).join('').trim();
+                          const isYouTube = textContent.startsWith('http') && (textContent.includes('youtube.com') || textContent.includes('youtu.be')) && !textContent.includes(' ');
+                          
+                          if (isYouTube) {
+                            let videoId = '';
+                            try {
+                              const url = new URL(textContent);
+                              if (url.hostname.includes('youtube.com')) {
+                                videoId = url.searchParams.get('v') || '';
+                                if (!videoId && url.pathname.startsWith('/live/')) {
+                                  videoId = url.pathname.split('/')[2];
+                                }
+                              } else if (url.hostname.includes('youtu.be')) {
+                                videoId = url.pathname.slice(1);
+                              }
+                            } catch (e) {}
+
+                            if (videoId) {
+                              return <YouTubeEmbed videoId={videoId} />;
+                            }
+                          }
+                          return <p className="text-gray-300 text-[16px] leading-relaxed mb-4">{children}</p>;
+                        },
+                        blockquote: ({children}) => (
+                          <blockquote className="bg-[#e67e22] text-white p-6 rounded-xl relative my-8 font-medium">
+                            {children}
+                          </blockquote>
+                        )
+                      },
+                      list: {
+                        bullet: ({children}) => <ul className="list-disc marker:text-[#50C0CC] pl-5 space-y-2 text-gray-300 mb-6">{children}</ul>,
+                        number: ({children}) => <ol className="list-decimal marker:text-[#50C0CC] pl-5 space-y-2 text-gray-300 mb-6">{children}</ol>
+                      },
+                      types: {
+                        tipItem: ({ value }: any) => {
+                          const isPrincipal = value.isPrincipal;
+                          return (
+                            <div className={`bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4 ${isPrincipal ? 'border-l-4 border-l-[#e67e22] bg-[#0A051A]/80' : ''}`}>
+                              <h3 className="text-white font-bold text-lg mb-3">{value.title}</h3>
+                              <div className="text-[#b0b0b0] text-[15px] leading-relaxed space-y-4">
+                                {value.contentBlocks && value.contentBlocks.map((b: any, idx: number) => (
+                                  <p key={idx}>{b.children?.map((c: any) => c.text).join('')}</p>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        },
+                        faqItem: ({ value }: any) => (
+                          <div className="bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4">
+                            <h3 className="text-white font-bold mb-2">{value.question}</h3>
+                            <p className="text-[#b0b0b0] text-[15px] leading-relaxed">{value.answer}</p>
+                          </div>
+                        ),
+                        image: ({ value }: any) => {
+                          if (!value?.asset?._ref) {
+                            return null;
+                          }
+                          return (
+                            <img
+                              alt={value.alt || 'Imagem do artigo'}
+                              loading="lazy"
+                              src={urlFor(value).url()}
+                              className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
+                            />
+                          );
+                        }
+                      },
+                      marks: {
+                        link: ({ children, value }: any) => {
+                          const href = value?.href || '';
+                          const isYouTube = href.includes('youtube.com') || href.includes('youtu.be');
+                          
+                          if (isYouTube) {
+                            let videoId = '';
+                            try {
+                              const url = new URL(href);
+                              if (url.hostname.includes('youtube.com')) {
+                                videoId = url.searchParams.get('v') || '';
+                                if (!videoId && url.pathname.startsWith('/live/')) {
+                                  videoId = url.pathname.split('/')[2];
+                                }
+                              } else if (url.hostname.includes('youtu.be')) {
+                                videoId = url.pathname.slice(1);
+                              }
+                            } catch (e) {}
+                            
+                            if (videoId) {
+                              return <YouTubeEmbed videoId={videoId} />;
+                            }
+                          }
+
+                          return (
+                            <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#50C0CC] hover:underline">
+                              {children}
+                            </a>
+                          );
+                        }
+                      }
+                    }} 
+                  />
+                </div>
+                
+                {/* Bottom Social Share Ribbon */}
+                <div className="mt-8">
+                  <SocialShareRibbon />
+                </div>
+                
+                <AuthorBox name={post.authorName || 'Erico Gomes'} image="/assets/Erico_Gomes_Copywriter.jpg" />
+
+                <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
+                  <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>
+                  <p className="text-sm text-[#c0c0c0]"><strong>Regulamentação:</strong> Conteúdo em conformidade com a Lei nº 14.790/23 e Portaria SPA/MF nº 259/2025.</p>
+                </div>
+
+                <ResponsibleGamingNotice />
+              </article>
+            </div>
+
+            <RelatedPosts currentPostId={post?._id} />
+          </div>
+        </main>
+
+        {/* Sidebar Area */}
+        <aside className="category-sidebar-track">
+          <DfolgaBetSidebar />
+        </aside>
       </div>
+      </div>
+    </div>
     </>
   );
 }
