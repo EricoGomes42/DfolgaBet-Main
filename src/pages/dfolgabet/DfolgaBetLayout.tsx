@@ -5,6 +5,7 @@ import DfolgaBetNavbar from './components/DfolgaBetNavbar';
 import DfolgaBetFooter from './components/DfolgaBetFooter';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import CookieConsentModal from './components/CookieConsentModal';
+import AdBlockWarningModal from './components/AdBlockWarningModal';
 
 export default function DfolgaBetLayout() {
   return (
@@ -12,6 +13,7 @@ export default function DfolgaBetLayout() {
       <DfolgaBetTopBar />
       <DfolgaBetHeader />
       <DfolgaBetNavbar />
+
       <main className="flex-1">
         <Outlet />
       </main>
@@ -19,6 +21,7 @@ export default function DfolgaBetLayout() {
       <DfolgaBetFooter />
       <CookieConsentModal />
       <AgeVerificationModal />
+      <AdBlockWarningModal />
     </div>
   );
 }
