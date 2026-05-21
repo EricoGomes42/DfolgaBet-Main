@@ -12,7 +12,7 @@ export function LottolandBanner() {
         className="block transition-transform hover:scale-[1.02] w-full max-w-[728px]"
       >
         <img 
-          src="/assets/banner/banner_lottoland_728x90.png" 
+          src="/assets/banner/lottoland-card.png" 
           alt="Aposte na Lottoland - Plataforma Registrada - Para maiores de 18 anos" 
           className="w-full h-auto rounded-lg shadow-lg border border-[#311B92]/30"
           loading="lazy"
@@ -33,7 +33,7 @@ export function SorteOnlineBanner() {
         className="block transition-transform hover:scale-[1.02] w-full max-w-[728px]"
       >
         <img 
-          src="/assets/banner/banner_sorte_online_728x90.png" 
+          src="/assets/banner/sorteonline-card.png" 
           alt="Aposte na Sorte Online - Plataforma Registrada - Para maiores de 18 anos" 
           className="w-full h-auto rounded-lg shadow-lg border border-[#311B92]/30"
           loading="lazy"
