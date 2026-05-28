@@ -23,10 +23,10 @@ export default function FlamengoVsFluminense() {
     "headline": "Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026",
     "alternativeHeadline": "Análise completa do clássico Fla-Flu Feminino com palpites, odds e dicas de apostas",
     "image": [
-      "https://dfolgabet.com/assets/capa_flamengo_fluminense_fem.jpg",
-      "https://dfolgabet.com/assets/tabela_comparativa_flamengo_fluminense_fem.jpg",
-      "https://dfolgabet.com/assets/odds_palpites_flamengo_fluminense_fem.jpg",
-      "https://dfolgabet.com/assets/plataformas_afiliadas_flamengo_fluminense_fem.jpg"
+      "https://dfolgabet.comassets/articles/capas/capa_flamengo_fluminense_fem.webp",
+      "https://dfolgabet.com/assets/articles/infograficos/tabela_comparativa_flamengo_fluminense_fem.jpg",
+      "https://dfolgabet.com/assets/articles/infograficos/odds_palpites_flamengo_fluminense_fem.jpg",
+      "https://dfolgabet.com/assets/articles/infograficos/plataformas_afiliadas_flamengo_fluminense_fem.jpg"
     ],
     "datePublished": "2026-05-13T10:00:00-03:00",
     "dateModified": "2026-05-13T10:00:00-03:00",
@@ -190,7 +190,7 @@ export default function FlamengoVsFluminense() {
           {/* Capa */}
           <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
             <img 
-              src="/assets/capa_flamengo_fluminense_fem.jpg" 
+              src="/assets/articles/capas/capa_flamengo_fluminense_fem.webp" 
               alt="Flamengo x Fluminense Feminino - Capa do artigo de palpites e odds para o Brasileirão 2026" 
               className="w-full object-cover"
               loading="lazy"
@@ -244,7 +244,7 @@ export default function FlamengoVsFluminense() {
                 <div className="mb-10 mt-6">
                   <figure>
                     <img 
-                      src="/assets/tabela_comparativa_flamengo_fluminense_fem.jpg" 
+                      src="/assets/articles/infograficos/tabela_comparativa_flamengo_fluminense_fem.jpg" 
                       alt="Comparação de estatísticas técnicas: Flamengo Feminino vs Fluminense Feminino" 
                       className="w-full rounded-xl border border-gray-800"
                       loading="lazy"
@@ -319,7 +319,7 @@ export default function FlamengoVsFluminense() {
                 <div className="mb-10 mt-6">
                   <figure>
                     <img 
-                      src="/assets/odds_palpites_flamengo_fluminense_fem.jpg" 
+                      src="/assets/articles/infograficos/odds_palpites_flamengo_fluminense_fem.jpg" 
                       alt="Palpites e odds recomendadas para Flamengo x Fluminense Feminino" 
                       className="w-full rounded-xl border border-gray-800"
                       loading="lazy"
@@ -429,7 +429,7 @@ export default function FlamengoVsFluminense() {
                 <div className="mb-10 mt-6">
                   <figure>
                     <img 
-                      src="/assets/plataformas_afiliadas_flamengo_fluminense_fem.jpg" 
+                      src="/assets/articles/infograficos/plataformas_afiliadas_flamengo_fluminense_fem.jpg" 
                       alt="Lottoland e Sorte Online - Plataformas oficiais licenciadas" 
                       className="w-full rounded-xl border border-gray-800"
                       loading="lazy"

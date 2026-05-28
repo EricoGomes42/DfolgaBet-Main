@@ -6,7 +6,7 @@ export default function SidebarEckoayBlock() {
       <div className="relative p-6 pt-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2">
-            <img src="/assets/logo_eckoay.png" alt="ecKOay" className="w-[32px] h-[32px] object-contain shadow-2xl" />
+            <img src="/assets/logos/partners/logo_eckoay.png" alt="ecKOay" className="w-[32px] h-[32px] object-contain shadow-2xl" />
             <h3 className="font-black text-white text-[20px] italic tracking-widest mt-1">
               Grupo <span className="text-[#a8cd45]">ecKOay</span>
             </h3>
@@ -17,7 +17,7 @@ export default function SidebarEckoayBlock() {
         <div className="space-y-4">
           <a href="https://utimeoff.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-[#0A051A]/80 border border-[#8e44ad]/40 hover:border-[#8e44ad] transition-all group/item hover:scale-[1.03] shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl flex justify-center items-center p-2 shrink-0 border border-[#8e44ad]/20">
-              <img src="/assets/utimeoff-logo-original.png" alt="uTimeOff" className="max-w-full max-h-full object-contain" />
+              <img src="/assets/logos/partners/utimeoff-logo-original.png" alt="uTimeOff" className="max-w-full max-h-full object-contain" />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-white text-[13px] font-black uppercase tracking-wide group-hover/item:text-[#8e44ad] transition-colors">UTIMEOFF</h4>
@@ -28,7 +28,7 @@ export default function SidebarEckoayBlock() {
 
           <a href="https://dfolga.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-[#0A051A]/80 border border-[#311B92]/50 hover:border-[#50C0CC] transition-all group/item hover:scale-[1.03] shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl flex justify-center items-center p-2 shrink-0 border border-[#311B92]/20">
-              <img src="/assets/dfolga-logo-novo.png" alt="Dfolga" className="max-w-full max-h-full object-contain" />
+              <img src="/assets/logos/dfolga/dfolga-logo-novo.png" alt="Dfolga" className="max-w-full max-h-full object-contain" />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-white text-[13px] font-black uppercase tracking-wide group-hover/item:text-[#50C0CC] transition-colors">DFOLGA</h4>
@@ -39,7 +39,7 @@ export default function SidebarEckoayBlock() {
 
           <a href="https://dfolga.com/dfolgashop/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-[#0A051A]/80 border border-[#311B92]/50 hover:border-[#F37021] transition-all group/item hover:scale-[1.03] shadow-lg">
             <div className="w-14 h-14 bg-white rounded-xl flex justify-center items-center p-1 shrink-0 border border-[#311B92]/20">
-              <img src="/assets/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = "/assets/dfolgashop-bg.png"; }} />
+              <img src="/assets/logos/dfolgashop/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.src = "/assets/logos/dfolgashop/dfolgashop-bg.png"; }} />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="text-white text-[13px] font-black uppercase tracking-wide group-hover/item:text-[#F37021] transition-colors">DFOLGASHOP</h4>

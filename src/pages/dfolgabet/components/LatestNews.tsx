@@ -28,13 +28,13 @@ export default function LatestNews({ posts = [] }: { posts?: Post[] }) {
       title: post.title,
       excerpt: post.excerpt || (index === 0 ? 'Confira as últimas novidades e análises exclusivas preparadas por nossa equipe de especialistas para turbinar suas estratégias.' : ''),
       image: post._id === 'local-alice-vs-polyana'
-        ? '/assets/capa_alice_polyana_final (1).png'
+        ? '/assets/articles/capas/capa_alice_polyana_final%20(1).webp'
         : post._id === 'local-sao-paulo-vs-juventude-fem'
           ? '/assets/Imagens%20Brasileir%C3%A3o%20Feminino/sao_paulo_juventude_capa.png'
           : post._id === 'local-caliari-vs-bannon' 
-            ? '/assets/capa_caliari_bannon_ufc.jpg'
+            ? '/assets/articles/capas/capa_caliari_bannon_ufc.webp'
             : post._id === 'local-flamengo-vs-fluminense-fem'
-              ? '/assets/capa_flamengo_fluminense_fem.jpg'
+              ? '/assets/articles/capas/capa_flamengo_fluminense_fem.webp'
               : post.mainImage 
               ? urlFor(post.mainImage).width(800).height(500).url() 
               : 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=800&q=80',

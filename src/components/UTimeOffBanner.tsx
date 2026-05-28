@@ -14,7 +14,7 @@ export default function UTimeOffBanner() {
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center p-6">
         <img 
-          src="/assets/utimeoff-logo-original.png" 
+          src="/assets/logos/partner/utimeoff-logo-original.png" 
           alt="uTimeOff" 
           className="h-8 sm:h-12 mb-3 object-contain"
           onError={(e) => {

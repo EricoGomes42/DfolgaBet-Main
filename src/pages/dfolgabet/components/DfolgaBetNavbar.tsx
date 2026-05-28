@@ -58,7 +58,7 @@ export default function DfolgaBetNavbar() {
             {/* Logo on Mobile - Visible during scroll too */}
             <Link to="/" className="flex lg:hidden items-center justify-center absolute left-1/2 -translate-x-1/2 h-full py-2 max-w-[200px]">
               <img 
-                src="/assets/dfolgabet-oficial.png" 
+                src="/assets/logos/dfolgabet/dfolgabet-oficial.png" 
                 alt="DfolgaBet Logo" 
                 className={`object-contain transition-all duration-500 w-full ${isScrolled ? 'h-8' : 'h-10'}`}
               />
@@ -102,7 +102,7 @@ export default function DfolgaBetNavbar() {
             {/* Desktop Logo (Made larger and prominent on the right side) */}
             <Link to="/" className="hidden lg:flex items-center h-full justify-end flex-1 pl-4 mr-4">
               <img 
-                src="/assets/dfolgabet-oficial.png" 
+                src="/assets/logos/dfolgabet/dfolgabet-oficial.png" 
                 alt="DfolgaBet Logo" 
                 className={`object-contain transition-all duration-300 ${isScrolled ? 'h-8' : ''}`}
                 style={{ marginTop: '0px', marginRight: '95px', height: '51px', width: '247.778px' }}
@@ -137,7 +137,7 @@ export default function DfolgaBetNavbar() {
               {/* Drawer Header */}
               <div className="flex items-center justify-between px-6 h-16 md:h-20 border-b border-[#311B92]/50 shrink-0 bg-[#0A051A]/40">
                 <img 
-                  src="/assets/dfolgabet-oficial.png" 
+                  src="/assets/logos/dfolgabet/dfolgabet-oficial.png" 
                   alt="DfolgaBet Logo" 
                   className="h-8 object-contain"
                 />

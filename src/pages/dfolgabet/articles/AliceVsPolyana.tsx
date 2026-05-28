@@ -23,10 +23,10 @@ export default function AliceVsPolyana() {
     "headline": "Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night",
     "description": "Análise técnica, odds reais de Lottoland e Sorte Online, e palpites para Alice Ardelean vs Polyana Viana no UFC Fight Night de 16/05/2026.",
     "image": [
-      "https://dfolgabet.com/assets/capa_alice_polyana_final (1).png",
-      "https://dfolgabet.com/assets/analise_tecnica_final.png",
-      "https://dfolgabet.com/assets/odds_comparacao_final.png",
-      "https://dfolgabet.com/assets/predicoes_especialistas_final.png"
+      "https://dfolgabet.com/assets/articles/capas/capa_alice_polyana_final%20(1).webp",
+      "https://dfolgabet.com/assets/articles/infograficos/analise_tecnica_final.png",
+      "https://dfolgabet.com/assets/articles/infograficos/odds_comparacao_final.png",
+      "https://dfolgabet.com/assets/articles/infograficos/predicoes_especialistas_final.png"
     ],
     "datePublished": "2026-05-13T00:00:00Z",
     "dateModified": "2026-05-13T00:00:00Z",
@@ -114,7 +114,7 @@ export default function AliceVsPolyana() {
         <meta property="og:type" content="article" />
         <meta property="og:title" content="Alice Ardelean x Polyana Viana: Análise, Odds e Palpites UFC" />
         <meta property="og:description" content="Análise técnica, odds reais de Lottoland e Sorte Online, e palpites para Alice Ardelean vs Polyana Viana no UFC Fight Night de 16/05/2026." />
-        <meta property="og:image" content="https://dfolgabet.com/assets/capa_alice_polyana_final (1).png" />
+        <meta property="og:image" content="https://dfolgabet.com/assets/articles/capas/capa_alice_polyana_final%20(1).webp" />
         <meta property="og:url" content="https://dfolgabet.com/alice-ardelean-polyana-viana-ufc-fight-night/" />
         <meta property="og:site_name" content="DfolgaBet" />
         <meta property="og:locale" content="pt_BR" />
@@ -123,7 +123,7 @@ export default function AliceVsPolyana() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Alice Ardelean x Polyana Viana: Análise, Odds e Palpites UFC" />
         <meta name="twitter:description" content="Análise técnica, odds reais de Lottoland e Sorte Online, e palpites para Alice Ardelean vs Polyana Viana no UFC Fight Night de 16/05/2026." />
-        <meta name="twitter:image" content="https://dfolgabet.com/assets/capa_alice_polyana_final (1).png" />
+        <meta name="twitter:image" content="https://dfolgabet.com/assets/articles/capas/capa_alice_polyana_final%20(1).webp" />
 
         <script type="application/ld+json">
           {JSON.stringify(structuredDataNewsArticle)}
@@ -151,7 +151,7 @@ export default function AliceVsPolyana() {
           {/* Capa */}
           <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
             <img 
-              src="/assets/capa_alice_polyana_final (1).png" 
+              src="/assets/articles/capas/capa_alice_polyana_final%20(1).webp" 
               alt="Imagem cinética com dois portraits de lutadoras em posição de combate, iluminação neon teal e laranja, fundo roxo profundo" 
               className="w-full object-cover"
               loading="lazy"
@@ -208,7 +208,7 @@ export default function AliceVsPolyana() {
                 {/* Alice Ardelean Profile Imagem */}
                 <div className="mb-8 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
                   <img 
-                    src="/assets/alice_ardelean_profile.png" 
+                    src="/assets/avatars/sports/fighters/alice_ardelean_profile.png" 
                     alt="Card de perfil da lutadora com nome, stats (18 wins, 5 losses, 89% striking) e iluminação neon teal"
                     className="w-full object-cover"
                     loading="lazy"
@@ -245,7 +245,7 @@ export default function AliceVsPolyana() {
                 {/* Polyana Viana Profile Imagem */}
                 <div className="mb-8 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
                   <img 
-                    src="/assets/polyana_viana_profile.png" 
+                    src="/assets/avatars/sports/fighters/polyana_viana_profile.png" 
                     alt="Card de perfil da lutadora com nome, stats (15 wins, 8 losses, 78% striking) e iluminação neon laranja"
                     className="w-full object-cover"
                     loading="lazy"
@@ -307,7 +307,7 @@ export default function AliceVsPolyana() {
                 {/* Análise Técnica Imagem */}
                 <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
                   <img 
-                    src="/assets/analise_tecnica_final.png" 
+                    src="/assets/articles/infograficos/analise_tecnica_final.png" 
                     alt="Infográfico comparativo de estatísticas técnicas - Alice Ardelean 18 vitórias, 89% acurácia vs Polyana Viana 15 vitórias, 78% acurácia"
                     className="w-full object-cover"
                     loading="lazy"
@@ -357,7 +357,7 @@ export default function AliceVsPolyana() {
                 {/* Odds Imagem */}
                 <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
                   <img 
-                    src="/assets/odds_comparacao_final.png" 
+                    src="/assets/articles/infograficos/odds_comparacao_final.png" 
                     alt="Infográfico com comparação de odds de Lottoland e Sorte Online, mostrando Alice Ardelean 1.42 vs Polyana Viana 2.62"
                     className="w-full object-cover"
                     loading="lazy"
@@ -523,7 +523,7 @@ export default function AliceVsPolyana() {
                 {/* Previsões Imagem */}
                 <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
                   <img 
-                    src="/assets/predicoes_especialistas_final.png" 
+                    src="assets/articles/infograficos/predicoes_especialistas_final.png" 
                     alt="Infográfico com previsões de especialistas, 72% favor Alice vs 28% favor Polyana, com análise de confiança"
                     className="w-full object-cover"
                     loading="lazy"

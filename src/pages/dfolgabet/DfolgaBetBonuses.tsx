@@ -25,7 +25,7 @@ const BannerImage = ({ src, alt }: { src: string; alt: string }) => {
                const nameMatch = imgSrc.match(/banner_patrocinio_([a-zA-Z0-9\-]+)/);
                const name = nameMatch ? nameMatch[1] : '';
                if (name) {
-                 setImgSrc(`/assets/banner_${name}_offer.png`);
+                 setImgSrc(`/assets/betting/banner-casas-ofertas/banner_${name}_offer.png`);
                  return;
                }
             }
@@ -38,26 +38,26 @@ const BannerImage = ({ src, alt }: { src: string; alt: string }) => {
 };
 
 const bookmakerOffers = [
-  { id: 1, name: 'LOTTOLAND', offer: '25% DE VOLTA', description: 'Aposte R$ 15 nos jogos selecionados', image: '/assets/banner_lottoland_offer.png', url: 'https://www.lottoland.bet.br/', badge: 'DESTAQUE' },
-  { id: 2, name: 'SORTE ONLINE', offer: '30 RODADAS GRÁTIS', description: 'Aposte R$ 70 nos slots selecionados', image: '/assets/banner_sorteonline_offer.png', url: 'https://www.sorteonline.bet.br/', badge: 'NOVO' },
-  { id: 3, name: 'BET365', offer: 'BET CREDITS', description: 'Até R$ 200 em créditos de aposta', image: '/assets/banner_bet365_offer.png', url: 'https://www.bet365.bet.br/' },
-  { id: 4, name: 'ESTRELABET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/banner_estrelabet_offer.png', url: 'https://www.estrelabet.bet.br/' },
-  { id: 5, name: 'ESPORTES DA SORTE', offer: 'APOSTA GRÁTIS', description: 'R$ 50 sem risco para começar', image: '/assets/banner_esportesdasorte_offer.png', url: 'https://esportesdasorte.bet.br/' },
-  { id: 6, name: 'KTO', offer: 'PRIMEIRA APOSTA', description: 'Até R$ 200 em créditos de aposta', image: '/assets/banner_kto_offer.png', url: 'https://www.kto.bet.br/' },
-  { id: 7, name: 'SUPERBET', offer: 'BÔNUS INICIAL', description: '100% até R$ 500 em créditos', image: '/assets/banner_superbet_offer.png', url: 'https://www.superbet.bet.br/' },
-  { id: 8, name: 'BETMGM', offer: 'WELCOME BONUS', description: 'Até R$ 600 em créditos de aposta', image: '/assets/banner_betmgm_offer.png', url: 'https://www.betmgm.bet.br/' },
-  { id: 9, name: 'NOVIBET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/banner_novibet_offer.png', url: 'https://www.novibet.bet.br/' },
-  { id: 10, name: 'VBET', offer: 'PRIMEIRO DEPÓSITO', description: '100% até R$ 400 em créditos', image: '/assets/banner_vbet_offer.png', url: 'https://www.vbet.bet.br/' },
-  { id: 11, name: 'SPORTINGBET', offer: 'BÔNUS ESPORTIVO', description: 'Até R$ 300 em créditos de aposta', image: '/assets/banner_sportingbet_offer.png', url: 'https://www.sportingbet.bet.br/' },
-  { id: 12, name: 'BANDBET', offer: 'APOSTA SEM RISCO', description: 'R$ 50 de crédito para começar', image: '/assets/banner_bandbet_offer.png', url: 'https://www.bandbet.bet.br/' },
-  { id: 13, name: 'BETANO', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/banner_betano_offer.png', url: 'https://www.betano.bet.br/' },
-  { id: 14, name: 'BETWARRIOR', offer: 'BÔNUS INICIAL', description: 'Até R$ 250 em créditos de aposta', image: '/assets/banner_betwarrior_offer.png', url: 'https://www.betwarrior.bet.br/' },
-  { id: 15, name: 'ONABET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/banner_onabet_offer.png', url: 'https://ona.bet.br/casino' },
-  { id: 16, name: 'BETNACIONAL', offer: 'BÔNUS INICIAL', description: 'Até R$ 300 em créditos de aposta', image: '/assets/banner_betnacional_offer.png', url: 'https://www.betnacional.bet.br/' },
-  { id: 17, name: '1XBET', offer: 'BÔNUS ESPORTIVO', description: '100% até R$ 1.200 em créditos', image: '/assets/banner_1xbet_offer.png', url: 'https://1xbet.bet.br/pt' },
-  { id: 18, name: 'PIXBET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 600 em créditos', image: '/assets/banner_pixbet_offer.png', url: 'https://www.pixbet.bet.br/' },
-  { id: 19, name: 'GALERA BET', offer: 'BÔNUS INICIAL', description: 'Até R$ 500 em créditos de aposta', image: '/assets/banner_galera_offer.png', url: 'https://www.galera.bet.br/' },
-  { id: 20, name: 'STAKE', offer: 'BÔNUS DE BOAS-VINDAS', description: 'Até R$ 1.000 em créditos', image: '/assets/banner_stake_offer.png', url: 'https://stake.com/pt' }
+  { id: 1, name: 'LOTTOLAND', offer: '25% DE VOLTA', description: 'Aposte R$ 15 nos jogos selecionados', image: '/assets/betting/banner-casas-ofertas/banner_lottoland_offer.png', url: 'https://www.lottoland.bet.br/', badge: 'DESTAQUE' },
+  { id: 2, name: 'SORTE ONLINE', offer: '30 RODADAS GRÁTIS', description: 'Aposte R$ 70 nos slots selecionados', image: '/assets/betting/banner-casas-ofertas/banner_sorteonline_offer.png', url: 'https://www.sorteonline.bet.br/', badge: 'NOVO' },
+  { id: 3, name: 'BET365', offer: 'BET CREDITS', description: 'Até R$ 200 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_bet365_offer.png', url: 'https://www.bet365.bet.br/' },
+  { id: 4, name: 'ESTRELABET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_estrelabet_offer.png', url: 'https://www.estrelabet.bet.br/' },
+  { id: 5, name: 'ESPORTES DA SORTE', offer: 'APOSTA GRÁTIS', description: 'R$ 50 sem risco para começar', image: '/assets/betting/banner-casas-ofertas/banner_esportesdasorte_offer.png', url: 'https://esportesdasorte.bet.br/' },
+  { id: 6, name: 'KTO', offer: 'PRIMEIRA APOSTA', description: 'Até R$ 200 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_kto_offer.png', url: 'https://www.kto.bet.br/' },
+  { id: 7, name: 'SUPERBET', offer: 'BÔNUS INICIAL', description: '100% até R$ 500 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_superbet_offer.png', url: 'https://www.superbet.bet.br/' },
+  { id: 8, name: 'BETMGM', offer: 'WELCOME BONUS', description: 'Até R$ 600 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_betmgm_offer.png', url: 'https://www.betmgm.bet.br/' },
+  { id: 9, name: 'NOVIBET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_novibet_offer.png', url: 'https://www.novibet.bet.br/' },
+  { id: 10, name: 'VBET', offer: 'PRIMEIRO DEPÓSITO', description: '100% até R$ 400 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_vbet_offer.png', url: 'https://www.vbet.bet.br/' },
+  { id: 11, name: 'SPORTINGBET', offer: 'BÔNUS ESPORTIVO', description: 'Até R$ 300 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_sportingbet_offer.png', url: 'https://www.sportingbet.bet.br/' },
+  { id: 12, name: 'BANDBET', offer: 'APOSTA SEM RISCO', description: 'R$ 50 de crédito para começar', image: '/assets/betting/banner-casas-ofertas/banner_bandbet_offer.png', url: 'https://www.bandbet.bet.br/' },
+  { id: 13, name: 'BETANO', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_betano_offer.png', url: 'https://www.betano.bet.br/' },
+  { id: 14, name: 'BETWARRIOR', offer: 'BÔNUS INICIAL', description: 'Até R$ 250 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_betwarrior_offer.png', url: 'https://www.betwarrior.bet.br/' },
+  { id: 15, name: 'ONABET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 500 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_onabet_offer.png', url: 'https://ona.bet.br/casino' },
+  { id: 16, name: 'BETNACIONAL', offer: 'BÔNUS INICIAL', description: 'Até R$ 300 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_betnacional_offer.png', url: 'https://www.betnacional.bet.br/' },
+  { id: 17, name: '1XBET', offer: 'BÔNUS ESPORTIVO', description: '100% até R$ 1.200 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_1xbet_offer.png', url: 'https://1xbet.bet.br/pt' },
+  { id: 18, name: 'PIXBET', offer: 'BÔNUS DE BOAS-VINDAS', description: '100% até R$ 600 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_pixbet_offer.png', url: 'https://www.pixbet.bet.br/' },
+  { id: 19, name: 'GALERA BET', offer: 'BÔNUS INICIAL', description: 'Até R$ 500 em créditos de aposta', image: '/assets/betting/banner-casas-ofertas/banner_galera_offer.png', url: 'https://www.galera.bet.br/' },
+  { id: 20, name: 'STAKE', offer: 'BÔNUS DE BOAS-VINDAS', description: 'Até R$ 1.000 em créditos', image: '/assets/betting/banner-casas-ofertas/banner_stake_offer.png', url: 'https://stake.com/pt' }
 ];
 
 export default function DfolgaBetBonuses() {

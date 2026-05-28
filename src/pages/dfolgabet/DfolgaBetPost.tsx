@@ -9,6 +9,7 @@ import RelatedPosts from './components/RelatedPosts';
 import ResponsibleGamingNotice from './components/ResponsibleGamingNotice';
 import SocialShareRibbon from './components/SocialShareRibbon';
 import { YouTubeEmbed } from './components/YouTubeEmbed';
+import AuthorBox from './components/AuthorBox';
 
 const LottolandBanner = () => (
   <div className="flex justify-center w-full my-6">
@@ -263,7 +264,7 @@ export default function DfolgaBetPost() {
             <div className="flex items-center justify-center gap-6 text-[12px] md:text-[13px] font-medium text-gray-400 flex-wrap">
               <div className="flex items-center gap-2">
                 <img
-                  src="/assets/Erico_Gomes_Copywriter.jpg"
+                  src="/assets/avatars/authors/Erico_Gomes_Copywriter.jpg"
                   alt={post.authorName || 'Erico Gomes'}
                   className="w-6 h-6 rounded-full object-cover border border-[#50C0CC]/50"
                   onError={(e) => { e.currentTarget.src = '/assets/dfolga-logo-novo.png'; }}
@@ -368,21 +369,15 @@ export default function DfolgaBetPost() {
                         }}
                       />
                     </div>
+<div className="mt-8">
+  <SocialShareRibbon />
+</div>
 
-                    <div className="mt-8">
-                      <SocialShareRibbon />
-                    </div>
-
-                    <div className="mt-8 bg-[#120826] border border-[#311B92] rounded-xl p-6 flex items-start gap-4">
-                      <img src="/assets/Erico_Gomes_Copywriter.jpg" alt={post.authorName || 'Erico Gomes'} className="w-20 h-20 rounded-full object-cover border-2 border-[#50C0CC]/60" />
-
-                      <div>
-                        <h3 className="text-white font-black text-lg mb-2">{post.authorName || 'Erico Gomes'}</h3>
-                        <p className="text-[#b0b0b0] text-sm leading-relaxed">
-                          Jornalista apaixonado por esportes, cobre grandes eventos esportivos com análises detalhadas, estatísticas e odds de apostas.
-                        </p>
-                      </div>
-                    </div>
+<AuthorBox
+  name={post.authorName || 'Erico Gomes'}
+  bio="Jornalista apaixonado por esportes, cobre grandes eventos esportivos com análises detalhadas, estatísticas e odds de apostas."
+  image="/assets/avatars/authors/Erico_Gomes_Copywriter.jpg"
+/>
 
                     <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
                       <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>

@@ -48,7 +48,7 @@ export default function DfolgaBetPlaceholder() {
         <div className="flex justify-center mb-8">
            <Link to="/">
              <img 
-                src="/assets/dfolgabet-oficial.png" 
+                src="/assets/logos/dfolgabet/dfolgabet-oficial.png" 
                 alt="DfolgaBet Logo" 
                 className="h-16 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(80,192,204,0.3)] hover:scale-105 transition-transform duration-500" 
              />

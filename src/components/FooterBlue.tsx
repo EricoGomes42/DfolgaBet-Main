@@ -44,7 +44,7 @@ const socialLinks = [
   { label: "LinkedIn", href: "https://linkedin.com/company/dfolga", icon: <LinkedInIcon /> },
 ];
 
-const UTIMEOFF_LOGO = "/assets/utimeoff-logo.png";
+const UTIMEOFF_LOGO = "/assets/logos/partners/utimeoff-logo.png";
 
 export default function FooterBlue() {
   return (

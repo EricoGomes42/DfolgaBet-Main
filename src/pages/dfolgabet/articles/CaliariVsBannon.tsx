@@ -24,9 +24,9 @@ export default function CaliariVsBannon() {
     "alternativeHeadline": "Nicolle Caliari vs. Shauna Bannon - Odds, Estatísticas e Palpites para UFC Fight Night",
     "description": "Análise completa da luta Nicolle Caliari vs. Shauna Bannon no UFC Fight Night de 16 de maio de 2026. Confira estatísticas, odds, palpites e informações sobre plataformas licenciadas para apostas.",
     "image": [
-      "https://dfolgabet.com/assets/capa_caliari_bannon_ufc.jpg",
-      "https://dfolgabet.com/assets/tabela_comparativa_caliari_bannon.jpg",
-      "https://dfolgabet.com/assets/odds_e_palpites_caliari_bannon.jpg"
+      "https://dfolgabet.com/assets/articles/capas/capa_caliari_bannon_ufc.webp",
+      "https://dfolgabet.com/assets/articles/infograficos/tabela_comparativa_caliari_bannon.jpg",
+      "https://dfolgabet.com/assets/articles/infograficos/odds_e_palpites_caliari_bannon.jpg"
     ],
     "datePublished": "2026-05-12T10:00:00Z",
     "dateModified": "2026-05-12T10:00:00Z",
@@ -153,10 +153,10 @@ export default function CaliariVsBannon() {
         <meta property="og:url" content="https://dfolgabet.com/ufc-caliari-vs-bannon" />
         <meta property="og:title" content="Nicolle Caliari vs. Shauna Bannon: Palpites, Odds e Análise UFC 2026" />
         <meta property="og:description" content="Análise completa da luta Nicolle Caliari vs. Shauna Bannon no UFC Fight Night de 16 de maio de 2026. Confira odds, estatísticas, palpites e informações sobre plataformas licenciadas para apostas." />
-        <meta property="og:image" content="https://dfolgabet.com/assets/capa_caliari_bannon_ufc.jpg" />
+        <meta property="og:image" content="https://dfolgabet.com/assets/articles/capas/capa_caliari_bannon_ufc.webp" />
         <meta property="og:image:width" content="2560" />
         <meta property="og:image:height" content="1440" />
-        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:type" content="image/webp" />
         <meta property="og:image:alt" content="Nicolle Caliari em postura ofensiva com iluminação roxo-azul vs. Shauna Bannon em postura técnica com iluminação laranja no octógono UFC" />
         <meta property="og:site_name" content="DfolgaBet" />
         <meta property="og:locale" content="pt_BR" />
@@ -178,7 +178,7 @@ export default function CaliariVsBannon() {
         <meta name="twitter:url" content="https://dfolgabet.com/ufc-caliari-vs-bannon" />
         <meta name="twitter:title" content="Nicolle Caliari vs. Shauna Bannon: Palpites, Odds e Análise UFC 2026" />
         <meta name="twitter:description" content="Análise completa de Nicolle Caliari vs. Shauna Bannon com odds, estatísticas e palpites para o UFC Fight Night de 16 de maio." />
-        <meta name="twitter:image" content="https://dfolgabet.com/assets/capa_caliari_bannon_ufc.jpg" />
+        <meta name="twitter:image" content="https://dfolgabet.com/assets/articles/capas/capa_caliari_bannon_ufc.webp" />
         <meta name="twitter:image:alt" content="Nicolle Caliari vs. Shauna Bannon - UFC Fight Night 2026" />
         <meta name="twitter:creator" content="@DfolgaBet" />
         <meta name="twitter:site" content="@DfolgaBet" />
@@ -209,7 +209,7 @@ export default function CaliariVsBannon() {
           {/* Capa */}
           <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
             <img 
-              src="/assets/capa_caliari_bannon_ufc.jpg" 
+              src="/assets/articles/capas/capa_caliari_bannon_ufc.webp" 
               alt="Capa UFC Nicolle Caliari vs. Shauna Bannon" 
               className="w-full object-cover"
               loading="lazy"
@@ -295,7 +295,7 @@ export default function CaliariVsBannon() {
                 
                 <div className="mb-10">
                   <img 
-                    src="/assets/tabela_comparativa_caliari_bannon.jpg" 
+                    src="/assets/articles/infograficos/tabela_comparativa_caliari_bannon.jpg" 
                     alt="Tabela Comparativa Nicolle Caliari vs. Shauna Bannon" 
                     className="w-full rounded-xl border border-gray-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                   />
@@ -366,7 +366,7 @@ export default function CaliariVsBannon() {
 
                 <div className="mb-10">
                   <img 
-                    src="/assets/odds_e_palpites_caliari_bannon.jpg" 
+                    src="/assets/articles/infograficos/odds_e_palpites_caliari_bannon.jpg" 
                     alt="Odds e Palpites de Apostas UFC" 
                     className="w-full rounded-xl border border-gray-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                   />
@@ -408,7 +408,7 @@ export default function CaliariVsBannon() {
 
                 <div className="mb-10">
                   <img 
-                    src="/assets/plataformas_afiliadas_caliari_bannon.jpg" 
+                    src="/assets/articles/infograficos/plataformas_afiliadas_caliari_bannon.jpg" 
                     alt="Plataformas Afiliadas e Jogo Responsável" 
                     className="w-full rounded-xl border border-gray-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                   />

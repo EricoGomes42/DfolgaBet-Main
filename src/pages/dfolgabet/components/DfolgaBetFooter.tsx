@@ -65,7 +65,7 @@ export default function DfolgaBetFooter() {
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block">
               <img 
-                src="/assets/dfolgabet-oficial.png" 
+                src="/assets/logos/dfolgabet/dfolgabet-oficial.png" 
                 alt="DfolgaBet Logo" 
                 className="object-contain transition-transform hover:scale-105 duration-300"
                 style={{ marginRight: '4px', marginLeft: '-7px', paddingBottom: '0px', paddingRight: '13px', paddingTop: '0px', marginBottom: '22px', marginTop: '-72px', height: '159px', width: '255px' }}
@@ -114,13 +114,13 @@ export default function DfolgaBetFooter() {
               18+
             </div>
             <a href="https://gamblingtherapy.org/pt-br/" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-              <img src="/assets/gambling%20terapy.jpg" alt="Gambling Therapy" className="h-[28px] object-contain rounded-sm" />
+              <img src="/assets/logos/partners/gambling%20terapy.jpg" alt="Gambling Therapy" className="h-[28px] object-contain rounded-sm" />
             </a>
             <a href="https://www.grupojaonline.com.br/" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-              <img src="/assets/JA-400__1_.jpg" alt="Jogadores Anônimos" className="h-[28px] object-contain rounded-sm" />
+              <img src="/assets/logos/partners/JA-400__1_.jpg" alt="Jogadores Anônimos" className="h-[28px] object-contain rounded-sm" />
             </a>
             <a href="https://ibjr.org/" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-              <img src="/assets/logo-completo-IBJR.png" alt="Instituto Brasileiro de Jogo Responsável" className="h-[22px] object-contain brightness-0 invert" />
+              <img src="/assets/logos/partners/logo-completo-IBJR.png" alt="Instituto Brasileiro de Jogo Responsável" className="h-[22px] object-contain brightness-0 invert" />
             </a>
           </div>
 

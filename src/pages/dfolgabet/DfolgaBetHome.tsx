@@ -174,19 +174,19 @@ export default function DfolgaBetHome() {
                   />
                 ) : heroPosts[heroIndex]._id === 'local-alice-vs-polyana' ? (
                   <img 
-                    src="/assets/capa_alice_polyana_final (1).png" 
+                    src="/assets/articles/capas/capa_alice_polyana_final%20(1).webp" 
                     alt={heroPosts[heroIndex].title}
                     className="w-full h-full object-cover"
                   />
                 ) : heroPosts[heroIndex]._id === 'local-caliari-vs-bannon' ? (
                   <img 
-                    src="/assets/capa_caliari_bannon_ufc.jpg" 
+                    src="/assets/articles/capas/capa_caliari_bannon_ufc.webp" 
                     alt={heroPosts[heroIndex].title}
                     className="w-full h-full object-cover"
                   />
                 ) : heroPosts[heroIndex]._id === 'local-flamengo-vs-fluminense-fem' ? (
                   <img 
-                    src="/assets/capa_flamengo_fluminense_fem.jpg" 
+                    src="/assets/articles/capas/capa_flamengo_fluminense_fem.webp" 
                     alt={heroPosts[heroIndex].title}
                     className="w-full h-full object-cover"
                   />
@@ -238,7 +238,7 @@ export default function DfolgaBetHome() {
                     
                     <div className="flex items-center gap-3 text-[11px] font-bold text-gray-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                         <span className="flex items-center gap-2">
-                          <img src="/assets/Erico_Gomes_Copywriter.jpg" alt={heroPosts[heroIndex].authorName || 'Erico Gomes'} className="w-8 h-8 rounded-full object-cover border-2 border-[#50C0CC]/60 shadow-lg" onError={(e) => { e.currentTarget.src = "/assets/dfolga-logo-novo.png"; }} />
+                          <img src="assets/avatars/authors/Erico_Gomes_Copywriter.jpg" alt={heroPosts[heroIndex].authorName || 'Erico Gomes'} className="w-8 h-8 rounded-full object-cover border-2 border-[#50C0CC]/60 shadow-lg" onError={(e) => { e.currentTarget.src = "/assets/dfolga-logo-novo.png"; }} />
                           <span className="text-[#50C0CC] md:text-xs [text-shadow:_0_1px_2px_rgba(0,0,0,0.8)]">Por {heroPosts[heroIndex].authorName || 'Erico Gomes'}</span>
                        </span>
                        <span className="w-1 h-1 rounded-full bg-gray-400" />

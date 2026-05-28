@@ -3,26 +3,26 @@ import { Trophy, ShieldCheck, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const bookmakers = [
-  { name: 'Lottoland', image: '/assets/lottoland_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland' },
-  { name: 'Sorte Online', image: '/assets/sorte-online_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline' },
-  { name: 'bet365', image: '/assets/bet365_banner.png', link: '#' },
-  { name: 'EstrelaBet', image: '/assets/estrelabet_banner.png', link: '#' },
-  { name: 'Esportes da Sorte', image: '/assets/esportes-da-sorte_banner.png', link: '#' },
-  { name: 'KTO', image: '/assets/kto_banner.png', link: '#' },
-  { name: 'Superbet', image: '/assets/superbet_banner.png', link: '#' },
-  { name: 'BetMGM', image: '/assets/betmgm_banner.png', link: '#' },
-  { name: 'Novibet', image: '/assets/novibet_banner.png', link: '#' },
-  { name: 'VBet', image: '/assets/vbet_banner.png', link: '#' },
-  { name: 'Sportingbet', image: '/assets/sportingbet_banner.png', link: '#' },
-  { name: 'BandBet', image: '/assets/bandbet_banner.png', link: '#' },
-  { name: 'Betano', image: '/assets/betano_banner.png', link: '#' },
-  { name: 'BetWarrior', image: '/assets/betwarrior_banner.png', link: '#' },
-  { name: 'Onabet', image: '/assets/onabet_banner.png', link: '#' },
-  { name: 'Betnacional', image: '/assets/betnacional_banner.png', link: '#' },
-  { name: '1xBet', image: '/assets/1xbet_banner.png', link: '#' },
-  { name: 'Pixbet', image: '/assets/pixbet_banner.png', link: '#' },
-  { name: 'Galera Bet', image: '/assets/galerabet_banner.png', link: '#' },
-  { name: 'Stake', image: '/assets/stake_banner.png', link: '#' }
+  { name: 'Lottoland', image: '/assets/betting/banner-casas-menu/lottoland_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland' },
+  { name: 'Sorte Online', image: '/assets/betting/banner-casas-menu/sorte-online_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline' },
+  { name: 'bet365', image: '/assets/betting/banner-casas-menu/bet365_banner.png', link: '#' },
+  { name: 'EstrelaBet', image: '/assets/betting/banner-casas-menu/estrelabet_banner.png', link: '#' },
+  { name: 'Esportes da Sorte', image: '/assets/betting/banner-casas-menu/esportes-da-sorte_banner.png', link: '#' },
+  { name: 'KTO', image: '/assets/betting/banner-casas-menu/kto_banner.png', link: '#' },
+  { name: 'Superbet', image: '/assets/betting/banner-casas-menu/superbet_banner.png', link: '#' },
+  { name: 'BetMGM', image: '/assets/betting/banner-casas-menu/betmgm_banner.png', link: '#' },
+  { name: 'Novibet', image: '/assets/betting/banner-casas-menu/novibet_banner.png', link: '#' },
+  { name: 'VBet', image: '/assets/betting/banner-casas-menu/vbet_banner.png', link: '#' },
+  { name: 'Sportingbet', image: '/assets/betting/banner-casas-menu/sportingbet_banner.png', link: '#' },
+  { name: 'BandBet', image: '/assets/betting/banner-casas-menu/bandbet_banner.png', link: '#' },
+  { name: 'Betano', image: '/assets/betting/banner-casas-menu/betano_banner.png', link: '#' },
+  { name: 'BetWarrior', image: '/assets/betting/banner-casas-menu/betwarrior_banner.png', link: '#' },
+  { name: 'Onabet', image: '/assets/betting/banner-casas-menu/onabet_banner.png', link: '#' },
+  { name: 'Betnacional', image: '/assets/betting/banner-casas-menu/betnacional_banner.png', link: '#' },
+  { name: '1xBet', image: '/assets/betting/banner-casas-menu/1xbet_banner.png', link: '#' },
+  { name: 'Pixbet', image: '/assets/betting/banner-casas-menu/pixbet_banner.png', link: '#' },
+  { name: 'Galera Bet', image: '/assets/betting/banner-casas-menu/galerabet_banner.png', link: '#' },
+  { name: 'Stake', image: '/assets/betting/banner-casas-menu/stake_banner.png', link: '#' }
 ];
 
 export default function DfolgaBetBookmakers() {

@@ -10,7 +10,7 @@ import DfolgaBetHotPicks from './DfolgaBetHotPicks';
 import SidebarEckoayBlock from './SidebarEckoayBlock';
 import SidebarBonusBlock from './SidebarBonusBlock';
 import SidebarPrognosticosBlock from './SidebarPrognosticosBlock';
-import SidebarStickyBanner from './SidebarStickyBanner';
+import SidebarSponsorBanner from './SidebarSponsorBanner';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
 export default function DfolgaBetSidebar() {
@@ -25,7 +25,7 @@ export default function DfolgaBetSidebar() {
       title: 'Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night',
       slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
       isLocal: true,
-      localImage: '/assets/capa_alice_polyana_final (1).png',
+      localImage: '/assets/articles/capas/capa_alice_polyana_final%20(1).webp',
       publishedAt: '2026-05-13T12:00:00Z',
       _createdAt: '2026-05-13T12:00:00Z',
       categoryName: 'MMA'
@@ -35,7 +35,7 @@ export default function DfolgaBetSidebar() {
       title: 'Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026',
       slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
       isLocal: true,
-      localImage: '/assets/capa_flamengo_fluminense_fem.jpg',
+      localImage: '/assets/articles/capas/capa_flamengo_fluminense_fem.webp',
       publishedAt: '2026-05-13T10:00:00Z',
       _createdAt: '2026-05-13T10:00:00Z',
       categoryName: 'Futebol Feminino'
@@ -45,7 +45,7 @@ export default function DfolgaBetSidebar() {
       title: 'Palpites UFC: Nicolle Caliari vs. Shauna Bannon',
       slug: { current: 'ufc-caliari-vs-bannon' },
       isLocal: true,
-      localImage: '/assets/capa_caliari_bannon_ufc.jpg',
+      localImage: '/assets/articles/capas/capa_caliari_bannon_ufc.webp',
       publishedAt: '2026-05-12T00:00:00Z',
       _createdAt: '2026-05-12T00:00:00Z',
       categoryName: 'Luta'
@@ -241,9 +241,12 @@ export default function DfolgaBetSidebar() {
           <SidebarOddsTables />
         </div>
 
-        {/* 11. STICKY BANNER (Original Carousel - Absolute Last) */}
-        <SidebarStickyBanner />
-      </div>
+        {/* 11. Sticky Sponsor Banner */}
+        <div className="mb-0">
+          <SidebarSponsorBanner />
+        </div>
+        
+        </div>
     </aside>
   );
 }

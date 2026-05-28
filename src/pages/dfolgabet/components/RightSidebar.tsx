@@ -39,7 +39,7 @@ export function RightSidebar() {
       publishedAt: '2026-05-13T12:00:00Z',
       _createdAt: '2026-05-13T12:00:00Z',
       categoryName: 'MMA',
-      img: '/assets/capa_alice_polyana_final (1).png',
+      img: '/assets/articles/capas/capa_alice_polyana_final%20(1).webp',
       color: 'bg-[#50C0CC]',
       _mock: true
     },
@@ -51,7 +51,7 @@ export function RightSidebar() {
       publishedAt: '2026-05-13T10:00:00Z',
       _createdAt: '2026-05-13T10:00:00Z',
       categoryName: 'Futebol Feminino',
-      img: '/assets/capa_flamengo_fluminense_fem.jpg',
+      img: '/assets/articles/capas/capa_flamengo_fluminense_fem.webp',
       color: 'bg-green-500',
       _mock: true // we can use the existing mock rendering logic
     },
@@ -63,7 +63,7 @@ export function RightSidebar() {
       publishedAt: '2026-05-12T00:00:00Z',
       _createdAt: '2026-05-12T00:00:00Z',
       categoryName: 'Luta',
-      img: '/assets/capa_caliari_bannon_ufc.jpg',
+      img: '/assets/articles/capas/capa_caliari_bannon_ufc.webp',
       color: 'bg-red-600',
       _mock: true // use the mock rendering logic
     }
@@ -216,7 +216,7 @@ export function RightSidebar() {
              <div className="relative p-5 pb-8">
                 <div className="text-center mb-6 mt-2">
                    <div className="flex items-center justify-center gap-3">
-                      <img src="/assets/logo_eckoay.png" alt="ecKOay" className="w-[32px] h-[32px] object-contain" />
+                      <img src="/assets/logos/partners/logo_eckoay.png" alt="ecKOay" className="w-[32px] h-[32px] object-contain" />
                       <h3 className="font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#a8cd45] text-[20px] italic tracking-widest mt-1">
                          Grupo ecKOay
                       </h3>
@@ -228,7 +228,7 @@ export function RightSidebar() {
                    {/* uTimeOff (Carro-chefe) */}
                    <a href="https://utimeoff.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-[#0A051A]/80 border border-[#8e44ad]/50 hover:bg-[#0A051A] hover:border-[#8e44ad] transition-all group/item hover:scale-[1.03] shadow-lg">
                       <div className="w-16 h-16 bg-white rounded-lg flex justify-center items-center p-2 border-2 border-[#8e44ad]">
-                         <img src="/assets/utimeoff-logo-original.png" alt="uTimeOff" className="max-w-full max-h-full object-contain" />
+                         <img src="/assets/logos/partners/utimeoff-logo-original.png" alt="uTimeOff" className="max-w-full max-h-full object-contain" />
                       </div>
                       <div className="flex-1">
                          <h4 className="text-white text-sm font-bold uppercase tracking-wide group-hover/item:text-[#8e44ad] transition-colors">uTimeOff</h4>
@@ -242,7 +242,7 @@ export function RightSidebar() {
                    {/* Dfolga Turismo */}
                    <a href="https://dfolga.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-[#0A051A]/60 border border-[#311B92]/50 hover:bg-[#0A051A] hover:border-[#50C0CC] transition-all group/item hover:scale-[1.02]">
                       <div className="w-16 h-16 bg-white rounded-lg flex justify-center items-center p-2 border border-[#311B92]">
-                         <img src="/assets/dfolga-logo-novo.png" alt="Dfolga" className="max-w-full max-h-full object-contain" />
+                         <img src="/assets/logos/dfolga/dfolga-logo-novo.png" alt="Dfolga" className="max-w-full max-h-full object-contain" />
                       </div>
                       <div className="flex-1">
                          <h4 className="text-white text-sm font-bold uppercase tracking-wide group-hover/item:text-[#50C0CC] transition-colors">Dfolga</h4>
@@ -256,7 +256,7 @@ export function RightSidebar() {
                    {/* DfolgaShop */}
                    <a href="https://dfolgashop.com.br" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-[#0A051A]/60 border border-[#311B92]/50 hover:bg-[#0A051A] hover:border-[#F37021] transition-all group/item hover:scale-[1.02]">
                       <div className="bg-white rounded-lg flex justify-center items-center border border-[#311B92]" style={{ width: '63.29px', height: '40.37px', overflow: 'hidden' }}>
-                         <img src="/assets/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="object-contain" style={{ width: '63.29px', height: '40.37px', paddingLeft: 0, paddingTop: 0 }} onError={(e) => { e.currentTarget.src = "/assets/dfolgashop-bg.png"; }} />
+                         <img src="/assets/logos/dfolgashop/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="object-contain" style={{ width: '63.29px', height: '40.37px', paddingLeft: 0, paddingTop: 0 }} onError={(e) => { e.currentTarget.src = "/assets/dfolgashop-bg.png"; }} />
                       </div>
                       <div className="flex-1">
                          <h4 className="text-white text-sm font-bold uppercase tracking-wide group-hover/item:text-[#F37021] transition-colors">DfolgaShop</h4>
