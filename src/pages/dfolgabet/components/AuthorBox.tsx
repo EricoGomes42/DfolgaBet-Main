@@ -29,7 +29,7 @@ export default function AuthorBox({
         />
       </div>
 
-      <div className="flex-1 text-center md:text-left">
+      <div className="flex-1 text-center md:text-left flex flex-col justify-center">
 
         <h3 className="text-xl font-bold text-white mb-3">
           {name}
@@ -39,7 +39,7 @@ export default function AuthorBox({
           {bio}
         </p>
 
-        <div className="flex items-center justify-center md:justify-start gap-4">
+        <div className="flex items-center justify-center md:justify-start gap-4 mt-2">
 
           {name.includes('Erico') && (
             <>
