@@ -346,7 +346,7 @@ export default function DfolgaBetPost() {
   const altText = value.alt || 'Imagem do artigo';
 
   const isSerranoYouTubeThumbnail =
-    imageUrl.includes('thumbnail_youtube_serrano_hanson');
+    value.asset._ref.includes('b72920b1a0ac203d8e310fd522638595e1c75e7c');
 
   if (isSerranoYouTubeThumbnail) {
     return (
