@@ -13,10 +13,11 @@ export default function AuthorBox({
   bio = "Jornalista apaixonado por esportes, cobre grandes eventos esportivos com análises detalhadas, estatísticas e odds de apostas.",
   image = "/assets/avatars/authors/Erico_Gomes_Copywriter.jpg"
 }: AuthorBoxProps) {
-  return (
-    <div className="mt-12 mb-8 bg-[#120826] border border-[#311B92] rounded-xl p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
+  const isErico = name.toLowerCase().includes('erico');
 
-      <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#50C0CC] flex-shrink-0 bg-[#0A051A]">
+  return (
+    <div className="mt-10 mb-8 bg-[#120826] border border-[#311B92] rounded-xl px-5 py-4 flex flex-col md:flex-row items-center gap-5">
+      <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-[#50C0CC] flex-shrink-0 bg-[#0A051A]">
         <img
           src={image}
           alt={name}
@@ -29,19 +30,17 @@ export default function AuthorBox({
         />
       </div>
 
-      <div className="flex-1 text-center md:text-left flex flex-col justify-center">
-
-        <h3 className="text-xl font-bold text-white mb-3">
+      <div className="flex-1 text-center md:text-left flex flex-col justify-center min-w-0">
+        <h3 className="text-lg md:text-xl font-bold text-white mb-2 leading-tight">
           {name}
         </h3>
 
-        <p className="text-[#b0b0b0] text-sm mb-4 leading-relaxed">
+        <p className="text-[#b0b0b0] text-sm mb-3 leading-relaxed">
           {bio}
         </p>
 
-        <div className="flex items-center justify-center md:justify-start gap-4 mt-2">
-
-          {name.includes('Erico') && (
+        <div className="flex items-center justify-center md:justify-start gap-4">
+          {isErico && (
             <>
               <a
                 href="https://www.facebook.com/erico.gomes1/"
@@ -79,7 +78,7 @@ export default function AuthorBox({
           )}
 
           <a
-            href={name.includes('Erico') ? "https://utimeoff.com/social" : "https://utimeoff.com/"}
+            href={isErico ? "https://utimeoff.com/social" : "https://utimeoff.com/"}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative block w-[25px] h-[25px]"
@@ -110,7 +109,6 @@ export default function AuthorBox({
               }}
             />
           </a>
-
         </div>
       </div>
     </div>
