@@ -286,118 +286,152 @@ export default function DfolgaBetPost() {
                   <SocialShareRibbon />
                   <LottolandBanner />
 
-                  <article>
-                    <div className="prose prose-invert prose-lg max-w-none prose-a:text-[#50C0CC] prose-a:no-underline hover:prose-a:underline prose-headings:text-[#e67e22] prose-p:text-gray-300">
-                      <PortableText
-                        value={filteredBody}
-                        components={{
-                          block: {
-                            h2: ({ children, value }: any) => (
-                              <div className="mt-10 mb-6">
-                                <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
-                                  {value?.isFaqHeading ? <Info className="text-[#e67e22]" /> : value?.isTipsHeading ? <ShieldCheck className="text-[#e67e22]" /> : <Zap className="text-[#e67e22]" />}
-                                  {children}
-                                </h2>
-                                <div className="h-[1px] w-full bg-[#311B92]"></div>
-                              </div>
-                            ),
-                            h3: ({ children }) => <h3 className="text-xl font-bold text-white mt-8 mb-4">{children}</h3>,
-                            h4: ({ children }) => <h4 className="text-lg font-bold text-white mt-6 mb-3">{children}</h4>,
-                            normal: ({ children, value }: any) => {
-                              const textContent = (value?.children || []).map((c: any) => c.text).join('').trim();
-                              const isYouTube = textContent.startsWith('http') && (textContent.includes('youtube.com') || textContent.includes('youtu.be')) && !textContent.includes(' ');
+                 <article>
+  <div className="prose prose-invert prose-lg max-w-none prose-a:text-[#50C0CC] prose-a:no-underline hover:prose-a:underline prose-headings:text-[#e67e22] prose-p:text-gray-300">
+    <PortableText
+      value={filteredBody}
+      components={{
+        block: {
+          h2: ({ children, value }: any) => (
+            <div className="mt-10 mb-6">
+              <h2 className="text-2xl font-black text-white mb-2 flex items-center gap-3">
+                {value?.isFaqHeading ? <Info className="text-[#e67e22]" /> : value?.isTipsHeading ? <ShieldCheck className="text-[#e67e22]" /> : <Zap className="text-[#e67e22]" />}
+                {children}
+              </h2>
+              <div className="h-[1px] w-full bg-[#311B92]"></div>
+            </div>
+          ),
+          h3: ({ children }) => <h3 className="text-xl font-bold text-white mt-8 mb-4">{children}</h3>,
+          h4: ({ children }) => <h4 className="text-lg font-bold text-white mt-6 mb-3">{children}</h4>,
+          normal: ({ children, value }: any) => {
+            const textContent = (value?.children || []).map((c: any) => c.text).join('').trim();
+            const isYouTube = textContent.startsWith('http') && (textContent.includes('youtube.com') || textContent.includes('youtu.be')) && !textContent.includes(' ');
 
-                              if (isYouTube) return <YouTubeEmbed url={textContent} title={textContent} />;
+            if (isYouTube) return <YouTubeEmbed url={textContent} title={textContent} />;
 
-                              return <p className="text-gray-300 text-[16px] leading-relaxed mb-4">{children}</p>;
-                            },
-                            blockquote: ({ children }) => (
-                              <blockquote className="bg-[#e67e22] text-white p-6 rounded-xl relative my-8 font-medium">
-                                {children}
-                              </blockquote>
-                            ),
-                          },
-                          list: {
-                            bullet: ({ children }) => <ul className="list-disc marker:text-[#50C0CC] pl-5 space-y-2 text-gray-300 mb-6">{children}</ul>,
-                            number: ({ children }) => <ol className="list-decimal marker:text-[#50C0CC] pl-5 space-y-2 text-gray-300 mb-6">{children}</ol>,
-                          },
-                          types: {
-                            sorteOnlineBannerBlock: () => <SorteOnlineBanner />,
-                            tipItem: ({ value }: any) => (
-                              <div className={`bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4 ${value.isPrincipal ? 'border-l-4 border-l-[#e67e22] bg-[#0A051A]/80' : ''}`}>
-                                <h3 className="text-white font-bold text-lg mb-3">{value.title}</h3>
-                                <div className="text-[#b0b0b0] text-[15px] leading-relaxed space-y-4">
-                                  {value.contentBlocks?.map((b: any, idx: number) => (
-                                    <p key={idx}>{b.children?.map((c: any) => c.text).join('')}</p>
-                                  ))}
-                                </div>
-                              </div>
-                            ),
-                            faqItem: ({ value }: any) => (
-                              <div className="bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4">
-                                <h3 className="text-white font-bold mb-2">{value.question}</h3>
-                                <p className="text-[#b0b0b0] text-[15px] leading-relaxed">{value.answer}</p>
-                              </div>
-                            ),
-                            image: ({ value }: any) => {
-                              if (!value?.asset?._ref) return null;
+            return <p className="text-gray-300 text-[16px] leading-relaxed mb-4">{children}</p>;
+          },
+          blockquote: ({ children }) => (
+            <blockquote className="bg-[#e67e22] text-white p-6 rounded-xl relative my-8 font-medium">
+              {children}
+            </blockquote>
+          ),
+        },
+        list: {
+          bullet: ({ children }) => <ul className="list-disc marker:text-[#50C0CC] pl-5 space-y-2 text-gray-300 mb-6">{children}</ul>,
+          number: ({ children }) => <ol className="list-decimal marker:text-[#50C0CC] pl-5 space-y-2 text-gray-300 mb-6">{children}</ol>,
+        },
+        types: {
+          sorteOnlineBannerBlock: () => <SorteOnlineBanner />,
+          tipItem: ({ value }: any) => (
+            <div className={`bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4 ${value.isPrincipal ? 'border-l-4 border-l-[#e67e22] bg-[#0A051A]/80' : ''}`}>
+              <h3 className="text-white font-bold text-lg mb-3">{value.title}</h3>
+              <div className="text-[#b0b0b0] text-[15px] leading-relaxed space-y-4">
+                {value.contentBlocks?.map((b: any, idx: number) => (
+                  <p key={idx}>{b.children?.map((c: any) => c.text).join('')}</p>
+                ))}
+              </div>
+            </div>
+          ),
+          faqItem: ({ value }: any) => (
+            <div className="bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4">
+              <h3 className="text-white font-bold mb-2">{value.question}</h3>
+              <p className="text-[#b0b0b0] text-[15px] leading-relaxed">{value.answer}</p>
+            </div>
+          ),
+          image: ({ value }: any) => {
+            if (!value?.asset?._ref) return null;
 
-                              return (
-                                <img
-                                  alt={value.alt || 'Imagem do artigo'}
-                                  loading="lazy"
-                                  src={urlFor(value).url()}
-                                  className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
-                                />
-                              );
-                            },
-                          },
-                          marks: {
-                            link: ({ children, value }: any) => {
-                              const href = value?.href || '';
-                              const isYouTube = href.includes('youtube.com') || href.includes('youtu.be');
+            const imageUrl = urlFor(value).url();
+            const altText = value.alt || 'Imagem do artigo';
+            const postTitle = (post?.title || '').toLowerCase();
 
-                              if (isYouTube) return <YouTubeEmbed url={href} title={href} />;
+            const isSerranoYouTubeThumbnail =
+              postTitle.includes('amanda serrano') &&
+              postTitle.includes('cheyenne hanson');
 
-                              return (
-                                <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#50C0CC] hover:underline">
-                                  {children}
-                                </a>
-                              );
-                            },
-                          },
-                        }}
-                      />
-                    </div>
-<div className="mt-8">
-  <SocialShareRibbon />
+            if (isSerranoYouTubeThumbnail) {
+              return (
+                <a
+                  href="https://www.youtube.com/watch?v=xugV2TyoRg0&t=1s"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Assistir ao vídeo Amanda Serrano vs Cheyenne Hanson no YouTube"
+                  className="relative block my-8 group"
+                >
+                  <img
+                    alt={altText}
+                    loading="lazy"
+                    src={imageUrl}
+                    className="w-full rounded-2xl object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300 group-hover:scale-[1.01]"
+                  />
+
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-red-600/90 flex items-center justify-center shadow-[0_0_35px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110">
+                      <span className="ml-2 w-0 h-0 border-t-[16px] border-t-transparent border-b-[16px] border-b-transparent border-l-[26px] border-l-white"></span>
+                    </span>
+                  </span>
+                </a>
+              );
+            }
+
+            return (
+              <img
+                alt={altText}
+                loading="lazy"
+                src={imageUrl}
+                className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
+              />
+            );
+          },
+        },
+        marks: {
+          link: ({ children, value }: any) => {
+            const href = value?.href || '';
+            const isYouTube = href.includes('youtube.com') || href.includes('youtu.be');
+
+            if (isYouTube) return <YouTubeEmbed url={href} title={href} />;
+
+            return (
+              <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#50C0CC] hover:underline">
+                {children}
+              </a>
+            );
+          },
+        },
+      }}
+    />
+  </div>
+
+  <div className="mt-8">
+    <SocialShareRibbon />
+  </div>
+
+  <AuthorBox
+    name={post.authorName || 'Erico Gomes'}
+    bio="Jornalista apaixonado por esportes, cobre grandes eventos esportivos com análises detalhadas, estatísticas e odds de apostas."
+    image="/assets/avatars/authors/Erico_Gomes_Copywriter.jpg"
+  />
+
+  <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
+    <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>
+    <p className="text-sm text-[#c0c0c0]"><strong>Regulamentação:</strong> Conteúdo em conformidade com a Lei nº 14.790/23 e Portaria SPA/MF nº 259/2025.</p>
+  </div>
+
+  <ResponsibleGamingNotice />
+</article>
 </div>
 
-<AuthorBox
-  name={post.authorName || 'Erico Gomes'}
-  bio="Jornalista apaixonado por esportes, cobre grandes eventos esportivos com análises detalhadas, estatísticas e odds de apostas."
-  image="/assets/avatars/authors/Erico_Gomes_Copywriter.jpg"
-/>
+<RelatedPosts currentPostId={post._id} />
+</div>
+</main>
 
-                    <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
-                      <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>
-                      <p className="text-sm text-[#c0c0c0]"><strong>Regulamentação:</strong> Conteúdo em conformidade com a Lei nº 14.790/23 e Portaria SPA/MF nº 259/2025.</p>
-                    </div>
-
-                    <ResponsibleGamingNotice />
-                  </article>
-                </div>
-
-                <RelatedPosts currentPostId={post._id} />
-              </div>
-            </main>
-
-            <aside className="category-sidebar-track">
-              <DfolgaBetSidebar />
-            </aside>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+<aside className="category-sidebar-track">
+  <DfolgaBetSidebar />
+</aside>
+</div>
+</div>
+</div>
+</>
+);
 }

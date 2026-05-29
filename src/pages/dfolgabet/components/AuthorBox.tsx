@@ -21,7 +21,7 @@ export default function AuthorBox({
           src={image}
           alt={name}
           loading="lazy"
-          className="w-full h-full object-cover scale-110"
+          className="w-full h-full object-cover object-top scale-[1.22]"
           onError={(e) => {
             e.currentTarget.src = "/assets/logos/dfolga/dfolga-logo-novo-atualizado.png";
             e.currentTarget.className = "w-full h-full object-contain p-2";

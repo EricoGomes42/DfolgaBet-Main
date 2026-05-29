@@ -1,15 +1,20 @@
 {
-  "name": "DfolgaBet Oficial",
+  "name": "DfolgaBet",
   "short_name": "DfolgaBet",
-  "description": "Guias, Análises e Dicas de Apostas com Odds em Tempo Real.",
+  "description": "Portal de análises, estatísticas, odds e palpites esportivos.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0A051A",
-  "theme_color": "#0A051A",
+  "theme_color": "#120826",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/assets/dfolgabet-logo-oficial-transparente.png",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
