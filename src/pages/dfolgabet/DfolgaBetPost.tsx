@@ -340,49 +340,48 @@ export default function DfolgaBetPost() {
             </div>
           ),
           image: ({ value }: any) => {
-            if (!value?.asset?._ref) return null;
+  if (!value?.asset?._ref) return null;
 
-            const imageUrl = urlFor(value).url();
-            const altText = value.alt || 'Imagem do artigo';
-            const postTitle = (post?.title || '').toLowerCase();
+  const imageUrl = urlFor(value).url();
+  const altText = value.alt || 'Imagem do artigo';
 
-            const isSerranoYouTubeThumbnail =
-              imageUrl.includes('thumbnail_youtube_serrano_hanson');
+  const isSerranoYouTubeThumbnail =
+    imageUrl.includes('thumbnail_youtube_serrano_hanson');
 
-            if (isSerranoYouTubeThumbnail) {
-              return (
-                <a
-                  href="https://www.youtube.com/watch?v=xugV2TyoRg0&t=1s"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Assistir ao vídeo Amanda Serrano vs Cheyenne Hanson no YouTube"
-                  className="relative block my-8 group"
-                >
-                  <img
-                    alt={altText}
-                    loading="lazy"
-                    src={imageUrl}
-                    className="w-full rounded-2xl object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300 group-hover:scale-[1.01]"
-                  />
+  if (isSerranoYouTubeThumbnail) {
+    return (
+      <a
+        href="https://www.youtube.com/watch?v=xugV2TyoRg0&t=1s"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Assistir ao vídeo Amanda Serrano vs Cheyenne Hanson no YouTube"
+        className="relative block my-8 group"
+      >
+        <img
+          alt={altText}
+          loading="lazy"
+          src={imageUrl}
+          className="w-full rounded-2xl object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800 transition-transform duration-300 group-hover:scale-[1.01]"
+        />
 
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-red-600/90 flex items-center justify-center shadow-[0_0_35px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110">
-                      <span className="ml-2 w-0 h-0 border-t-[16px] border-t-transparent border-b-[16px] border-b-transparent border-l-[26px] border-l-white"></span>
-                    </span>
-                  </span>
-                </a>
-              );
-            }
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-red-600/90 flex items-center justify-center shadow-[0_0_35px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-110">
+            <span className="ml-2 w-0 h-0 border-t-[16px] border-t-transparent border-b-[16px] border-b-transparent border-l-[26px] border-l-white"></span>
+          </span>
+        </span>
+      </a>
+    );
+  }
 
-            return (
-              <img
-                alt={altText}
-                loading="lazy"
-                src={imageUrl}
-                className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
-              />
-            );
-          },
+  return (
+    <img
+      alt={altText}
+      loading="lazy"
+      src={imageUrl}
+      className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
+    />
+  );
+},
         },
         marks: {
           link: ({ children, value }: any) => {
