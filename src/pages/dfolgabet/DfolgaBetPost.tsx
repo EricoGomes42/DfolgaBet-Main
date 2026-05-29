@@ -347,8 +347,7 @@ export default function DfolgaBetPost() {
             const postTitle = (post?.title || '').toLowerCase();
 
             const isSerranoYouTubeThumbnail =
-              postTitle.includes('amanda serrano') &&
-              postTitle.includes('cheyenne hanson');
+              imageUrl.includes('thumbnail_youtube_serrano_hanson');
 
             if (isSerranoYouTubeThumbnail) {
               return (
