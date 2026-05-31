@@ -35,7 +35,6 @@ async function startServer() {
   });
 
   // Email Transporter (Placeholder - needs real SMTP in production)
-  // We'll use a dummy/test account or just log it if no credentials
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.ethereal.email',
     port: Number(process.env.SMTP_PORT) || 587,
@@ -73,7 +72,6 @@ async function startServer() {
       res.status(200).json({ success: true, message: "Mensagem enviada com sucesso!" });
     } catch (error: any) {
       console.error("Error sending contact email:", error.message);
-      // Even if email fails, we return 200 for UX in this demo if we don't have real SMTP
       res.status(200).json({ success: true, warning: "Email trigger failed but request accepted" });
     }
   });
@@ -122,8 +120,6 @@ async function startServer() {
     }
   });
 
-  // Airticles Webhook Integration (matching the expected WP plugin URL)
-  
   // Automarticles Webhook Integration
   app.post("/api/automarticles/webhook", async (req, res) => {
     console.log(`Automarticles Webhook Request Received`, req.body);
@@ -136,7 +132,6 @@ async function startServer() {
         return res.status(401).json({ error: "No access token provided" });
       }
 
-      // 1. Integration Check
       if (event === "CHECK_INTEGRATION") {
         return res.status(200).json({ token: accessToken });
       }
@@ -157,10 +152,8 @@ async function startServer() {
           token: sanityApiToken,
         });
 
-        // Helper to upload image to sanity
         async function uploadImageAsset(url: string) {
           try {
-             // We can use generic proxy or fetch directly
              const imageRes = await axios.get(url, { responseType: 'arraybuffer' });
              const buffer = Buffer.from(imageRes.data, 'binary');
              const asset = await client.assets.upload('image', buffer, {
@@ -173,7 +166,6 @@ async function startServer() {
           }
         }
 
-        // Post Handling
         if (event === "POST_CREATED" || event === "POST_UPDATED") {
           const post = req.body.post;
           if (!post) return res.status(400).json({ error: "Missing post data" });
@@ -183,7 +175,6 @@ async function startServer() {
             mainImageAssetId = await uploadImageAsset(post.featured_image.url);
           }
 
-          // Generate portable text structure or just store raw HTML for rendering
           const doc: any = {
             _type: 'post',
             _id: `automarticles-${post.id}`,
@@ -192,10 +183,10 @@ async function startServer() {
               _type: 'slug',
               current: post.slug || `post-${Date.now()}`
             },
-            status: post.status === 'publish' ? 'published' : 'draft', // maps to arbitrary status field if desired
+            status: post.status === 'publish' ? 'published' : 'draft',
             excerpt: post.description || '',
             publishedAt: new Date((post.publication_date || 0) * 1000).toISOString(),
-            contentHtml: post.content?.html || '', // storing the raw HTML which is easier to render for blogs
+            contentHtml: post.content?.html || '',
             body: [
               {
                 _type: 'block',
@@ -222,7 +213,6 @@ async function startServer() {
           }
 
           if (post.category && post.category.name) {
-             // Create or refer category
              const catId = `automarticles-cat-${post.category.id}`;
              await client.createIfNotExists({
                _type: 'category',
@@ -236,7 +226,6 @@ async function startServer() {
                  _key: `key-${Date.now()}`
                }
              ];
-             // Add categoryName for easy access
              doc.categoryName = post.category.name;
           }
 
@@ -248,10 +237,7 @@ async function startServer() {
              await client.delete(`automarticles-${post.id}`);
              sanityResponse = { deleted: true };
           }
-        }
-        
-        // Category Handling (optional as requested by docs, but good to have)
-        else if (event === "CATEGORY_CREATED" || event === "CATEGORY_UPDATED") {
+        } else if (event === "CATEGORY_CREATED" || event === "CATEGORY_UPDATED") {
           const cat = req.body.category;
           if (cat && cat.id) {
             const catId = `automarticles-cat-${cat.id}`;
@@ -287,7 +273,6 @@ async function startServer() {
 
   // API Proxy Route for WordPress
   app.use("/api/wp", async (req, res) => {
-    // Remove query params from original to avoid double encoding (axios handled them via params)
     const url = req.url.split('?')[0];
     const targetUrl = `https://dfolga.com/wp-json/wp/v2${url}`;
     
@@ -377,11 +362,10 @@ async function startServer() {
     }
 
     const { sport = 'soccer_brazil_campeonato', regions = 'eu', markets = 'h2h' } = req.query;
-
     const cacheKey = `${sport}-${regions}-${markets}`;
-    
-    // Check Cache
     const now = Date.now();
+
+    // Check Cache
     if (oddsCache[cacheKey] && (now - oddsCache[cacheKey].timestamp < CACHE_DURATION)) {
       console.log(`Returning cached odds for ${cacheKey}`);
       const cachedData = oddsCache[cacheKey].data.map((d: any) => ({
@@ -400,27 +384,9 @@ async function startServer() {
       
       console.log(`The Odds API limit: Used ${requestsUsed}, Remaining ${requestsRemaining}`);
       
-      if (parseInt(requestsRemaining) < 50) {
+      if (requestsRemaining && parseInt(requestsRemaining) < 50) {
          console.warn(`[WARNING] The Odds API limit is running low. Remaining: ${requestsRemaining}`);
       }
-
-      // Mantenha aqui as linhas seguintes que tratam a variável normalizedData do seu código original
-      res.json(normalizedData);
-
-    } catch (error: any) {
-      const status = error.response ? error.response.status : 500;
-      
-      if (status === 404 || status === 422) {
-         console.log(`[INFO] Modalidade esportiva não encontrada ou sem eventos ativos no momento. Retornando lista vazia.`);
-         return res.json([]);
-      }
-
-      res.status(status).json({
-        error: "Failed to fetch odds",
-        message: error.message,
-        details: error.response?.data
-      });
-    }
 
       // Normalize data but keep original fields so we don't break existing components
       const rawData = response.data || [];
@@ -447,10 +413,18 @@ async function startServer() {
         timestamp: now
       };
 
-      res.json(normalizedData);
+      return res.json(normalizedData);
+
     } catch (error: any) {
       const status = error.response ? error.response.status : 500;
       
+      // Tratativa prioritária para esporte fora de temporada ou sem eventos ativos (404/422)
+      if (status === 404 || status === 422) {
+         console.log(`[INFO] Modalidade ${sport} não encontrada ou sem eventos ativos no momento. Retornando lista vazia.`);
+         oddsCache[cacheKey] = { data: [], timestamp: now };
+         return res.json([]);
+      }
+
       // Do not log 401 to console.error as it triggers error alerts in AI Studio
       if (status !== 401) {
          console.error(`Error fetching from The Odds API (${status}):`, error.message);
@@ -458,7 +432,7 @@ async function startServer() {
          console.warn(`[API KEY] The Odds API returned 401 Unauthorized. Check API key validity.`);
       }
       
-      // If we hit a rate limit (429) or other errors, fallback to cache if available
+      // Fallback to cache if available on rate limit or other failures
       if (oddsCache[cacheKey]) {
         console.warn(`API Failed (${status}). Returning stale cached odds for ${cacheKey}`);
         const staleData = oddsCache[cacheKey].data.map((d: any) => ({
@@ -510,7 +484,6 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // Note: since this is run from the root, process.cwd() should work
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
