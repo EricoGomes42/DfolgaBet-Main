@@ -108,13 +108,19 @@ export default function DfolgaBetPost() {
 
   if (!post) {
     return (
+      <>
+      <Helmet>
+        <title>Carregando Artigo - DfolgaBet</title>
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
       <div className="max-w-[800px] mx-auto px-4 py-24 text-center">
         <h1 className="text-3xl font-black text-white mb-4">Post não encontrado</h1>
         <p className="text-gray-400 mb-8">O post que você está procurando não existe ou foi removido.</p>
         <Link to="/dfolgabet" className="text-[#50C0CC] hover:underline">Voltar para o DfolgaBet</Link>
       </div>
-    );
-  }
+    </>
+  );
+}
 
   const dateToUse = post.publishedAt || post._createdAt;
 
