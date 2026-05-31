@@ -404,6 +404,24 @@ async function startServer() {
          console.warn(`[WARNING] The Odds API limit is running low. Remaining: ${requestsRemaining}`);
       }
 
+      // Mantenha aqui as linhas seguintes que tratam a variável normalizedData do seu código original
+      res.json(normalizedData);
+
+    } catch (error: any) {
+      const status = error.response ? error.response.status : 500;
+      
+      if (status === 404 || status === 422) {
+         console.log(`[INFO] Modalidade esportiva não encontrada ou sem eventos ativos no momento. Retornando lista vazia.`);
+         return res.json([]);
+      }
+
+      res.status(status).json({
+        error: "Failed to fetch odds",
+        message: error.message,
+        details: error.response?.data
+      });
+    }
+
       // Normalize data but keep original fields so we don't break existing components
       const rawData = response.data || [];
       let normalizedData = rawData.map((event: any) => {

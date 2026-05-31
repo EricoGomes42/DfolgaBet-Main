@@ -287,7 +287,7 @@ function DfolgaBetLiveMatchesContent() {
 
         let endpoints: {name: string, url: string}[] = [];
         if (activeSportFilter === 'Todos' || activeSportFilter === 'Ao Vivo') {
-           endpoints = [...(ENDPOINTS_MAP['Futebol']||[]), ...(ENDPOINTS_MAP['Basquete']||[])];
+           endpoints = Object.values(ENDPOINTS_MAP).flat();
         } else if (ENDPOINTS_MAP[activeSportFilter]) {
            endpoints = [...ENDPOINTS_MAP[activeSportFilter]];
         }
