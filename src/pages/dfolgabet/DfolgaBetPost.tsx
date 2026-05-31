@@ -51,22 +51,31 @@ export default function DfolgaBetPost() {
   useEffect(() => {
     async function fetchPost() {
       try {
-        const query = `*[_type == "post" && slug.current == $slug][0] {
-          _id,
-          title,
-          mainImage,
-          publishedAt,
-          _createdAt,
-          body,
-          seoTitle,
-          seoDescription,
-          seoCustomCode,
-          "authorName": author->name,
-          "authorImage": author->image,
-          "categoryName": categories[0]->title
-        }`;
+        const query = `*[
+  _type == "post" &&
+  !(_id in path("drafts.**")) &&
+  slug.current == $slug
+][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  mainImage,
+  publishedAt,
+  _createdAt,
+  body,
+  seoTitle,
+  seoDescription,
+  seoCustomCode,
+  "authorName": author->name,
+  "authorImage": author->image,
+  "categoryName": categories[0]->title
+}`;
 
         const data = await client.fetch(query, { slug });
+        console.log('================================');
+        console.log('SLUG RECEBIDO:', slug);
+        console.log('POST RETORNADO:', data);
+        console.log('================================');
         setPost(data);
       } catch (error) {
         console.error('Error fetching post:', error);
