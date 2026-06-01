@@ -72,10 +72,6 @@ export default function DfolgaBetPost() {
 }`;
 
         const data = await client.fetch(query, { slug });
-        console.log('================================');
-        console.log('SLUG RECEBIDO:', slug);
-        console.log('POST RETORNADO:', data);
-        console.log('================================');
         setPost(data);
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -119,8 +115,9 @@ export default function DfolgaBetPost() {
     return (
       <>
       <Helmet>
-        <title>Carregando Artigo - DfolgaBet</title>
-        <meta name="robots" content="noindex, follow" />
+        <title>{post.seoTitle || post.title} | DfolgaBet</title>
+        <meta name="description" content={post.seoDescription || post.excerpt || ''} />
+        <link rel="canonical" href={`https://dfolgabet.com.br/dfolgabet/post/${slug}`} />
       </Helmet>
       <div className="max-w-[800px] mx-auto px-4 py-24 text-center">
         <h1 className="text-3xl font-black text-white mb-4">Post não encontrado</h1>
