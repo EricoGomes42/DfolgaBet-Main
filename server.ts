@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
+import fs from "fs";
 import axios from "axios";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
@@ -475,6 +476,80 @@ async function startServer() {
       res.status(500).send("Proxy error: " + error.message);
     }
   });
+
+// SEO server-side para posts do DfolgaBet
+app.get("/dfolgabet/post/:slug", async (req, res, next) => {
+  const slug = req.params.slug;
+
+  try {
+    const sanityProjectId = process.env.VITE_SANITY_PROJECT_ID || "isnjdgzr";
+    const sanityDataset = process.env.VITE_SANITY_DATASET || "production";
+
+    const { createClient } = await import("@sanity/client");
+
+    const client = createClient({
+      projectId: sanityProjectId,
+      dataset: sanityDataset,
+      apiVersion: "2024-05-09",
+      useCdn: false,
+    });
+
+    const decodedSlug = decodeURIComponent(slug);
+
+    const query = `*[
+      _type == "post" &&
+      !(_id in path("drafts.**")) &&
+      slug.current == $slug
+    ][0] {
+      title,
+      seoTitle,
+      seoDescription,
+      excerpt
+    }`;
+
+    const post = await client.fetch(query, { slug: decodedSlug });
+
+    const templatePath =
+      process.env.NODE_ENV !== "production"
+        ? path.resolve(process.cwd(), "index.html")
+        : path.resolve(process.cwd(), "dist/index.html");
+
+    let template = fs.readFileSync(templatePath, "utf-8");
+
+    if (post) {
+      const title = `${post.seoTitle || post.title || "DfolgaBet"} | DfolgaBet`;
+      const description = post.seoDescription || post.excerpt || "";
+      const canonical = `https://dfolgabet.com.br/dfolgabet/post/${decodedSlug}`;
+
+      template = template.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
+
+      template = template.replace(
+        /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i,
+        `<meta name="description" content="${String(description).replace(/"/g, "&quot;")}" />`
+      );
+
+      template = template.replace(
+        "</head>",
+        `    <link rel="canonical" href="${canonical}" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  </head>`
+      );
+    } else {
+      template = template.replace(/<title>.*?<\/title>/, `<title>Post não encontrado | DfolgaBet</title>`);
+
+      template = template.replace(
+        "</head>",
+        `    <meta name="robots" content="noindex, follow" />
+  </head>`
+      );
+    }
+
+    res.status(200).set({ "Content-Type": "text/html" }).send(template);
+  } catch (error) {
+    console.error("SEO server-side error:", error);
+    next();
+  }
+});
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
