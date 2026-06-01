@@ -477,6 +477,51 @@ async function startServer() {
     }
   });
 
+// SEO server-side para artigos estáticos do DfolgaBet
+const staticArticleSeo: Record<string, { title: string; description: string; canonical: string }> = {
+  "/ufc-caliari-vs-bannon": {
+    title: "Nicolle Caliari vs. Shauna Bannon: Palpites, Odds e Análise UFC 2026",
+    description: "Análise completa de Nicolle Caliari vs. Shauna Bannon. Confira odds, estatísticas, palpites e onde apostar com segurança no UFC Fight Night.",
+    canonical: "https://dfolgabet.com.br/ufc-caliari-vs-bannon",
+  },
+  "/flamengo-x-fluminense-feminino-palpites-odds-15-05-2026": {
+    title: "Flamengo x Fluminense Feminino: Palpites, Odds e Análise",
+    description: "Confira análise, odds, estatísticas e palpites para Flamengo x Fluminense Feminino, com informações para acompanhar o confronto com responsabilidade.",
+    canonical: "https://dfolgabet.com.br/flamengo-x-fluminense-feminino-palpites-odds-15-05-2026",
+  },
+  "/alice-ardelean-polyana-viana-ufc-fight-night": {
+    title: "Alice Ardelean x Polyana Viana: Palpites, Odds e Análise UFC Fight Night",
+    description: "Veja análise, odds, estatísticas e palpites para Alice Ardelean x Polyana Viana no UFC Fight Night, com foco em informação e jogo responsável.",
+    canonical: "https://dfolgabet.com.br/alice-ardelean-polyana-viana-ufc-fight-night",
+  },
+};
+
+app.get(Object.keys(staticArticleSeo), (req, res) => {
+  const seo = staticArticleSeo[req.path];
+  const templatePath =
+    process.env.NODE_ENV !== "production"
+      ? path.resolve(process.cwd(), "index.html")
+      : path.resolve(process.cwd(), "dist/index.html");
+
+  let template = fs.readFileSync(templatePath, "utf-8");
+
+  template = template.replace(/<title>.*?<\/title>/, `<title>${seo.title} | DfolgaBet</title>`);
+
+  template = template.replace(
+    /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i,
+    `<meta name="description" content="${seo.description.replace(/"/g, "&quot;")}" />`
+  );
+
+  template = template.replace(
+    "</head>",
+    `    <link rel="canonical" href="${seo.canonical}" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  </head>`
+  );
+
+  res.status(200).set({ "Content-Type": "text/html" }).send(template);
+});
+
 // SEO server-side para posts do DfolgaBet
 app.get("/dfolgabet/post/:slug", async (req, res, next) => {
   const slug = req.params.slug;
