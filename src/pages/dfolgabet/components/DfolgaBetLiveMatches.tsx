@@ -66,7 +66,7 @@ function DfolgaBetLiveMatchesContent() {
   const getTournamentSlug = (tournament: string) => {
     const parts = tournament.split('/');
     const title = parts.length > 1 ? parts[1].trim() : tournament.trim();
-    return title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return title.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   };
 
   useEffect(() => {
@@ -251,8 +251,8 @@ function DfolgaBetLiveMatchesContent() {
               return;
            }
         } catch (err) {
-           console.error("Debug endpoint falhou:", err);
-           setError("Erro ao verificar status da API.");
+           console.warn("Preview mode: /api/odds/debug unavailable because server.ts is not running.");
+           setError("Live odds are temporarily unavailable.");
            setLoading(false);
            return;
         }
