@@ -30,6 +30,8 @@ import DfolgaBetCompetitionPage from './pages/dfolgabet/DfolgaBetCompetitionPage
 import CaliariVsBannon from './pages/dfolgabet/articles/CaliariVsBannon';
 import FlamengoVsFluminense from './pages/dfolgabet/articles/FlamengoVsFluminense';
 import AliceVsPolyana from './pages/dfolgabet/articles/AliceVsPolyana';
+import CopaDoMundo2026 from './pages/dfolgabet/competition/CopaDoMundo2026';
+
 
 // Sanity Studio
 import SanityStudio from './pages/SanityStudio';
@@ -72,7 +74,8 @@ export default function App() {
           <Route path="dfolgabet/post/:slug" element={<DfolgaBetPost />} />
 
           {/* COMPETIÇÕES */}
-          <Route path="dfolgabet/competicao/:slug" element={<DfolgaBetCompetitionPage />} />
+          <Route path="dfolgabet/competition/copa-do-mundo-2026" element={<CopaDoMundo2026 />} />
+          <Route path="dfolgabet/competition/:slug" element={<DfolgaBetCompetitionPage />} />
 
           {/* PALPITES */}
           <Route path="palpite/:id" element={<DfolgaBetPredictionDetails />} />
