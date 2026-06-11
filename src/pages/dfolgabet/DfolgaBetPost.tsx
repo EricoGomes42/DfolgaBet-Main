@@ -51,20 +51,25 @@ export default function DfolgaBetPost() {
   useEffect(() => {
     async function fetchPost() {
       try {
-        const query = `*[_type == "post" && slug.current == $slug][0] {
-          _id,
-          title,
-          mainImage,
-          publishedAt,
-          _createdAt,
-          body,
-          seoTitle,
-          seoDescription,
-          seoCustomCode,
-          "authorName": author->name,
-          "authorImage": author->image,
-          "categoryName": categories[0]->title
-        }`;
+        const query = `*[
+  _type == "post" &&
+  !(_id in path("drafts.**")) &&
+  slug.current == $slug
+][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  mainImage,
+  publishedAt,
+  _createdAt,
+  body,
+  seoTitle,
+  seoDescription,
+  seoCustomCode,
+  "authorName": author->name,
+  "authorImage": author->image,
+  "categoryName": categories[0]->title
+}`;
 
         const data = await client.fetch(query, { slug });
         setPost(data);
@@ -110,8 +115,9 @@ export default function DfolgaBetPost() {
     return (
       <>
       <Helmet>
-        <title>Carregando Artigo - DfolgaBet</title>
-        <meta name="robots" content="noindex, follow" />
+        <title>{post.seoTitle || post.title} | DfolgaBet</title>
+        <meta name="description" content={post.seoDescription || post.excerpt || ''} />
+        <link rel="canonical" href={`https://dfolgabet.com.br/dfolgabet/post/${slug}`} />
       </Helmet>
       <div className="max-w-[800px] mx-auto px-4 py-24 text-center">
         <h1 className="text-3xl font-black text-white mb-4">Post não encontrado</h1>
