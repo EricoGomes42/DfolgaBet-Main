@@ -1,35 +1,35 @@
-import { useEffect, useState } from 'react';
 
-const BANNERS = [
-  {
-    link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland',
-    img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_lottoland.png',
-    name: 'LOTTOLAND'
-  },
-  {
-    link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline',
-    img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_sorteonline.png',
-    name: 'SORTE ONLINE'
-  },
-  {
-    link: 'https://esportesdasorte.bet.br/',
-    img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_esportesdasorte.png',
-    name: 'ESPORTES DA SORTE'
-  }
-];
+import { useEffect, useState } from 'react';
+import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
+
+// Filtra e mapeia os patrocinadores que têm um banner de patrocínio definido
+const SPONSOR_BANNERS = DFOLOGABET_PRIORITY_BOOKMAKERS
+  .filter(b => b.enabled && b.key) // Garante que a casa está habilitada e tem uma chave
+  .map(b => ({
+    link: getAffiliateLink(b.label),
+    img: `/assets/betting/banner-casas-patrocinio/banner_patrocinio_${b.key}.png`,
+    name: b.label
+  }));
 
 export default function SidebarSponsorBanner() {
   const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCarouselIndex((prev) => (prev + 1) % BANNERS.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
+    // Só ativa o carrossel se houver mais de um banner
+    if (SPONSOR_BANNERS.length > 1) {
+      const interval = setInterval(() => {
+        setCarouselIndex((prev) => (prev + 1) % SPONSOR_BANNERS.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
   }, []);
 
-  const banner = BANNERS[carouselIndex];
+  // Se não houver banners, não renderiza nada
+  if (SPONSOR_BANNERS.length === 0) {
+    return null;
+  }
+
+  const banner = SPONSOR_BANNERS[carouselIndex];
 
   return (
     <div className="sticky top-[96px] self-start z-10 w-full">
@@ -45,6 +45,8 @@ export default function SidebarSponsorBanner() {
           alt={banner.name}
           className="w-full h-auto object-cover block"
           loading="lazy"
+          // Adiciona um fallback para o caso da imagem não existir
+          onError={(e: any) => { e.target.style.display = 'none'; }}
         />
       </a>
     </div>
