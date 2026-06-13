@@ -23,7 +23,7 @@ const ligasFutebol = [
   { name: 'Bundesliga', img: 'https://flagsapi.com/DE/flat/16.png' },
   { name: 'Ligue 1', img: 'https://flagsapi.com/FR/flat/16.png' },
   { name: 'Liga Portugal', img: 'https://flagsapi.com/PT/flat/16.png' },
-  { name: 'Copa do Mundo', img: '🌎' }
+  { name: 'Copa do Mundo 2026', img: '🌎', customLink: '/dfolgabet/competition/copa-do-mundo-2026' },
 ];
 
 export function LeftSidebar() {
@@ -113,6 +113,7 @@ export function LeftSidebar() {
             <ul className="space-y-0.5">
                {ligasFutebol.map(liga => {
                  const slug = liga.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                 const toPath = liga.customLink || `/dfolgabet/competicao/${slug}`;
                  return (
                  <li key={liga.name} className="px-2 py-1.5 rounded-lg hover:bg-[#1A0D35] hover:text-[#50C0CC] cursor-pointer transition-colors flex items-center gap-3 text-sm font-semibold text-gray-300">
                     {liga.img.includes('http') ? (
@@ -120,7 +121,7 @@ export function LeftSidebar() {
                     ) : (
                        <span className="w-4 h-4 text-center text-xs">{liga.img}</span>
                     )}
-                    <Link to={`/dfolgabet/competicao/${slug}`} className="truncate hover:underline flex-1">{liga.name}</Link>
+                    <Link to={toPath} className="truncate hover:underline flex-1">{liga.name}</Link>
                  </li>
                )})}
             </ul>
@@ -218,4 +219,3 @@ export function LeftSidebar() {
     </aside>
   );
 }
-

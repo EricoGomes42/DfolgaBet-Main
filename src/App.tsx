@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import { DarkModeProvider } from './hooks/useDarkMode';
+import VignetteAd from './components/VignetteAd';
 
 // DfolgaBet Pages
 import DfolgaBetLayout from './pages/dfolgabet/DfolgaBetLayout';
@@ -32,7 +32,6 @@ import FlamengoVsFluminense from './pages/dfolgabet/articles/FlamengoVsFluminens
 import AliceVsPolyana from './pages/dfolgabet/articles/AliceVsPolyana';
 import CopaDoMundo2026 from './pages/dfolgabet/competition/CopaDoMundo2026';
 
-
 // Sanity Studio
 import SanityStudio from './pages/SanityStudio';
 
@@ -43,6 +42,7 @@ export default function App() {
     <DarkModeProvider>
       <ScrollToTop />
       <ScrollToTopButton />
+      <VignetteAd />
 
       <Routes>
         {/* Sanity Studio Route */}
