@@ -80,6 +80,7 @@ export default function DfolgaBetSidebar() {
   const popularArticles = popularArticlesRaw.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : !isCasinoArticle(post)).slice(0, 4);
 
   const leagues = [
+    { name: 'Copa do Mundo 2026', icon: '🌎', link: '/dfolgabet/competition/copa-do-mundo-2026' },
     { name: 'Brasileirão Série A', icon: '🇧🇷', link: '/dfolgabet/competition/campeonato-brasileiro' },
     { name: 'Copa do Brasil', icon: '🏆', link: '/dfolgabet/competition/campeonato-brasileiro' },
     { name: 'Brasileirão Série B', icon: '🇧🇷', link: '/dfolgabet/competition/campeonato-brasileiro' },

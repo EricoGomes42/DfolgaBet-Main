@@ -251,8 +251,8 @@ function DfolgaBetLiveMatchesContent() {
               return;
            }
         } catch (err) {
-           console.error("Debug endpoint falhou:", err);
-           setError("Erro ao verificar status da API.");
+           console.warn("Preview mode: /api/odds/debug unavailable because server.ts is not running.");
+           setError("Live odds are temporarily unavailable.");
            setLoading(false);
            return;
         }
@@ -341,7 +341,10 @@ function DfolgaBetLiveMatchesContent() {
                    }
                    
                    const mapped = arrayData.map((m: any) => {
-                      const tournamentName = (m.league || 'Competição').replace('Brazil', 'Brasil');
+                      let tournamentName = (m.league || 'Competição').replace('Brazil', 'Brasil');
+                      if (tournamentName === 'FIFA World Cup') {
+                        tournamentName = 'Copa do Mundo 2026';
+                      }
                       const countryCode = getCountryCode(tournamentName);
                       const homeTeamName = m.homeTeam || m.home_team || 'H';
                       const awayTeamName = m.awayTeam || m.away_team || 'A';
@@ -718,7 +721,7 @@ function DfolgaBetLiveMatchesContent() {
                               <div className="bg-[#1A0D35] border-b border-[#311B92] px-3 sm:px-4 py-2.5 flex items-center justify-between">
                                  <div className="flex items-center gap-2">
                                     <span className="w-5 h-5 flex items-center justify-center rounded-full border border-[#311B92] bg-[#0A051A] text-[10px] overflow-hidden shrink-0">
-                                       <img src={`https://flagsapi.com/${tournMatches[0]?.countryCode?.toUpperCase() || getFlagCode(tournament)}/flat/32.png`} alt="flag" className="object-cover w-full h-full" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                                       <img src={`https://flagsapi.com/${tournMatches[0]?.countryCode?.toUpperCase() || getFlagCode(tournament)}/flat/32.png`} alt="flag" className="object-cover w-full h-full" onError={(e) => (e.currentTarget.style.display = 'none')}/>
                                     </span>
                                     <Link to={`/dfolgabet/competicao/${getTournamentSlug(tournament)}`} className="hover:text-[#50c0cc] transition-colors hover:underline">
                                        <h4 className="text-xs sm:text-sm font-bold text-white tracking-wide line-clamp-1">{tournament}</h4>

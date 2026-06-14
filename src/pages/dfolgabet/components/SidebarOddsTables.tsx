@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Trophy, Clock } from 'lucide-react';
 
+// Adicionando a Copa do Mundo com prioridade (primeiro da lista)
 const SPORTS = [
+  { key: 'soccer_fifa_world_cup', name: 'Copa do Mundo', icon: '🏆', color: '#e67e22' },
   { key: 'soccer_epl', name: 'Premier League', icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', color: '#38003c' },
   { key: 'soccer_spain_la_liga', name: 'La Liga', icon: '🇪🇸', color: '#ee8707' },
   { key: 'soccer_italy_serie_a', name: 'Serie A', icon: '🇮🇹', color: '#003399' },
@@ -9,117 +11,83 @@ const SPORTS = [
   { key: 'soccer_brazil_campeonato', name: 'Brasileirão', icon: '🇧🇷', color: '#009b3a' }
 ];
 
-const BANNERS = [
-  { link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_lottoland.png', name: 'LOTTOLAND', tagline: 'Loterias Online' },
-  { link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_sorteonline.png', name: 'SORTE ONLINE', tagline: 'Apostas Seguras' },
-  { link: 'https://www.bet365.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_bet365.png', name: 'BET365', tagline: 'Líder Mundial' },
-  { link: 'https://www.estrelabet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_estrelabet.png', name: 'ESTRELABET', tagline: 'Esportes & Cassino' },
-  { link: 'https://esportesdasorte.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_esportesdasorte.png', name: 'ESPORTES DA SORTE', tagline: 'Odds Competitivas' },
-  { link: 'https://www.kto.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_kto.png', name: 'KTO', tagline: 'Saques Rápidos' },
-  { link: 'https://www.superbet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_superbet.png', name: 'SUPERBET', tagline: 'Bônus Generosos' },
-  { link: 'https://www.betmgm.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_betmgm.png', name: 'BETMGM', tagline: 'Experiência Premium' },
-  { link: 'https://www.novibet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_novibet.png', name: 'NOVIBET', tagline: 'Confiança Garantida' },
-  { link: 'https://www.vbet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_vbet.png', name: 'VBET', tagline: 'Mercados Variados' },
-  { link: 'https://www.sportingbet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_sportingbet.png', name: 'SPORTINGBET', tagline: 'Tradição Confiável' },
-  { link: 'https://www.bandbet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_bandbet.png', name: 'BANDBET', tagline: 'Transmissão Ao Vivo' },
-  { link: 'https://www.betano.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_betano.png', name: 'BETANO', tagline: 'Melhor Experiência' },
-  { link: 'https://www.betwarrior.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_betwarrior.png', name: 'BETWARRIOR', tagline: 'Guerreiros das apostas' },
-  { link: 'https://ona.bet.br/casino', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_onabet.png', name: 'ONABET', tagline: 'Confiança Total' },
-  { link: 'https://www.betnacional.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_betnacional.png', name: 'BETNACIONAL', tagline: 'Orgulho Brasileiro' },
-  { link: 'https://1xbet.bet.br/pt', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_1xbet.png', name: '1XBET', tagline: 'Maior Cobertura' },
-  { link: 'https://www.pixbet.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_pixbet.png', name: 'PIXBET', tagline: 'Apostas Rápidas' },
-  { link: 'https://www.galera.bet.br/', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_galera.png', name: 'GALERA BET', tagline: 'Comunidade Forte' },
-  { link: 'https://stake.com/pt', img: '/assets/betting/banner-casas-patrocinio/banner_patrocinio_stake.png', name: 'STAKE', tagline: 'Cripto & Esportes' }
-];
-
 export default function SidebarOddsTables() {
   const [oddsData, setOddsData] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const [carouselIndex, setCarouselIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCarouselIndex(prev => (prev + 1) % BANNERS.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     async function fetchOdds() {
+      setLoading(true);
       try {
-        const CACHE_KEY = 'dfolgabet_sidebar_odds_cache';
-        const CACHE_TIME = 1000 * 60 * 5;
-
-        const cached = localStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const { timestamp, data } = JSON.parse(cached);
-          if (Date.now() - timestamp < CACHE_TIME) {
-            groupDataBySport(data);
-            setLoading(false);
-            return;
-          }
-        }
-
-        const response = await fetch(`/api/odds?sport=upcoming&regions=eu,us&markets=h2h`);
+        const allSports = SPORTS.map(s => s.key).join(',');
+        // Busca dados para todos os esportes configurados, incluindo a Copa do Mundo
+        const response = await fetch(`/api/odds?sport=upcoming&group=sport_key&markets=h2h&sports=${allSports}`);
+        
         if (!response.ok) throw new Error('Failed to fetch odds');
 
         const data = await response.json();
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));
         groupDataBySport(data);
       } catch (error) {
-        groupDataBySport([]);
+        console.error("Falha ao buscar odds para a sidebar:", error);
+        setOddsData({}); // Limpa os dados em caso de erro
       } finally {
         setLoading(false);
       }
     }
 
     fetchOdds();
+    // Atualiza a cada 5 minutos
+    const interval = setInterval(fetchOdds, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+
   }, []);
 
-  function groupDataBySport(data: any[]) {
+  function groupDataBySport(data: any) {
     const grouped: any = {};
 
-    SPORTS.forEach(sport => {
-      grouped[sport.key] = data
-        .filter(m => m.sport_key === sport.key || m.sport_title.toLowerCase().includes(sport.name.toLowerCase()))
-        .slice(0, 3)
-        .map(match => {
-          let home = '-';
-          let draw = '-';
-          let away = '-';
+    // O endpoint com group=sport_key já deve retornar os dados agrupados
+    // Apenas processamos para o formato que o componente espera
+    for (const sportKey in data) {
+        if (SPORTS.some(s => s.key === sportKey)) {
+            grouped[sportKey] = data[sportKey].slice(0, 3).map((match: any) => {
+                let home = '-';
+                let draw = '-';
+                let away = '-';
 
-          if (match.bookmakers?.[0]?.markets?.[0]?.outcomes) {
-            const outcomes = match.bookmakers[0].markets[0].outcomes;
-            const h = outcomes.find((o: any) => o.name === match.home_team);
-            const a = outcomes.find((o: any) => o.name === match.away_team);
-            const d = outcomes.find((o: any) => o.name === 'Draw');
+                if (match.bookmakers?.[0]?.markets?.[0]?.outcomes) {
+                    const outcomes = match.bookmakers[0].markets[0].outcomes;
+                    const h = outcomes.find((o: any) => o.name === match.home_team);
+                    const a = outcomes.find((o: any) => o.name === match.away_team);
+                    const d = outcomes.find((o: any) => o.name === 'Draw');
 
-            if (h) home = h.price.toFixed(2);
-            if (a) away = a.price.toFixed(2);
-            if (d) draw = d.price.toFixed(2);
-          }
+                    if (h?.price) home = h.price.toFixed(2);
+                    if (a?.price) away = a.price.toFixed(2);
+                    if (d?.price) draw = d.price.toFixed(2);
+                }
 
-          return {
-            home_team: match.home_team,
-            away_team: match.away_team,
-            home,
-            draw,
-            away,
-            start: new Date(match.commence_time).toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit'
-            })
-          };
-        });
-    });
-
+                return {
+                    home_team: match.home_team,
+                    away_team: match.away_team,
+                    home,
+                    draw,
+                    away,
+                    start: new Date(match.commence_time).toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                };
+            });
+        }
+    }
+    
     setOddsData(grouped);
   }
 
-  if (loading) return null;
+  if (loading) return null; 
 
-  const banner = BANNERS[carouselIndex % BANNERS.length];
-  const validSports = SPORTS.filter(sport => (oddsData[sport.key] || []).length > 0);
+  const validSports = SPORTS.filter(sport => oddsData[sport.key] && oddsData[sport.key].length > 0);
+
+  if (validSports.length === 0) return null; // Não renderiza nada se não houver jogos para nenhum esporte
 
   return (
     <div className="space-y-6 mt-6 flex-1 flex flex-col">
@@ -132,7 +100,7 @@ export default function SidebarOddsTables() {
             className="bg-[#120826] border border-[#311B92] rounded-xl overflow-hidden shadow-[0_0_20px_rgba(49,27,146,0.15)] flex-none"
           >
             <div
-              className="px-4 py-3 flex items-center gap-2 border-b border-[#311B92]"
+              className="px-4 py-3 flex items-center gap-3 border-b border-[#311B92]"
               style={{ backgroundColor: `${sport.color}20` }}
             >
               <span className="text-xl">{sport.icon}</span>
@@ -142,7 +110,7 @@ export default function SidebarOddsTables() {
               </h3>
 
               <span className="ml-auto text-[10px] font-black text-gray-400 bg-[#311B92]/30 px-2 py-1 rounded">
-                AO VIVO / HOJE
+                HOJE
               </span>
             </div>
 
@@ -150,11 +118,11 @@ export default function SidebarOddsTables() {
               {matches.map((match: any, i: number) => (
                 <div
                   key={i}
-                  className="bg-[#1A0D35] rounded-lg p-3 border border-gray-800 hover:border-[#50C0CC] transition-colors"
+                  className="bg-[#1A0D35] rounded-lg p-3 border border-gray-800/50 hover:border-[#50C0CC] transition-colors"
                 >
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold">
-                      <Clock size={12} className="text-[#F37021]" />
+                      <Clock size={12} className="text-[#e67e22]" />
                       <span>{match.start}</span>
                     </div>
                   </div>
@@ -174,17 +142,17 @@ export default function SidebarOddsTables() {
                   </div>
 
                   <div className="grid grid-cols-3 gap-1">
-                    <button className="bg-[#311B92]/30 hover:bg-[#311B92]/60 text-[#50C0CC] font-bold text-[11px] py-2 rounded transition-colors text-center">
+                    <button className="bg-[#311B92]/30 hover:bg-[#311B92]/60 text-white font-bold text-[11px] py-2 rounded transition-colors text-center">
                       <span className="text-gray-500 block text-[9px] mb-0.5">1</span>
                       {match.home}
                     </button>
 
-                    <button className="bg-[#311B92]/30 hover:bg-[#311B92]/60 text-[#50C0CC] font-bold text-[11px] py-2 rounded transition-colors text-center">
+                    <button className="bg-[#311B92]/30 hover:bg-[#311B92]/60 text-white font-bold text-[11px] py-2 rounded transition-colors text-center">
                       <span className="text-gray-500 block text-[9px] mb-0.5">X</span>
                       {match.draw}
                     </button>
 
-                    <button className="bg-[#311B92]/30 hover:bg-[#311B92]/60 text-[#50C0CC] font-bold text-[11px] py-2 rounded transition-colors text-center">
+                    <button className="bg-[#311B92]/30 hover:bg-[#311B92]/60 text-white font-bold text-[11px] py-2 rounded transition-colors text-center">
                       <span className="text-gray-500 block text-[9px] mb-0.5">2</span>
                       {match.away}
                     </button>
