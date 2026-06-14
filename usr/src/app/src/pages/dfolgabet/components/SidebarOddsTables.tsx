@@ -6,7 +6,7 @@ const SPORTS = [
   { key: 'soccer_spain_la_liga', name: 'La Liga', icon: '🇪🇸', color: '#ee8707' },
   { key: 'soccer_italy_serie_a', name: 'Serie A', icon: '🇮🇹', color: '#003399' },
   { key: 'basketball_nba', name: 'NBA', icon: '🏀', color: '#1d428a' },
-  { key: 'soccer_brazil_campeonato', name: 'Brasileirão', icon: '🇧🇷', color: '#009b3a' }
+  { key: 'soccer_brazil_serie_a', name: 'Brasileirão Série A', icon: '🇧🇷', color: '#009b3a' }
 ];
 
 const BANNERS = [

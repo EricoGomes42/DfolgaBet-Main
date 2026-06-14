@@ -48,7 +48,16 @@ async function startServer() {
   app.post("/api/automarticles/webhook", async (req, res) => { /* ... existing code ... */ });
   app.use("/api/wp", async (req, res) => { /* ... existing code ... */ });
   app.get("/api/env-check", (req, res) => { /* ... existing code ... */ });
-  app.get("/api/odds/debug", async (req, res) => { /* ... existing code ... */ });
+  app.get("/api/odds/debug", async (req, res) => {
+  return res.json({
+    ok: true,
+    hasNewOddsApiKey: Boolean(process.env.NEW_ODDS_API_KEY),
+    hasViteNewOddsApiKey: Boolean(process.env.VITE_NEW_ODDS_API_KEY),
+    hasOddsApiKey: Boolean(process.env.ODDS_API_KEY),
+    nodeEnv: process.env.NODE_ENV || null,
+    port: process.env.PORT || null
+  });
+});
   
   app.get("/api/odds", async (req, res) => {
     const { sport } = req.query;
@@ -74,7 +83,7 @@ async function startServer() {
         const apiResponse = await axios.get(`https://api.the-odds-api.com/v4/sports/${sport}/odds`, {
             params: {
                 apiKey,
-                regions: 'br',
+                regions: 'us,uk,eu',
                 markets: 'h2h',
                 oddsFormat: 'decimal',
             }
