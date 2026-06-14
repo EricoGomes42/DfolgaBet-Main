@@ -42,7 +42,8 @@ const MatchCard = ({ match }: { match: any }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {safeBookmakers.map((bookmaker: any) => {
               const bookmakerInfo = DFOLOGABET_PRIORITY_BOOKMAKERS.find((b: any) => b.key === bookmaker.key);
-              if (!bookmakerInfo) return null;
+              const bookmakerLabel = bookmakerInfo?.label || bookmaker.title || bookmaker.key;
+              const bookmakerLogo = bookmakerInfo?.logo || null;
               
               const homeOdd = bookmaker.markets?.[0]?.outcomes?.find((o: any) => o.name === match.home_team)?.price;
               const drawOdd = bookmaker.markets?.[0]?.outcomes?.find((o: any) => o.name === 'Draw')?.price;
@@ -50,7 +51,11 @@ const MatchCard = ({ match }: { match: any }) => {
 
               return (
                 <div key={bookmaker.key} className="bg-[#0A051A] p-4 rounded-xl border border-[#311B92]/50 hover:border-[#50C0CC]/50 transition-colors">
-                  <img src={bookmakerInfo.logo} alt={bookmakerInfo.label} className="h-6 w-auto mx-auto mb-4"/>
+                  {bookmakerLogo ? (
+                    <img src={bookmakerLogo} alt={bookmakerLabel} className="h-6 w-auto mx-auto mb-4"/>
+                  ) : (
+                    <div className="h-6 mb-4 text-center text-white font-bold text-sm">{bookmakerLabel}</div>
+                  )}
                   <div className="grid grid-cols-3 gap-2 text-center text-xs md:text-sm">
                      <div className="flex flex-col bg-[#120826] py-2 rounded-lg">
                         <span className="text-[#b0b0b0] mb-1">1</span>
