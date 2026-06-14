@@ -8,20 +8,17 @@
     "vue.volar"
   ];
   idx.previews = {
-    previews = {
-      web = {
-        command = [
-          "npm"
-          "run"
-          "dev"
-          "--"
-          "--port"
-          "$PORT"
-          "--host"
-          "0.0.0.0"
-        ];
-        manager = "web";
-      };
+  previews = {
+    web = {
+      command = [
+        "npx"
+        "vite"
+        "--host"
+        "0.0.0.0"
+        "--port"
+        "$PORT"
+      ];
+      manager = "web";
     };
   };
-}
+};
