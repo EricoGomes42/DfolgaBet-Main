@@ -233,7 +233,7 @@ function DfolgaBetLiveMatchesContent() {
            const debugRes = await fetch('/api/odds/debug');
            debugInfo = await debugRes.json();
            
-           if (!debugInfo.hasApiKey) {
+           if (!debugInfo.hasApiKey && !debugInfo.hasNewOddsApiKey) {
               setError("NEW_ODDS_API_KEY não carregada");
               setLoading(false);
               return;
