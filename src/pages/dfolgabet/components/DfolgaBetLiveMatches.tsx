@@ -263,57 +263,57 @@ function DfolgaBetLiveMatchesContent() {
 
         const ENDPOINTS_MAP: Record<string, {name: string, url: string}[]> = {
            'Futebol': [
-             { name: 'Futebol', url: `/api/odds?sport=soccer_fifa_world_cup` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_brazil_serie_a` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_brazil_serie_b` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_epl` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_spain_la_liga` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_italy_serie_a` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_germany_bundesliga` },
-             { name: 'Futebol', url: `/api/odds?sport=soccer_france_ligue_one` }
+             { name: 'Copa do Mundo 2026', url: `/api/odds?sport=soccer_fifa_world_cup` },
+             { name: 'Brasileirão Série A', url: `/api/odds?sport=soccer_brazil_serie_a` },
+             { name: 'Brasileirão Série B', url: `/api/odds?sport=soccer_brazil_serie_b` },
+             { name: 'Premier League', url: `/api/odds?sport=soccer_epl` },
+             { name: 'La Liga', url: `/api/odds?sport=soccer_spain_la_liga` },
+             { name: 'Serie A Italiana', url: `/api/odds?sport=soccer_italy_serie_a` },
+             { name: 'Bundesliga', url: `/api/odds?sport=soccer_germany_bundesliga` },
+             { name: 'Ligue 1', url: `/api/odds?sport=soccer_france_ligue_one` }
          ],
            'Basquete': [
-             { name: 'Basquete', url: `/api/odds?sport=basketball_nba` },
-             { name: 'Basquete', url: `/api/odds?sport=basketball_euroleague` }
+             { name: 'NBA', url: `/api/odds?sport=basketball_nba` },
+             { name: 'EuroLeague', url: `/api/odds?sport=basketball_euroleague` }
          ],
            'Tênis': [
-             { name: 'Tênis', url: `/api/odds?sport=tennis_atp` },
-             { name: 'Tênis', url: `/api/odds?sport=tennis_wta` }
+             { name: 'ATP', url: `/api/odds?sport=tennis_atp` },
+             { name: 'WTA', url: `/api/odds?sport=tennis_wta` }
          ],
            'Luta': [
-             { name: 'Luta', url: `/api/odds?sport=mma_mixed_martial_arts` },
-             { name: 'Luta', url: `/api/odds?sport=boxing_boxing` }
+             { name: 'MMA', url: `/api/odds?sport=mma_mixed_martial_arts` },
+             { name: 'Boxe', url: `/api/odds?sport=boxing_boxing` }
         ],
            'Voleibol': [
-             { name: 'Voleibol', url: `/api/odds?sport=volleyball` },
-             { name: 'Voleibol', url: `/api/odds?sport=volleyball_beach_volleyball` }
+             { name: 'Vôlei Indoor', url: `/api/odds?sport=volleyball` },
+             { name: 'Vôlei de Praia', url: `/api/odds?sport=volleyball_beach_volleyball` }
          ],
            'Futsal': [
              { name: 'Futsal', url: `/api/odds?sport=soccer_futsal` }
          ],
            'eSports': [
-             { name: 'eSports', url: `/api/odds?sport=esports_csgo` },
-             { name: 'eSports', url: `/api/odds?sport=esports_lol` },
-             { name: 'eSports', url: `/api/odds?sport=esports_dota2` }
+             { name: 'CS:GO', url: `/api/odds?sport=esports_csgo` },
+             { name: 'League of Legends', url: `/api/odds?sport=esports_lol` },
+             { name: 'Dota 2', url: `/api/odds?sport=esports_dota2` }
          ],
            'Futebol Americano': [
-             { name: 'Futebol Americano', url: `/api/odds?sport=americanfootball_nfl` },
-             { name: 'Futebol Americano', url: `/api/odds?sport=americanfootball_ncaaf` }
+             { name: 'NFL', url: `/api/odds?sport=americanfootball_nfl` },
+             { name: 'NCAA Football', url: `/api/odds?sport=americanfootball_ncaaf` }
          ],
            'Beisebol': [
-             { name: 'Beisebol', url: `/api/odds?sport=baseball_mlb` }
+             { name: 'MLB', url: `/api/odds?sport=baseball_mlb` }
          ],
            'Hóquei no Gelo': [
-             { name: 'Hóquei no Gelo', url: `/api/odds?sport=icehockey_nhl` }
+             { name: 'NHL', url: `/api/odds?sport=icehockey_nhl` }
          ],
            'Críquete': [
-             { name: 'Críquete', url: `/api/odds?sport=cricket_international_t20` }
+             { name: 'T20 Internacional', url: `/api/odds?sport=cricket_international_t20` }
          ],
            'Rugby League': [
-             { name: 'Rugby League', url: `/api/odds?sport=rugbyleague_nrl` }
+             { name: 'NRL', url: `/api/odds?sport=rugbyleague_nrl` }
          ],
            'Rugby Union': [
-             { name: 'Rugby Union', url: `/api/odds?sport=rugbyunion_six_nations` }
+             { name: 'Six Nations', url: `/api/odds?sport=rugbyunion_six_nations` }
          ]
        };
 
