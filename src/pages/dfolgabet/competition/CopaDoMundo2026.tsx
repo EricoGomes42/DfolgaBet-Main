@@ -45,9 +45,11 @@ const MatchCard = ({ match }: { match: any }) => {
               const bookmakerLabel = bookmakerInfo?.label || bookmaker.title || bookmaker.key;
               const bookmakerLogo = bookmakerInfo?.logo || null;
               
-              const homeOdd = bookmaker.markets?.[0]?.outcomes?.find((o: any) => o.name === match.home_team)?.price;
-              const drawOdd = bookmaker.markets?.[0]?.outcomes?.find((o: any) => o.name === 'Draw')?.price;
-              const awayOdd = bookmaker.markets?.[0]?.outcomes?.find((o: any) => o.name === match.away_team)?.price;
+              const h2hMarket = bookmaker.markets?.find((market: any) => market.key === 'h2h') || bookmaker.markets?.[0];
+
+              const homeOdd = h2hMarket?.outcomes?.find((o: any) => o.name === match.home_team)?.price;
+              const drawOdd = h2hMarket?.outcomes?.find((o: any) => o.name === 'Draw')?.price;
+              const awayOdd = h2hMarket?.outcomes?.find((o: any) => o.name === match.away_team)?.price;
 
               return (
                 <div key={bookmaker.key} className="bg-[#0A051A] p-4 rounded-xl border border-[#311B92]/50 hover:border-[#50C0CC]/50 transition-colors">
