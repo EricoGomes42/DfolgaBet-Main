@@ -208,9 +208,12 @@ function DfolgaBetLiveMatchesContent() {
             if (Date.now() - timestamp < CACHE_TIME) {
               setData(payload);
               const initialEndpoints = [
-                 `/api/odds?sport=soccer_brazil_campeonato`,
+                 `/api/odds?sport=soccer_fifa_world_cup`,
+                 `/api/odds?sport=soccer_brazil_serie_a`,
                  `/api/odds?sport=soccer_brazil_serie_b`,
                  `/api/odds?sport=soccer_epl`,
+                 `/api/odds?sport=soccer_spain_la_liga`,
+                 `/api/odds?sport=soccer_italy_serie_a`,
                  `/api/odds?sport=basketball_nba`
               ];
               initialEndpoints.forEach(ep => loadedEndpointsRef.current.add(ep));
@@ -259,9 +262,12 @@ function DfolgaBetLiveMatchesContent() {
 
         const ENDPOINTS_MAP: Record<string, {name: string, url: string}[]> = {
           'Futebol': [
-            { name: 'Futebol', url: `/api/odds?sport=soccer_brazil_campeonato` },
-            { name: 'Futebol', url: `/api/odds?sport=soccer_brazil_serie_b` },
-            { name: 'Futebol', url: `/api/odds?sport=soccer_epl` }
+            { name: 'Copa do Mundo 2026', url: `/api/odds?sport=soccer_fifa_world_cup` },
+            { name: 'Brasileirão Série A', url: `/api/odds?sport=soccer_brazil_serie_a` },
+            { name: 'Brasileirão Série B', url: `/api/odds?sport=soccer_brazil_serie_b` },
+            { name: 'Premier League', url: `/api/odds?sport=soccer_epl` },
+            { name: 'La Liga', url: `/api/odds?sport=soccer_spain_la_liga` },
+            { name: 'Serie A', url: `/api/odds?sport=soccer_italy_serie_a` }
           ],
           'Basquete': [
             { name: 'Basquete', url: `/api/odds?sport=basketball_nba` }
