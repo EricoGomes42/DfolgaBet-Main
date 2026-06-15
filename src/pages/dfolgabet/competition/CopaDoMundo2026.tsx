@@ -6,11 +6,67 @@ import { Home, Globe, Zap, ChevronDown, AlertTriangle } from 'lucide-react';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS } from '../../../config/dfolgabetBookmakers';
 import ResponsibleGamingNotice from '../components/ResponsibleGamingNotice';
 
+const PREFERRED_BOOKMAKER_KEYS = [
+  'estrelabet',
+  'vupibet',
+  'superbet',
+  'betwinner',
+  'lottoland',
+  'sorte_online',
+  'melbet',
+  'stake',
+  'novibet',
+  'blaze',
+  'brazino777',
+  'betobet',
+  'bet365',
+  'esportes_da_sorte',
+  'kto',
+  'betmgm',
+  'vbet',
+  'sportingbet',
+  'bandbet',
+  'betano',
+  'betwarrior',
+  'onabet',
+  'betnacional',
+  'onexbet',
+  'pixbet',
+  'galera_bet'
+];
+
+const normalizeBookmakerName = (value: string = '') => {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+};
+
+const getBookmakerPriority = (bookmaker: any) => {
+  const candidates = [
+    bookmaker.key,
+    bookmaker.title,
+    normalizeBookmakerName(bookmaker.title),
+    normalizeBookmakerName(bookmaker.key)
+  ];
+
+  for (const candidate of candidates) {
+    const index = PREFERRED_BOOKMAKER_KEYS.indexOf(candidate);
+    if (index !== -1) return index;
+  }
+
+  return 999;
+};
+
 const MatchCard = ({ match }: { match: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   // Tratamento de Erro Opcional: Garante que bookmakers e markets existam
-  const safeBookmakers = match.bookmakers || [];
+  const safeBookmakers = (match.bookmakers || [])
+    .slice()
+    .sort((a: any, b: any) => getBookmakerPriority(a) - getBookmakerPriority(b));
   const homeTeamOdds = safeBookmakers.map((b: any) => b.markets?.[0]?.outcomes?.find((o: any) => o.name === match.home_team)?.price).filter(Boolean);
   const awayTeamOdds = safeBookmakers.map((b: any) => b.markets?.[0]?.outcomes?.find((o: any) => o.name === match.away_team)?.price).filter(Boolean);
   
