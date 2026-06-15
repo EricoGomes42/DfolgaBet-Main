@@ -8,6 +8,7 @@ import { dfolgabetPromoCodes } from '../../../data/dfolgabetPromoCodes';
 import { dfolgabetBonus } from '../../../data/dfolgabetBonus';
 
 const ligasFutebol = [
+  { name: 'Copa do Mundo 2026', img: '🌎', customLink: '/dfolgabet/competition/copa-do-mundo-2026' },
   { name: 'Brasileirão Série A', img: 'https://flagsapi.com/BR/flat/16.png' },
   { name: 'Copa do Brasil', img: 'https://flagsapi.com/BR/flat/16.png' },
   { name: 'Brasileirão Série B', img: 'https://flagsapi.com/BR/flat/16.png' },
@@ -23,7 +24,6 @@ const ligasFutebol = [
   { name: 'Bundesliga', img: 'https://flagsapi.com/DE/flat/16.png' },
   { name: 'Ligue 1', img: 'https://flagsapi.com/FR/flat/16.png' },
   { name: 'Liga Portugal', img: 'https://flagsapi.com/PT/flat/16.png' },
-  { name: 'Copa do Mundo 2026', img: '🌎', customLink: '/dfolgabet/competition/copa-do-mundo-2026' },
 ];
 
 export function LeftSidebar() {

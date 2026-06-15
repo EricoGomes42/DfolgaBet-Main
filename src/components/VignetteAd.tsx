@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigationType } from 'react-router-dom';
 import { X } from 'lucide-react';
 
 const CAMPAIGN = {
@@ -25,25 +25,30 @@ const Plus18Icon = () => (
 export default function VignetteAd() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigationType = useNavigationType();
 
   useEffect(() => {
     if (isInitialLoad) {
-      isInitialLoad = false;
-      return;
-    }
+    isInitialLoad = false;
+    return;
+  }
 
-    const lastShown = sessionStorage.getItem('last_vignette_ad_time');
-    const now = Date.now();
+  if (navigationType !== 'PUSH') {
+    return;
+  }
 
-    if (lastShown && now - parseInt(lastShown, 10) < COOLDOWN_MS) {
-      return;
-    }
+  const lastShown = sessionStorage.getItem('last_vignette_ad_time');
+  const now = Date.now();
 
-    if (Math.random() < PROBABILITY) {
-      setIsOpen(true);
-      sessionStorage.setItem('last_vignette_ad_time', now.toString());
-    }
-  }, [location.pathname]);
+  if (lastShown && now - parseInt(lastShown, 10) < COOLDOWN_MS) {
+    return;
+  }
+
+  if (Math.random() < PROBABILITY) {
+    setIsOpen(true);
+    sessionStorage.setItem('last_vignette_ad_time', now.toString());
+  }
+}, [location.pathname, navigationType]);
 
   useEffect(() => {
     if (isOpen) {
