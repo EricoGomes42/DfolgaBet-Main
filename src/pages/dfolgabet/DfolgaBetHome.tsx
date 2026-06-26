@@ -25,6 +25,7 @@ interface Post {
 
 export default function DfolgaBetHome() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [casinoPosts, setCasinoPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [heroIndex, setHeroIndex] = useState(0);
 
@@ -77,13 +78,25 @@ export default function DfolgaBetHome() {
                  cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
         };
 
-        const combined = [...localArticles, ...data]
-          .filter(p => !isCasinoArticle(p))
-          .sort((a, b) => {
-            const dateA = new Date(a.publishedAt || a._createdAt).getTime();
-            const dateB = new Date(b.publishedAt || b._createdAt).getTime();
-            return dateB - dateA;
-          });
+        const allPosts = [...localArticles, ...data];
+
+const casinoOnlyPosts = allPosts
+  .filter(isCasinoArticle)
+  .sort((a, b) => {
+    const dateA = new Date(a.publishedAt || a._createdAt).getTime();
+    const dateB = new Date(b.publishedAt || b._createdAt).getTime();
+    return dateB - dateA;
+  });
+
+setCasinoPosts(casinoOnlyPosts.slice(0, 5));
+
+const combined = allPosts
+  .filter(p => !isCasinoArticle(p))
+  .sort((a, b) => {
+    const dateA = new Date(a.publishedAt || a._createdAt).getTime();
+    const dateB = new Date(b.publishedAt || b._createdAt).getTime();
+    return dateB - dateA;
+  });
 
         // Limit to desired number of posts (e.g. 12)
         setPosts(combined.slice(0, 12));
@@ -298,6 +311,28 @@ export default function DfolgaBetHome() {
 
               <LatestNews posts={posts} />
             </section>
+
+{/* CASINO HERO BLOCK */}
+<section id="casino" className="mt-16 pt-12 border-t border-[#311B92]/30 relative z-40">
+  <div className="flex flex-col gap-2 mb-10 px-1">
+    <div className="flex items-center gap-2">
+      <Trophy size={16} className="text-[#50C0CC]" />
+      <span className="text-[#50C0CC] font-black text-[11px] uppercase tracking-[0.2em]">
+        O Melhor do Cassino
+      </span>
+    </div>
+
+    <h2 className="text-4xl sm:text-5xl md:text-[60px] font-black w-full text-white tracking-tighter leading-[1.05] mt-2">
+      Crash, Slots <span className="text-[#e67e22]">& Roleta</span>
+    </h2>
+
+    <p className="text-gray-400 text-lg md:text-xl font-medium mt-4 w-full leading-relaxed">
+      Estratégias, tutoriais e as melhores dicas para você dominar os jogos de cassino mais populares do mercado.
+    </p>
+  </div>
+
+  <LatestNews posts={casinoPosts} />
+</section>
 
             {/* SEO EDUCATIONAL CONTENT */}
             <EducationalSeoSections />
