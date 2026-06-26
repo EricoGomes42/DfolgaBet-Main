@@ -312,28 +312,6 @@ const combined = allPosts
               <LatestNews posts={posts} />
             </section>
 
-{/* CASINO HERO BLOCK */}
-<section id="casino" className="mt-16 pt-12 border-t border-[#311B92]/30 relative z-40">
-  <div className="flex flex-col gap-2 mb-10 px-1">
-    <div className="flex items-center gap-2">
-      <Trophy size={16} className="text-[#50C0CC]" />
-      <span className="text-[#50C0CC] font-black text-[11px] uppercase tracking-[0.2em]">
-        O Melhor do Cassino
-      </span>
-    </div>
-
-    <h2 className="text-4xl sm:text-5xl md:text-[60px] font-black w-full text-white tracking-tighter leading-[1.05] mt-2">
-      Crash, Slots <span className="text-[#e67e22]">& Roleta</span>
-    </h2>
-
-    <p className="text-gray-400 text-lg md:text-xl font-medium mt-4 w-full leading-relaxed">
-      Estratégias, tutoriais e as melhores dicas para você dominar os jogos de cassino mais populares do mercado.
-    </p>
-  </div>
-
-  <LatestNews posts={casinoPosts} />
-</section>
-
             {/* SEO EDUCATIONAL CONTENT */}
             <EducationalSeoSections />
           </div>
@@ -346,9 +324,35 @@ const combined = allPosts
 
           </aside>
         </div>
-        
-        {/* LIVE MATCHES LAYOUT */}
+                {/* LIVE MATCHES LAYOUT */}
         <DfolgaBetLiveMatches />
+
+        {/* CASINO HERO BLOCK */}
+        <section
+          id="casino"
+          className="mt-16 pt-12 border-t border-[#311B92]/30 relative z-40"
+        >
+          <div className="flex flex-col gap-2 mb-10 px-1">
+            <div className="flex items-center gap-2">
+              <Trophy size={16} className="text-[#50C0CC]" />
+              <span className="text-[#50C0CC] font-black text-[11px] uppercase tracking-[0.2em]">
+                O Melhor do Cassino
+              </span>
+            </div>
+
+            <h2 className="text-4xl sm:text-5xl md:text-[60px] font-black w-full text-white tracking-tighter leading-[1.05] mt-2">
+              Crash, Slots <span className="text-[#e67e22]">&amp; Roleta</span>
+            </h2>
+
+            <p className="text-gray-400 text-lg md:text-xl font-medium mt-4 w-full leading-relaxed">
+              Estratégias, tutoriais e as melhores dicas para você dominar os
+              jogos de cassino mais populares do mercado.
+            </p>
+          </div>
+
+          <LatestNews posts={casinoPosts} />
+        </section>
+
       </div>
     </div>
   );
