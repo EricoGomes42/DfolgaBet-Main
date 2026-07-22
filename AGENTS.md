@@ -19,3 +19,8 @@
 - **Lista / Bullets:** All list items (`<ul className="list-disc ...">`) MUST use the `marker:text-[#50C0CC]` class to make bullets cyan (#50C0CC).
 - **YouTube Links:** Any YouTube URL pasted or linked within article content MUST automatically render as an embedded video player or thumbnail (iframe) instead of a plain link. The embed should be visually consistent with the rest of the site (e.g. `aspect-video rounded-xl border border-[#311B92] shadow-lg`).
 - **H2 / Titles Decorator:** Every `<h2>` section title should have a horizontal purple divider below it to provide visual hierarchy. Specifically, use empty div like: `<div className="h-[1px] w-full bg-[#311B92] mb-6"></div>` directly underneath the `<h2>`.
+## Cross-Platform Compatibility & Scripts
+- **NODE_OPTIONS:** NEVER use the syntax `NODE_OPTIONS='--max-old-space-size=4096'`. This breaks the build on Windows.
+- **cross-env:** ALWAYS use a cross-platform solution for setting environment variables in package.json scripts: `cross-env NODE_OPTIONS=--max-old-space-size=4096`. If `cross-env` is missing, it must be added as a devDependency. This setting must never be removed in future package.json edits.
+- **Temporary Scripts:** Do not leave temporary scripts (`patch_*.cjs`, `fix_*.cjs`, `audit.py`, `update_*.cjs`, `test-*.ts`, etc.) in the project root. They should be deleted immediately after their temporary use and never committed.
+- **System Folders:** NEVER create or modify files inside artificial Linux directories like `usr/`, `mnt/`, etc. All code must remain exclusively within the official project structure.

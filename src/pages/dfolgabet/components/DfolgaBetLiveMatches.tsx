@@ -94,7 +94,7 @@ function DfolgaBetLiveMatchesContent() {
   const filterMatches = (matches: any[], forceFilter?: string) => {
     if (!matches || matches.length === 0) return [];
     let filtered = matches;
-    
+
     const isAoVivoMode = forceFilter === 'Ao Vivo' || activeSportFilter === 'Ao Vivo';
 
     if (isAoVivoMode) {
@@ -102,9 +102,9 @@ function DfolgaBetLiveMatchesContent() {
     }
 
     if (search) {
-      filtered = filtered.filter((m: any) => 
-        m.home.toLowerCase().includes(search.toLowerCase()) || 
-        m.away.toLowerCase().includes(search.toLowerCase()) || 
+      filtered = filtered.filter((m: any) =>
+        m.home.toLowerCase().includes(search.toLowerCase()) ||
+        m.away.toLowerCase().includes(search.toLowerCase()) ||
         m.tournament.toLowerCase().includes(search.toLowerCase())
       );
     }
@@ -123,10 +123,28 @@ function DfolgaBetLiveMatchesContent() {
       }
     }
 
+    // 1. Mandatory Validations: At least two teams, main market valid, at least two numerical valid odds
+    filtered = filtered.filter((m: any) => {
+      if (!m.home || !m.away) return false;
+      if (!m.odds) return false;
+
+      const homeOdd = parseFloat(m.odds.home);
+      const awayOdd = parseFloat(m.odds.away);
+      const drawOdd = parseFloat(m.odds.draw);
+
+      let validOddsCount = 0;
+      if (!isNaN(homeOdd) && homeOdd > 0) validOddsCount++;
+      if (!isNaN(awayOdd) && awayOdd > 0) validOddsCount++;
+      if (!isNaN(drawOdd) && drawOdd > 0) validOddsCount++;
+
+      if (validOddsCount < 2) return false;
+
+      return true;
+    });
+
     if (filters.oddsMin > 1.0 || filters.oddsMax < 20.0) {
       filtered = filtered.filter((m: any) => {
-        if (!m.odds) return false;
-        const vals = Object.values(m.odds).map(v => parseFloat(v as string)).filter(v => !isNaN(v));
+        const vals = Object.values(m.odds).map(v => parseFloat(v as string)).filter(v => !isNaN(v) && v > 0);
         if (vals.length === 0) return false;
         return vals.some(v => v >= filters.oddsMin && v <= filters.oddsMax);
       });
@@ -171,7 +189,7 @@ function DfolgaBetLiveMatchesContent() {
     { label: 'Xadrez', icon: '♟️' }
   ].map(s => ({ ...s, count: filterMatches(data[s.label] || []).length }));
 
-  const liveEventsCount = Object.keys(data).filter(k => k !== '_debug').reduce((acc, k) => 
+  const liveEventsCount = Object.keys(data).filter(k => k !== '_debug').reduce((acc, k) =>
      acc + filterMatches(data[k] || [], 'Ao Vivo').length, 0
   );
 
@@ -220,21 +238,21 @@ function DfolgaBetLiveMatchesContent() {
             }
           }
         }
-        
+
         setLoading(true);
 
         const payloadAggregated: Record<string, any[]> = {};
-        
+
         let hasData = false;
         let loadedSports: string[] = [];
         let totalEvents = 0;
         let debugInfo: any = {};
-        
+
         // 1. Fetch debug info first
         try {
            const debugRes = await fetch(typeof window !== 'undefined' ? `${window.location.origin}/api/odds/debug` : 'http://127.0.0.1:3000/api/odds/debug');
            debugInfo = await debugRes.json();
-           
+
            if (!debugInfo.hasApiKey) {
               console.warn("NEW_ODDS_API_KEY não carregada");
            }
@@ -279,7 +297,7 @@ function DfolgaBetLiveMatchesContent() {
         } else if (ENDPOINTS_MAP[activeSportFilter]) {
            endpoints = [...ENDPOINTS_MAP[activeSportFilter]];
         }
-        
+
         endpoints = endpoints.filter(ep => !loadedEndpointsRef.current.has(ep.url));
         if (endpoints.length === 0) {
            setLoading(false);
@@ -302,14 +320,14 @@ function DfolgaBetLiveMatchesContent() {
         }
 
         let _currentDataSource = "SEM CHAVE";
-        
+
         for (const ep of endpoints) {
           try {
              const controller = new AbortController();
              const timeoutId = setTimeout(() => controller.abort(), 8000);
              const res = await fetch(ep.url, { signal: controller.signal });
              clearTimeout(timeoutId);
-             
+
              if (res.ok) {
                 const rawData = await res.json();
                 const arrayData = Array.isArray(rawData) ? rawData : [];
@@ -328,7 +346,7 @@ function DfolgaBetLiveMatchesContent() {
                       _currentDataSource = src === 'real' ? 'API REAL' : (src.includes('cache') ? 'CACHE' : src);
                       setDataSource(_currentDataSource);
                    }
-                   
+
                    const mapped = arrayData.map((m: any) => {
                       let tournamentName = (m.league || 'Competição').replace('Brazil', 'Brasil');
                       const countryCode = getCountryCode(tournamentName);
@@ -350,23 +368,23 @@ function DfolgaBetLiveMatchesContent() {
                             .filter(Boolean)
                             .sort((a, b) => (b.config.priority || 0) - (a.config.priority || 0));
                       }
-                      
+
                       const cleanMatch = { ...m, bookmakers: processedBookmakers };
 
                       return {
                          ...cleanMatch,
-                         id: m.id, 
-                         tournament: tournamentName, 
+                         id: m.id,
+                         tournament: tournamentName,
                          countryCode,
-                         time: m.time || m.commence_time, 
-                         home: m.homeTeam || m.home_team, 
+                         time: m.time || m.commence_time,
+                         home: m.homeTeam || m.home_team,
                          homeLogo,
-                         away: m.awayTeam || m.away_team, 
+                         away: m.awayTeam || m.away_team,
                          awayLogo,
                          odds: extractOdds(cleanMatch)
                       };
                    });
-                   
+
                    if (!payloadAggregated[ep.name]) {
                       payloadAggregated[ep.name] = [];
                    }
@@ -375,9 +393,9 @@ function DfolgaBetLiveMatchesContent() {
              } else {
                   throw new Error(`Error ${res.status}`);
              }
-          } catch(err) { 
-             console.warn("Falling back to mock data for", ep.url, err); 
-              
+          } catch(err) {
+             console.warn("Falling back to mock data for", ep.url, err);
+
               const isBR = ep.url.includes("brazil_campeonato");
               const mockTournament = isBR ? "Brasileirão Série A" : ep.name;
               const t1 = isBR ? "Palmeiras" : "Time A";
@@ -408,19 +426,19 @@ function DfolgaBetLiveMatchesContent() {
               totalEvents += 1;
               _currentDataSource = "Mock Data Fallback";
               setDataSource(_currentDataSource);
-              
+
               const homeLogo = getTeamLogo(t1) || `https://ui-avatars.com/api/?name=${encodeURIComponent(t1)}&background=random&color=fff&size=64&bold=true`;
               const awayLogo = getTeamLogo(t2) || `https://ui-avatars.com/api/?name=${encodeURIComponent(t2)}&background=random&color=fff&size=64&bold=true`;
 
               const mapped = mockData.map(m => {
                  return {
-                    id: m.id, 
-                    tournament: mockTournament, 
+                    id: m.id,
+                    tournament: mockTournament,
                     countryCode: getCountryCode(mockTournament),
-                    time: m.commence_time, 
-                    home: m.homeTeam, 
+                    time: m.commence_time,
+                    home: m.homeTeam,
                     homeLogo,
-                    away: m.awayTeam, 
+                    away: m.awayTeam,
                     awayLogo,
                     odds: extractOdds(m as any)
                  };
@@ -432,7 +450,7 @@ function DfolgaBetLiveMatchesContent() {
               payloadAggregated[ep.name] = [...payloadAggregated[ep.name], ...mapped];
           }
         }
-        
+
         if (!hasData && Object.keys(payloadAggregated).length === 0 && !error) {
            setError("Nenhum evento disponível para os filtros atuais.");
         }
@@ -497,22 +515,35 @@ function DfolgaBetLiveMatchesContent() {
           grid-template-columns: 280px minmax(0, 1fr) 320px;
           gap: 24px;
           position: relative;
+          align-items: start;
         }
 
         .dfolgabet-left-sidebar,
         .dfolgabet-right-sidebar {
-          position: relative;
+          position: sticky;
+          top: 96px;
+          height: fit-content;
+          max-height: calc(100vh - 120px);
+          overflow-y: auto;
           min-width: 0;
+          align-self: start;
+        }
+
+        /* Hide scrollbar for sidebars but keep functionality */
+        .dfolgabet-left-sidebar::-webkit-scrollbar,
+        .dfolgabet-right-sidebar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .dfolgabet-left-sidebar::-webkit-scrollbar-thumb,
+        .dfolgabet-right-sidebar::-webkit-scrollbar-thumb {
+          background-color: rgba(80, 192, 204, 0.2);
+          border-radius: 4px;
         }
 
         .dfolgabet-left-sidebar-inner,
         .dfolgabet-right-sidebar-inner {
-          position: sticky;
-          top: 96px;
-          height: fit-content;
-          max-height: none;
+          height: 100%;
           overflow: visible;
-          align-self: start;
         }
 
         .dfolgabet-main-feed {
@@ -527,13 +558,15 @@ function DfolgaBetLiveMatchesContent() {
             gap: 0px;
           }
 
-          .dfolgabet-left-sidebar-inner,
-          .dfolgabet-right-sidebar-inner {
+          .dfolgabet-left-sidebar,
+          .dfolgabet-right-sidebar {
             position: static;
+            max-height: none;
+            overflow-y: visible;
           }
         }
       `}</style>
-      
+
       {/* Toast Popup */}
       {popupMessage && (
          <div className="fixed bottom-4 right-4 bg-[#1A0D35] border border-[#50C0CC] text-white px-6 py-4 rounded-lg shadow-[0_10px_30px_rgba(80,192,204,0.3)] z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -575,7 +608,7 @@ function DfolgaBetLiveMatchesContent() {
                   ))}
                </div>
             </div>
-            
+
             <div className="relative shrink-0" ref={moreMenuRef}>
                <button
                   onClick={() => setShowMoreMenu(!showMoreMenu)}
@@ -583,7 +616,7 @@ function DfolgaBetLiveMatchesContent() {
                >
                   Mais <ChevronDown size={14} className={showMoreMenu ? 'rotate-180 transition-transform' : 'transition-transform'}/>
                </button>
-               
+
                {showMoreMenu && (
                   <div className="absolute top-full right-0 mt-2 bg-[#1A0D35] border border-[#311B92] rounded-xl shadow-2xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 z-50 min-w-[280px] sm:min-w-[400px] max-h-[70vh] overflow-y-auto">
                      {sportsMore.map((sport, i) => (
@@ -619,7 +652,7 @@ function DfolgaBetLiveMatchesContent() {
                  <button onClick={() => showPopup('A filtragem por tempo está desativada no momento.')} className="bg-[#1A0D35] hover:bg-[#311B92]/50 text-white px-4 py-2 rounded-full text-sm font-bold transition-colors">Por tempo</button>
                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-400">
                     <span>Mostrar odds</span>
-                    <div 
+                    <div
                       className={`w-10 h-5 rounded-full relative cursor-pointer px-1 flex items-center transition-colors ${showOdds ? 'bg-[#50C0CC]' : 'bg-gray-600'}`}
                       onClick={() => setShowOdds(!showOdds)}
                     >
@@ -718,8 +751,8 @@ function DfolgaBetLiveMatchesContent() {
                      const content = filteredSportNames.map(sportName => {
                         const sportInfo = [...sportsMain, ...sportsMore].find(s => s.label === sportName);
                         const sportIcon = sportInfo ? sportInfo.icon : '🏅';
-                        
-                        // Use our helper to get filtered elements 
+
+                        // Use our helper to get filtered elements
                         const matches = filterMatches(data[sportName] || []);
 
                         if (matches.length === 0) return null;
@@ -731,7 +764,7 @@ function DfolgaBetLiveMatchesContent() {
                             <h2 className="text-2xl font-black text-white italic flex items-center gap-2">
                              {sportIcon} {sportName}
                            </h2>
-                           <span 
+                           <span
                              onClick={() => {
                                if (sportName === 'Futebol') {
                                  setSportTab('Futebol');
@@ -745,7 +778,7 @@ function DfolgaBetLiveMatchesContent() {
                              Ver Tudo <ArrowRight size={14} className="ml-1 text-[#e67e22]" />
                            </span>
                         </div>
-                        
+
                         {/* Group matches by tournament to replicate UI */}
                         {Object.entries(groupByTournament(matches)).map(([tournament, tournMatches]: [string, any], idx) => (
                            <div key={idx} className="mb-4 bg-[#120826] border border-[#311B92] rounded-lg overflow-hidden shadow-sm hover:border-[#50C0CC]/50 transition-colors">
@@ -784,7 +817,7 @@ function DfolgaBetLiveMatchesContent() {
                                              </span>
                                           )}
                                        </div>
-                                       
+
                                        {/* Teams & Score */}
                                        <div className="flex-1 flex items-center justify-between min-w-0">
                                           <div className="space-y-1 sm:space-y-2 flex-1 min-w-0">
@@ -847,9 +880,9 @@ function DfolgaBetLiveMatchesContent() {
                   );
                   });
                   return foundAny ? content : (
-                     <div className="py-10 text-center text-gray-500 font-bold bg-[#120826] border border-[#311B92] rounded-xl shadow-lg">
-                        <div className="flex justify-center mb-4 text-[#50C0CC] opacity-50"><Search size={48} /></div>
-                        {activeSportFilter === 'Ao Vivo' ? 'Nenhum evento ao vivo no momento.' : 'Nenhuma partida encontrada com os filtros atuais.'}
+                     <div className="py-6 text-center text-gray-500 font-bold bg-[#120826] border border-[#311B92] rounded-xl shadow-lg">
+                        <div className="flex justify-center mb-3 text-[#50C0CC] opacity-50"><Search size={32} /></div>
+                        {activeSportFilter === 'Ao Vivo' ? 'Nenhum evento ao vivo com odds no momento.' : 'Nenhuma odd disponível no momento.'}
                      </div>
                   );
                   })()
@@ -864,9 +897,9 @@ function DfolgaBetLiveMatchesContent() {
       </div>
 
       {selectedEvent && (
-        <EventDetailsModal 
-          event={selectedEvent} 
-          onClose={() => setSelectedEvent(null)} 
+        <EventDetailsModal
+          event={selectedEvent}
+          onClose={() => setSelectedEvent(null)}
         />
       )}
     </section>
