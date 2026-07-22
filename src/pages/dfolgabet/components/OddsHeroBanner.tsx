@@ -3,6 +3,7 @@ import { ArrowRight, Flame, ChevronLeft, ChevronRight, Star } from 'lucide-react
 import { useState, useEffect } from 'react';
 import { MOCK_PREDICTIONS } from './HotPredictionsCarousel';
 import { AnimatePresence, motion } from 'motion/react';
+import { getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
 export default function OddsHeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,10 +25,6 @@ export default function OddsHeroBanner() {
   }, []);
 
   const pred = MOCK_PREDICTIONS[currentIndex];
-
-  if (!pred) {
-  return null;
-  }
 
   return (
     <div className="bg-gradient-to-br from-[#120826] to-[#311B92] rounded-[32px] p-6 md:p-12 mb-8 flex flex-col lg:flex-row justify-between items-center gap-10 border border-[#50C0CC]/20 overflow-hidden relative shadow-[0_20px_60px_-15px_rgba(10,5,26,0.8)]">
@@ -108,6 +105,7 @@ export default function OddsHeroBanner() {
                 </div>
 
                 <button 
+                  onClick={() => window.open(getAffiliateLink(pred.bookmaker), '_blank', 'noopener,noreferrer')}
                   className="w-full py-4 rounded-xl flex items-center justify-center gap-3 font-black text-[#0A051A] bg-[#50C0CC] hover:bg-white transition-all uppercase tracking-widest text-[11px] shadow-lg active:scale-95"
                 >
                   APOSTAR NA {pred.bookmaker.toUpperCase()}

@@ -10,38 +10,7 @@ interface RelatedPost {
   mainImage: any;
   categoryName?: string;
   _createdAt: string;
-  isStatic?: boolean;
 }
-
-const STATIC_POSTS: RelatedPost[] = [
-  {
-    _id: "static-alice-polyana",
-    title: "Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night",
-    slug: "/alice-ardelean-polyana-viana-ufc-fight-night",
-    mainImage: "/assets/articles/capas/capa_alice_polyana_final%20(1).webp",
-    categoryName: "MMA",
-    _createdAt: "2026-05-13T00:00:00Z",
-    isStatic: true,
-  },
-  {
-    _id: "static-caliari-bannon",
-    title: "Palpites UFC Fight Night: Nicolle Caliari vs. Shauna Bannon - Análise e Melhores Odds",
-    slug: "/ufc-caliari-vs-bannon",
-    mainImage: "/assets/articles/capas/capa_caliari_bannon_ufc.webp",
-    categoryName: "UFC Palpites",
-    _createdAt: "2026-05-12T00:00:00Z",
-    isStatic: true,
-  },
-  {
-    _id: "static-flamengo-fluminense",
-    title: "Flamengo x Fluminense Feminino: Palpites, Odds e Análise do Clássico pelo Brasileirão",
-    slug: "/flamengo-x-fluminense-feminino-palpites-odds-15-05-2026",
-    mainImage: "/assets/articles/capas/capa_flamengo_fluminense_fem.webp",
-    categoryName: "Futebol Feminino",
-    _createdAt: "2026-05-12T00:00:00Z",
-    isStatic: true,
-  }
-];
 
 export default function RelatedPosts({ currentPostId }: { currentPostId?: string }) {
   const [posts, setPosts] = useState<RelatedPost[]>([]);
@@ -49,7 +18,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const query = `*[_type == "post" ${currentPostId ? `&& _id != "${currentPostId}"` : ''}] | order(_createdAt desc)[0...3] {
+        const query = `*[_type == "post" ${currentPostId ? `&& _id != "${currentPostId}"` : ''}] | order(_createdAt desc)[0...5] {
           _id,
           title,
           slug,
@@ -58,18 +27,9 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
           _createdAt
         }`;
         const data = await client.fetch(query);
-        
-        // Merge static posts with sanity posts
-        const allPosts = [...STATIC_POSTS, ...data].filter(
-          (post, index, self) => index === self.findIndex((p) => p._id === post._id)
-        );
-        
-        // Remove current post if it's one of the static ones (based on ID, though currentPostId usually comes from Sanity)
-        // For static pages, currentPostId isn't passed anyway. We'll just filter out any exact title matches just in case.
-        setPosts(allPosts);
+        setPosts(data || []);
       } catch (error) {
         console.error("Error fetching related posts:", error);
-        setPosts(STATIC_POSTS);
       }
     }
     fetchPosts();
@@ -81,23 +41,20 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
   const relatedPosts = posts.slice(1, 5); // take up to 4 more for related
 
   const getLinkUrl = (post: RelatedPost) => {
-    if (post.isStatic) return post.slug as string;
     return `/dfolgabet/post/${(post.slug as {current: string}).current}`;
   };
 
   const renderImage = (post: RelatedPost, width: number, height: number, className: string) => {
-    if (!post.mainImage) return null;
-    
-    if (post.isStatic) {
-      return (
-        <img 
-          src={post.mainImage as string} 
-          alt={post.title} 
-          className={className} 
-        />
-      );
+    if (!post.mainImage) {
+       return (
+          <img 
+            src={`https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=${width}&h=${height}&q=80`}
+            alt={post.title} 
+            className={className} 
+          />
+       );
     }
-
+    
     return (
       <img 
         src={urlFor(post.mainImage).width(width).height(height).url()} 

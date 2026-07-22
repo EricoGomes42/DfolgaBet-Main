@@ -4,6 +4,97 @@ export default {
   type: 'document',
   fields: [
     {
+      name: 'bookmakerKey',
+      title: 'Casa de Aposta Promovida',
+      type: 'string',
+      options: {
+        list: [
+          {title: '7K', value: '7k'},
+          {title: 'BetWinner', value: 'betwinner'},
+          {title: 'Cassino', value: 'cassino'},
+          {title: 'EstrelaBet', value: 'estrelabet'},
+          {title: 'Lottoland', value: 'lottoland'},
+          {title: 'MelBet', value: 'melbet'},
+          {title: 'Novibet', value: 'novibet'},
+          {title: 'Sorte Online', value: 'sorte-online'},
+          {title: 'Stake', value: 'stake'},
+          {title: 'Superbet', value: 'superbet'},
+          {title: 'VeraBet', value: 'verabet'},
+          {title: 'Vupi', value: 'vupi'},
+        ]
+      },
+      description: 'A casa de apostas principal que este artigo promove.',
+    },
+    {
+      name: 'sections',
+      title: 'Vitrines (Onde exibir)',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {
+        list: [
+          {title: 'Homepage', value: 'homepage'},
+          {title: 'Sports', value: 'sports'},
+          {title: 'Casino', value: 'casino'},
+          {title: 'Featured', value: 'featured'},
+          {title: 'Future', value: 'future'},
+        ],
+      },
+      initialValue: ['homepage', 'sports', 'casino', 'featured', 'future'],
+    },
+    {
+      name: 'promotedCategory',
+      title: 'Categoria Promovida',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Sports', value: 'sports'},
+          {title: 'Casino', value: 'casino'},
+          {title: 'Lottery', value: 'lottery'},
+          {title: 'Poker', value: 'poker'},
+          {title: 'eSports', value: 'esports'},
+          {title: 'Virtual', value: 'virtual'},
+          {title: 'Other', value: 'other'},
+        ],
+      },
+    },
+    {
+      name: 'area',
+      title: 'Área',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Esportes', value: 'Esportes'},
+          {title: 'Cassino', value: 'Cassino'},
+        ],
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'modalidade',
+      title: 'Modalidade',
+      type: 'reference',
+      to: {type: 'modalidade'},
+    },
+    {
+      name: 'heroParticipation',
+      title: 'Participar do Hero',
+      type: 'boolean',
+      initialValue: false,
+    },
+    {
+      name: 'heroPriority',
+      title: 'Prioridade Hero',
+      type: 'number',
+      description: 'Menor número = maior prioridade (ex: 1 aparece antes de 2).',
+    },
+    {
+      name: 'isFeatured',
+      title: 'Destaque?',
+      type: 'boolean',
+      initialValue: false,
+    },
+
+    {
       name: 'title',
       title: 'Title',
       type: 'string',

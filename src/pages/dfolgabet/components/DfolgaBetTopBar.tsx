@@ -11,32 +11,14 @@ export default function DfolgaBetTopBar() {
   useEffect(() => {
     async function fetchNews() {
       try {
-        const query = `*[_type == "post"] | order(_createdAt desc)[0...15] { 
+        const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] { 
           title, 
           slug,
           "category": categories[0]->title
         }`;
         const data = await client.fetch(query);
         
-        const localArticles = [
-          { 
-            title: 'Alice Ardelean x Polyana Viana: Análise e Palpites UFC', 
-            slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
-            category: 'MMA'
-          },
-          { 
-            title: 'Flamengo x Fluminense Feminino: Palpites e Odds', 
-            slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
-            category: 'Futebol'
-          },
-          { 
-            title: 'Nicolle Caliari vs. Shauna Bannon: Palpites UFC', 
-            slug: { current: 'ufc-caliari-vs-bannon' },
-            category: 'MMA'
-          }
-        ];
-
-        setNews([...localArticles, ...data]);
+        setNews(data || []);
       } catch (err) {
         console.error("Error fetching news for topbar:", err);
       }
@@ -63,7 +45,7 @@ export default function DfolgaBetTopBar() {
                   news.map((item, i) => (
                     <div key={`a-${i}`} className="flex items-center">
                       <Link 
-                        to={['ufc-caliari-vs-bannon', 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026', 'alice-ardelean-polyana-viana-ufc-fight-night'].includes(item.slug?.current || '') ? `/${item.slug?.current}` : `/dfolgabet/post/${item.slug?.current}`}
+                        to={`/dfolgabet/post/${item.slug?.current}`}
                         className="text-[10px] md:text-[11px] font-bold text-gray-300 hover:text-[#50C0CC] transition-colors flex items-center gap-2 px-6 whitespace-nowrap"
                       >
                         <span className="text-[#50C0CC] opacity-60">[{item.category || 'TIPS'}]</span>
@@ -81,7 +63,7 @@ export default function DfolgaBetTopBar() {
                 {news.map((item, i) => (
                   <div key={`b-${i}`} className="flex items-center">
                     <Link 
-                       to={['ufc-caliari-vs-bannon', 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026', 'alice-ardelean-polyana-viana-ufc-fight-night'].includes(item.slug?.current || '') ? `/${item.slug?.current}` : `/dfolgabet/post/${item.slug?.current}`}
+                       to={`/dfolgabet/post/${item.slug?.current}`}
                       className="text-[10px] md:text-[11px] font-bold text-gray-300 hover:text-[#50C0CC] transition-colors flex items-center gap-2 px-6 whitespace-nowrap"
                     >
                       <span className="text-[#50C0CC] opacity-60">[{item.category || 'TIPS'}]</span>

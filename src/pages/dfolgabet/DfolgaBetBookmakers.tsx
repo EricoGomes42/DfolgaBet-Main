@@ -1,28 +1,19 @@
-// src/pages/dfolgabet/DfolgaBetBookmakers.tsx
 import { Trophy, ShieldCheck, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const bookmakers = [
-  { name: 'Lottoland', image: '/assets/betting/banner-casas-menu/lottoland_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland' },
-  { name: 'Sorte Online', image: '/assets/betting/banner-casas-menu/sorte-online_banner.png', link: 'https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline' },
-  { name: 'bet365', image: '/assets/betting/banner-casas-menu/bet365_banner.png', link: '#' },
-  { name: 'EstrelaBet', image: '/assets/betting/banner-casas-menu/estrelabet_banner.png', link: '#' },
-  { name: 'Esportes da Sorte', image: '/assets/betting/banner-casas-menu/esportes-da-sorte_banner.png', link: '#' },
-  { name: 'KTO', image: '/assets/betting/banner-casas-menu/kto_banner.png', link: '#' },
-  { name: 'Superbet', image: '/assets/betting/banner-casas-menu/superbet_banner.png', link: '#' },
-  { name: 'BetMGM', image: '/assets/betting/banner-casas-menu/betmgm_banner.png', link: '#' },
-  { name: 'Novibet', image: '/assets/betting/banner-casas-menu/novibet_banner.png', link: '#' },
-  { name: 'VBet', image: '/assets/betting/banner-casas-menu/vbet_banner.png', link: '#' },
-  { name: 'Sportingbet', image: '/assets/betting/banner-casas-menu/sportingbet_banner.png', link: '#' },
-  { name: 'BandBet', image: '/assets/betting/banner-casas-menu/bandbet_banner.png', link: '#' },
-  { name: 'Betano', image: '/assets/betting/banner-casas-menu/betano_banner.png', link: '#' },
-  { name: 'BetWarrior', image: '/assets/betting/banner-casas-menu/betwarrior_banner.png', link: '#' },
-  { name: 'Onabet', image: '/assets/betting/banner-casas-menu/onabet_banner.png', link: '#' },
-  { name: 'Betnacional', image: '/assets/betting/banner-casas-menu/betnacional_banner.png', link: '#' },
-  { name: '1xBet', image: '/assets/betting/banner-casas-menu/1xbet_banner.png', link: '#' },
-  { name: 'Pixbet', image: '/assets/betting/banner-casas-menu/pixbet_banner.png', link: '#' },
-  { name: 'Galera Bet', image: '/assets/betting/banner-casas-menu/galerabet_banner.png', link: '#' },
-  { name: 'Stake', image: '/assets/betting/banner-casas-menu/stake_banner.png', link: '#' }
+  { name: '7K', slug: '7k', image: '/assets/betting/banners-afiliado/7K/banner-casas-menu/7k-casas-menu.webp' },
+  { name: 'BetWinner', slug: 'betwinner', image: '/assets/betting/banners-afiliado/BetWinner/banner-casas-menu/betwinner-casas-menu.webp' },
+  { name: 'Cassino', slug: 'cassino', image: '/assets/betting/banners-afiliado/Cassino/banner-casas-menu/cassino-casas-menu.webp' },
+  { name: 'EstrelaBet', slug: 'estrelabet', image: '/assets/betting/banners-afiliado/EstrelaBet/banner-casas-menu/estrelabet-casas-menu.webp' },
+  { name: 'Lottoland', slug: 'lottoland', image: '/assets/betting/banners-afiliado/Lottoland/banner-casas-menu/lottoland-casas-menu.webp' },
+  { name: 'MelBet', slug: 'melbet', image: '/assets/betting/banners-afiliado/MelBet/banner-casas-menu/melbet-casas-menu.webp' },
+  { name: 'Novibet', slug: 'novibet', image: '/assets/betting/banners-afiliado/Novibet/banner-casas-menu/novibet-casas-menu.webp' },
+  { name: 'Sorte Online', slug: 'sorte-online', image: '/assets/betting/banners-afiliado/Sorte Online/banner-casas-menu/sorte-online-casas-menu.webp' },
+  { name: 'Stake', slug: 'stake', image: '/assets/betting/banners-afiliado/Stake/banner-casas-menu/stake-casas-menu.webp' },
+  { name: 'Superbet', slug: 'superbet', image: '/assets/betting/banners-afiliado/Superbet/banner-casas-menu/superbet-casas-menu.webp' },
+  { name: 'VeraBet', slug: 'verabet', image: '/assets/betting/banners-afiliado/VeraBet/banner-casas-menu/verabet-casas-menu.webp' },
+  { name: 'Vupi', slug: 'vupi', image: '/assets/betting/banners-afiliado/Vupi/banner-casas-menu/vupi-casas-menu.webp' },
 ];
 
 export default function DfolgaBetBookmakers() {
@@ -55,27 +46,38 @@ export default function DfolgaBetBookmakers() {
 
       {/* Bookmakers Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {bookmakers.map((bookie, index) => (
-          <a 
-            key={index} 
-            href={bookie.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block relative group rounded-2xl overflow-hidden bg-[#120826] border border-[#311B92]/50 hover:border-[#e67e22] transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.5)] hover:shadow-[0_10px_30px_rgba(230,126,34,0.2)] hover:-translate-y-1"
-          >
-            {/* Imagem do Banner */}
-            <div className="w-full aspect-auto">
+        {bookmakers.map((bookie, index) => {
+          const content = (
+            <div className="w-full h-full flex items-center justify-center">
               <img 
                 src={bookie.image} 
-                alt={`Oferta especial e bônus da ${bookie.name}`} 
-                className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                alt={`Banner da casa ${bookie.name}`} 
+                className="w-full h-auto object-contain"
               />
             </div>
-            
-            {/* Overlay sutil para hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
-        ))}
+          );
+
+          const cardClassName = "block relative group rounded-2xl overflow-hidden bg-[#120826] border border-[#311B92]/50 hover:border-[#e67e22] transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.5)] hover:shadow-[0_10px_30px_rgba(230,126,34,0.3)] hover:-translate-y-1 hover:scale-[1.03]";
+
+          if (bookie.slug) {
+            return (
+              <Link 
+                key={index}
+                to={`/dfolgabet/casas/${bookie.slug}`}
+                className={cardClassName}
+                aria-label={`Acessar a página da ${bookie.name} no DfolgaBet`}
+              >
+                {content}
+              </Link>
+            );
+          }
+
+          return (
+            <div key={index} className={cardClassName}>
+              {content}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

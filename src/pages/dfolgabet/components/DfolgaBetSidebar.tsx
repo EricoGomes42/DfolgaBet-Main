@@ -10,7 +10,7 @@ import DfolgaBetHotPicks from './DfolgaBetHotPicks';
 import SidebarEckoayBlock from './SidebarEckoayBlock';
 import SidebarBonusBlock from './SidebarBonusBlock';
 import SidebarPrognosticosBlock from './SidebarPrognosticosBlock';
-import SidebarSponsorBanner from './SidebarSponsorBanner';
+import SidebarStickyBanner from './SidebarStickyBanner';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
 export default function DfolgaBetSidebar() {
@@ -19,68 +19,45 @@ export default function DfolgaBetSidebar() {
   const [activeArticleTab, setActiveArticleTab] = useState<'esportes'|'cassino'>('esportes');
   const [popularArticlesRaw, setPopularArticlesRaw] = useState<any[]>([]);
 
-  const localArticles = [
-    {
-      _id: 'local-alice-vs-polyana',
-      title: 'Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night',
-      slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
-      isLocal: true,
-      localImage: '/assets/articles/capas/capa_alice_polyana_final%20(1).webp',
-      publishedAt: '2026-05-13T12:00:00Z',
-      _createdAt: '2026-05-13T12:00:00Z',
-      categoryName: 'MMA'
-    },
-    {
-      _id: 'local-flamengo-vs-fluminense-fem',
-      title: 'Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026',
-      slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
-      isLocal: true,
-      localImage: '/assets/articles/capas/capa_flamengo_fluminense_fem.webp',
-      publishedAt: '2026-05-13T10:00:00Z',
-      _createdAt: '2026-05-13T10:00:00Z',
-      categoryName: 'Futebol Feminino'
-    },
-    {
-      _id: 'local-caliari-vs-bannon',
-      title: 'Palpites UFC: Nicolle Caliari vs. Shauna Bannon',
-      slug: { current: 'ufc-caliari-vs-bannon' },
-      isLocal: true,
-      localImage: '/assets/articles/capas/capa_caliari_bannon_ufc.webp',
-      publishedAt: '2026-05-12T00:00:00Z',
-      _createdAt: '2026-05-12T00:00:00Z',
-      categoryName: 'Luta'
-    }
-  ];
 
   useEffect(() => {
     async function fetchPopular() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
       try {
-        const query = `*[_type == "post"] | order(_createdAt desc)[0...15] {
-          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug
+        const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] {
+          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
         }`;
         const data = await client.fetch(query, {}, { signal: controller.signal });
         clearTimeout(timeoutId);
-        setPopularArticlesRaw([...localArticles, ...data]);
+        setPopularArticlesRaw(data || []);
       } catch(e) {
-        setPopularArticlesRaw(localArticles);
+        console.error(e);
       }
     }
     fetchPopular();
   }, []);
 
   const isCasinoArticle = (post: any) => {
+    if (post.area === 'Cassino') return true;
+    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
+    if (post.area || post.promotedCategory) return false;
     const title = (post.title || '').toLowerCase();
     const cat = (post.categoryName || '').toLowerCase();
-    return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') || 
-           cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
+    return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
+            cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
   };
 
-  const popularArticles = popularArticlesRaw.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : !isCasinoArticle(post)).slice(0, 4);
+  
+  const isSportsArticle = (post: any) => {
+    if (post.area === 'Esportes') return true;
+    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
+    if (post.area || post.promotedCategory) return false;
+    return !isCasinoArticle(post);
+  };
+  const popularArticles = popularArticlesRaw.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : (activeArticleTab === 'esportes' ? isSportsArticle(post) : true)).slice(0, 4);
 
   const leagues = [
-    { name: 'Copa do Mundo 2026', icon: '🌎', link: '/dfolgabet/competition/copa-do-mundo-2026' },
     { name: 'Brasileirão Série A', icon: '🇧🇷', link: '/dfolgabet/competition/campeonato-brasileiro' },
     { name: 'Copa do Brasil', icon: '🏆', link: '/dfolgabet/competition/campeonato-brasileiro' },
     { name: 'Brasileirão Série B', icon: '🇧🇷', link: '/dfolgabet/competition/campeonato-brasileiro' },
@@ -178,16 +155,9 @@ export default function DfolgaBetSidebar() {
           </div>
           <div className="space-y-6">
             {popularArticles.map((article, i) => (
-              <Link key={i} to={article.isLocal ? `/${article.slug?.current}` : `/dfolgabet/post/${article.slug?.current}`} className="group flex gap-4">
+              <Link key={i} to={`/dfolgabet/post/${article.slug?.current}`} className="group flex gap-4">
                 <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0">
-                  {article.isLocal ? (
-                    <img 
-                      src={article.localImage} 
-                      onError={(e: any) => { e.target.src = "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=1200&q=80" }}
-                      alt={article.title} 
-                      className="w-full h-full object-cover transition-transform group-hover:scale-110" 
-                    />
-                  ) : article.mainImage ? (
+                  {article.mainImage ? (
                     <img src={urlFor(article.mainImage).width(200).height(200).url()} alt={article.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                   ) : (
                     <img src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=200&q=80" alt={article.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
@@ -242,12 +212,9 @@ export default function DfolgaBetSidebar() {
           <SidebarOddsTables />
         </div>
 
-        {/* 11. Sticky Sponsor Banner */}
-        <div className="mb-0">
-          <SidebarSponsorBanner />
-        </div>
-        
-        </div>
+        {/* 11. STICKY BANNER (Original Carousel - Absolute Last) */}
+        <SidebarStickyBanner />
+      </div>
     </aside>
   );
 }

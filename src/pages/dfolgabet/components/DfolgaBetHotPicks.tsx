@@ -118,7 +118,7 @@ export default function DfolgaBetHotPicks() {
       {/* Cards */}
       <div className="flex flex-col gap-3">
         {picks.slice(0, visibleCount).map((pick) => (
-          <div key={pick.id} onClick={() => window.open(getAffiliateLink(pick.bookmaker), '_blank')} className="bg-gradient-to-r from-[#1A0D35] to-[#0A051A] rounded-xl border border-[#311B92]/80 hover:border-[#e67e22]/50 p-2.5 cursor-pointer group shadow-lg transition-all relative overflow-hidden" title={`Apostar via ${pick.bookmaker}`}>
+          <div key={pick.id} onClick={() => window.open(getAffiliateLink(pick.bookmaker), '_blank', 'noopener,noreferrer')} className="bg-gradient-to-r from-[#1A0D35] to-[#0A051A] rounded-xl border border-[#311B92]/80 hover:border-[#e67e22]/50 p-2.5 cursor-pointer group shadow-lg transition-all relative overflow-hidden" title={`Apostar via ${pick.bookmaker}`}>
              
              {/* Glow effect */}
              <div className="absolute top-0 right-0 w-16 h-16 bg-[#e67e22]/5 blur-[15px] rounded-full group-hover:bg-[#e67e22]/10 transition-all"></div>

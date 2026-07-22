@@ -1,54 +1,55 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, Info } from 'lucide-react';
 
 export default function LiveMatchRadar() {
+  const [popupMessage, setPopupMessage] = useState('');
+  const showPopup = (msg: string) => {
+    setPopupMessage(msg);
+    setTimeout(() => setPopupMessage(''), 3000);
+  };
+
   const [matchData, setMatchData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchOdds() {
-      setLoading(true);
       try {
-        // Prioridade 1: Copa do Mundo
-        let response = await fetch(`/api/odds?sport=soccer_fifa_world_cup&regions=br,eu&markets=h2h`);
-        let data = await response.json();
+        const CACHE_KEY = 'dfolgabet_match_radar_cache_v3';
+        const CACHE_TIME = 1000 * 60 * 5; // 5 minutes
 
-        // Fallback: Se a Copa do Mundo não tiver jogos, busca a Premier League
-        if (!data || data.length === 0 || data.error) {
-          response = await fetch(`/api/odds?sport=soccer_epl&regions=eu,us&markets=h2h`);
-          data = await response.json();
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { timestamp, data } = JSON.parse(cached);
+          if (Date.now() - timestamp < CACHE_TIME) {
+            processData(data);
+            setLoading(false);
+            return;
+          }
         }
+
+        // Fetch upcoming matches
+        let upcomingResponse = await fetch(`/api/odds?sport=upcoming&regions=eu,us&markets=h2h`).catch(() => null);
+        let data = upcomingResponse && upcomingResponse.ok ? await upcomingResponse.json() : [];
         
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));
         processData(data);
       } catch (error) {
-        console.error("Falha ao buscar dados para o Match Radar:", error);
-        // Em caso de erro, não renderiza nada.
-        setMatchData(null);
+        // Just leave empty if it fails
+        processData([]);
       } finally {
         setLoading(false);
       }
     }
 
     fetchOdds();
-    // Atualiza a cada 5 minutos
-    const interval = setInterval(fetchOdds, 5 * 60 * 1000);
-    return () => clearInterval(interval);
   }, []);
 
   function processData(data: any[]) {
-    if (!data || data.length === 0) {
-        setMatchData(null);
-        return;
-    }
+    if (!data || data.length === 0) return;
     
-    // Pega a partida mais próxima de começar
+    // Pick the most imminent match
     const sorted = data.sort((a, b) => new Date(a.commence_time).getTime() - new Date(b.commence_time).getTime());
     const target = sorted[0];
-
-    if (!target) {
-        setMatchData(null);
-        return;
-    }
 
     let home = '-';
     let draw = '-';
@@ -59,9 +60,9 @@ export default function LiveMatchRadar() {
       const h = outcomes.find((o: any) => o.name === target.home_team);
       const a = outcomes.find((o: any) => o.name === target.away_team);
       const d = outcomes.find((o: any) => o.name === 'Draw');
-      if (h?.price) home = h.price.toFixed(2);
-      if (a?.price) away = a.price.toFixed(2);
-      if (d?.price) draw = d.price.toFixed(2);
+      if (h) home = h.price.toFixed(2);
+      if (a) away = a.price.toFixed(2);
+      if (d) draw = d.price.toFixed(2);
     }
     
     const startTime = new Date(target.commence_time);
@@ -77,7 +78,7 @@ export default function LiveMatchRadar() {
       draw,
       away,
       datetime: `${day} | ${time}`,
-      stadium: target.sport_title || 'Evento Principal'
+      stadium: target.sport_title || 'Stadium'
     });
   }
 
@@ -87,13 +88,16 @@ export default function LiveMatchRadar() {
     <div className="bg-[#120826] border border-[#311B92] rounded-xl overflow-hidden shadow-[0_0_20px_rgba(49,27,146,0.15)] flex flex-col">
       <div className="bg-[#1A0D35] p-3 flex justify-between items-center border-b border-[#311B92]">
         <h2 className="text-white font-black text-sm tracking-widest flex items-center gap-2">
-          DESTAQUE AO VIVO
+          MATCH RADAR
         </h2>
         <TrendingUp size={16} className="text-[#50C0CC]" />
       </div>
       
+      {/* Synthetic Pitch Area */}
       <div className="relative h-[180px] bg-gradient-to-b from-[#1A0D35] to-[#0A051A] border-b-2 border-[#311B92]">
         <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'linear-gradient(#50C0CC 1px, transparent 1px), linear-gradient(90deg, #50C0CC 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
+        
+        {/* Center Circle */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 border opacity-10 border-[#50C0CC] rounded-full pointer-events-none"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-[#50C0CC] opacity-20 rounded-full pointer-events-none"></div>
         
@@ -125,35 +129,36 @@ export default function LiveMatchRadar() {
         </div>
       </div>
 
+      {/* Prediction Card */}
       <div className="bg-[#0A051A] p-5">
-        <h3 className="text-[#F37021] font-black text-[10px] uppercase text-center mb-5 tracking-widest">MELHORES ODDS DO MERCADO</h3>
+        <h3 className="text-[#F37021] font-black text-[10px] uppercase text-center mb-5 tracking-widest">FAÇA A SUA PREVISÃO</h3>
         
         <div className="grid grid-cols-3 gap-3 mb-5">
           <div className="flex flex-col items-center">
-            <div className="w-full bg-[#311B92]/30 border border-[#311B92] text-white flex flex-col items-center justify-center py-2.5 rounded-lg">
-              <span className="text-[10px] font-black text-gray-400 mb-1">1</span>
+            <button onClick={() => showPopup('Apostar nessa seleção está desativado no momento.')} className="w-full bg-[#311B92]/30 hover:bg-[#311B92]/60 border border-[#311B92] text-white flex flex-col items-center justify-center py-2.5 rounded-lg transition-colors group">
+              <span className="text-[10px] font-black text-gray-400 mb-1 group-hover:text-white transition-colors">1</span>
               <span className="text-[#50C0CC] font-black">{matchData.home}</span>
-            </div>
+            </button>
           </div>
           
           <div className="flex flex-col items-center">
-            <div className="w-full bg-[#311B92]/30 border border-[#311B92] text-white flex flex-col items-center justify-center py-2.5 rounded-lg">
-              <span className="text-[10px] font-black text-gray-400 mb-1">X</span>
+            <button onClick={() => showPopup('Apostar nessa seleção está desativado no momento.')} className="w-full bg-[#311B92]/30 hover:bg-[#311B92]/60 border border-[#311B92] text-white flex flex-col items-center justify-center py-2.5 rounded-lg transition-colors group">
+              <span className="text-[10px] font-black text-gray-400 mb-1 group-hover:text-white transition-colors">X</span>
               <span className="text-white font-black">{matchData.draw}</span>
-            </div>
+            </button>
           </div>
 
           <div className="flex flex-col items-center">
-            <div className="w-full bg-[#311B92]/30 border border-[#311B92] text-white flex flex-col items-center justify-center py-2.5 rounded-lg">
-              <span className="text-[10px] font-black text-gray-400 mb-1">2</span>
+            <button onClick={() => showPopup('Apostar nessa seleção está desativado no momento.')} className="w-full bg-[#311B92]/30 hover:bg-[#311B92]/60 border border-[#311B92] text-white flex flex-col items-center justify-center py-2.5 rounded-lg transition-colors group">
+              <span className="text-[10px] font-black text-gray-400 mb-1 group-hover:text-white transition-colors">2</span>
               <span className="text-[#50C0CC] font-black">{matchData.away}</span>
-            </div>
+            </button>
           </div>
         </div>
         
-        <a href="/prognosticos" className="w-full block text-center bg-[#F37021] text-white font-black uppercase text-xs py-3.5 rounded-lg hover:bg-opacity-90 shadow-[0_4px_15px_rgba(243,112,33,0.3)] transition-all">
-          Ver Todos os Prognósticos
-        </a>
+        <button onClick={() => showPopup('Submissão de previsões desativada no momento.')} className="w-full bg-[#F37021] text-white font-black uppercase text-xs py-3.5 rounded-lg hover:bg-opacity-90 shadow-[0_4px_15px_rgba(243,112,33,0.3)] transition-all">
+          Submeter Previsão
+        </button>
       </div>
     </div>
   );

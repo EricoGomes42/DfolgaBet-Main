@@ -44,7 +44,7 @@ const socialLinks = [
   { label: "LinkedIn", href: "https://linkedin.com/company/dfolga", icon: <LinkedInIcon /> },
 ];
 
-const UTIMEOFF_LOGO = "/assets/logos/partners/utimeoff-logo.png";
+const UTIMEOFF_LOGO = "/assets/logos/partners/utimeoff-logo.webp";
 
 export default function FooterBlue() {
   return (
@@ -130,6 +130,23 @@ export default function FooterBlue() {
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.9")}
           >
             <img src={UTIMEOFF_LOGO} alt="uTimeOff" className="w-7 h-7 object-contain" />
+          </a>
+        </div>
+
+        {/* Linha 4: IBJR Logo */}
+        <div className="flex justify-center mt-6">
+          <a
+            href="https://ibjr.org.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instituto Brasileiro de Jogo Responsável"
+            className="transition-transform duration-200 hover:scale-105"
+          >
+            <img 
+              src="/assets/logos/partners/logo-completo-IBJR.webp" 
+              alt="Instituto Brasileiro de Jogo Responsável" 
+              className="h-9 w-auto object-contain brightness-0 invert opacity-90 hover:opacity-100 transition-opacity" 
+            />
           </a>
         </div>
       </div>

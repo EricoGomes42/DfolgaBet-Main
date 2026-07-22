@@ -10,7 +10,7 @@ export default function DfolgaBetVoceGostar() {
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const query = `*[_type == "post"] | order(publishedAt desc)[0...3] {
+        const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(publishedAt desc)[0...3] {
           _id,
           title,
           slug,

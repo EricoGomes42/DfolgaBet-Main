@@ -23,10 +23,10 @@ export default function FlamengoVsFluminense() {
     "headline": "Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026",
     "alternativeHeadline": "Análise completa do clássico Fla-Flu Feminino com palpites, odds e dicas de apostas",
     "image": [
-      "https://dfolgabet.comassets/articles/capas/capa_flamengo_fluminense_fem.webp",
-      "https://dfolgabet.com/assets/articles/infograficos/tabela_comparativa_flamengo_fluminense_fem.jpg",
-      "https://dfolgabet.com/assets/articles/infograficos/odds_palpites_flamengo_fluminense_fem.jpg",
-      "https://dfolgabet.com/assets/articles/infograficos/plataformas_afiliadas_flamengo_fluminense_fem.jpg"
+      "https://dfolgabet.com/assets/articles/capas/capa_flamengo_fluminense_fem.webp",
+      "https://dfolgabet.com/assets/articles/infograficos/tabela_comparativa_flamengo_fluminense_fem.webp",
+      "https://dfolgabet.com/assets/articles/infograficos/odds_palpites_flamengo_fluminense_fem.webp",
+      "https://dfolgabet.com/assets/articles/infograficos/plataformas_afiliadas_flamengo_fluminense_fem.webp"
     ],
     "datePublished": "2026-05-13T10:00:00-03:00",
     "dateModified": "2026-05-13T10:00:00-03:00",
@@ -39,7 +39,7 @@ export default function FlamengoVsFluminense() {
       "name": "DfolgaBet",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://dfolgabet.com/logo.png"
+        "url": "https://dfolgabet.com/assets/logos/dfolgabet/dfolgabet-oficial.webp"
       }
     },
     "description": "Análise completa do clássico Flamengo x Fluminense Feminino da 11ª rodada do Brasileirão 2026. Confira palpites, odds em Lottoland e Sorte Online, estatísticas técnicas e dicas de apostas."
@@ -141,7 +141,7 @@ export default function FlamengoVsFluminense() {
         <meta property="og:description" content="Análise completa do clássico Fla-Flu Feminino com palpites, odds em Lottoland e Sorte Online, estatísticas técnicas e dicas de apostas. Confira!" />
         <meta property="og:url" content="https://www.dfolgabet.com/flamengo-x-fluminense-feminino-palpites-odds-15-05-2026" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://www.dfolgabet.com/assets/capa_flamengo_fluminense_fem.jpg" />
+        <meta property="og:image" content="https://www.dfolgabet.com/assets/articles/capas/capa_flamengo_fluminense_fem.webp" />
         <meta property="og:image:width" content="2560" />
         <meta property="og:image:height" content="1440" />
         <meta property="og:image:type" content="image/jpeg" />
@@ -169,7 +169,7 @@ export default function FlamengoVsFluminense() {
         <meta name="twitter:creator" content="@dfolgabet" />
         <meta name="twitter:title" content="Flamengo x Fluminense Feminino: Palpites e Odds 15/05/2026" />
         <meta name="twitter:description" content="Análise completa do clássico Fla-Flu Feminino com palpites, odds em Lottoland e Sorte Online, estatísticas técnicas e dicas de apostas." />
-        <meta name="twitter:image" content="https://www.dfolgabet.com/assets/capa_flamengo_fluminense_fem.jpg" />
+        <meta name="twitter:image" content="https://www.dfolgabet.com/assets/articles/capas/capa_flamengo_fluminense_fem.webp" />
         <meta name="twitter:image:alt" content="Flamengo x Fluminense Feminino - Capa do artigo de palpites e odds para o Brasileirão 2026" />
         <meta name="twitter:url" content="https://www.dfolgabet.com/flamengo-x-fluminense-feminino-palpites-odds-15-05-2026" />
 
@@ -209,7 +209,7 @@ export default function FlamengoVsFluminense() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
               <span className="flex items-center gap-2" itemProp="author">
-                <img src={authorImage || "/assets/dfolga-logo-novo.png"} alt="Erico Gomes" className="w-6 h-6 rounded-full object-cover border border-[#50C0CC]" onError={(e) => { e.currentTarget.src = "/assets/dfolga-logo-novo.png"; }} />
+                <img src={authorImage || "/assets/logos/dfolga/dfolga-logo-novo.webp"} alt="Erico Gomes" className="w-6 h-6 rounded-full object-cover border border-[#50C0CC]" onError={(e) => { e.currentTarget.src = "/assets/logos/dfolga/dfolga-logo-novo.webp"; }} />
                 Erico Gomes
               </span>
               <span className="flex items-center gap-1"><Calendar size={14} /> <time itemProp="datePublished" dateTime="2026-05-13">13 de Maio de 2026</time></span>
@@ -244,7 +244,7 @@ export default function FlamengoVsFluminense() {
                 <div className="mb-10 mt-6">
                   <figure>
                     <img 
-                      src="/assets/articles/infograficos/tabela_comparativa_flamengo_fluminense_fem.jpg" 
+                      src="/assets/articles/infograficos/tabela_comparativa_flamengo_fluminense_fem.webp" 
                       alt="Comparação de estatísticas técnicas: Flamengo Feminino vs Fluminense Feminino" 
                       className="w-full rounded-xl border border-gray-800"
                       loading="lazy"
@@ -319,7 +319,7 @@ export default function FlamengoVsFluminense() {
                 <div className="mb-10 mt-6">
                   <figure>
                     <img 
-                      src="/assets/articles/infograficos/odds_palpites_flamengo_fluminense_fem.jpg" 
+                      src="/assets/articles/infograficos/odds_palpites_flamengo_fluminense_fem.webp" 
                       alt="Palpites e odds recomendadas para Flamengo x Fluminense Feminino" 
                       className="w-full rounded-xl border border-gray-800"
                       loading="lazy"
@@ -429,7 +429,7 @@ export default function FlamengoVsFluminense() {
                 <div className="mb-10 mt-6">
                   <figure>
                     <img 
-                      src="/assets/articles/infograficos/plataformas_afiliadas_flamengo_fluminense_fem.jpg" 
+                      src="/assets/articles/infograficos/plataformas_afiliadas_flamengo_fluminense_fem.webp" 
                       alt="Lottoland e Sorte Online - Plataformas oficiais licenciadas" 
                       className="w-full rounded-xl border border-gray-800"
                       loading="lazy"
@@ -446,7 +446,7 @@ export default function FlamengoVsFluminense() {
                     <p className="text-sm text-gray-400 mb-4">
                       A Lottoland oferece odds competitivas para o Fla-Flu Feminino, com suporte em português e métodos de pagamento adaptados ao Brasil. Está licenciada pela Portaria SPA/MF nº 259, de 7 de fevereiro de 2025.
                     </p>
-                    <a href="https://www.lottoland.bet.br/?utm_source=dfolgabet" rel="noopener noreferrer" target="_blank" className="inline-block text-[#a8cd45] font-bold text-sm hover:underline" title="Apostar na Lottoland" aria-label="Apostar na Lottoland">Visitar Plataforma →</a>
+                    <a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland" rel="nofollow sponsored noopener noreferrer" target="_blank" className="inline-block text-[#a8cd45] font-bold text-sm hover:underline" title="Apostar na Lottoland" aria-label="Apostar na Lottoland">Visitar Plataforma →</a>
                   </div>
                   
                   <div className="bg-[#120826] border border-[#311B92] rounded-xl p-6 mb-4" style={{ borderTop: '4px solid #f39c12' }}>
@@ -454,7 +454,7 @@ export default function FlamengoVsFluminense() {
                     <p className="text-sm text-gray-400 mb-4">
                       A Sorte Online oferece apostas esportivas com foco em jogo responsável e segurança do apostador. Também licenciada pela SPA/MF, oferece suporte em português e transações via Pix.
                     </p>
-                    <a href="https://www.sorteonline.bet.br/?utm_source=dfolgabet" rel="noopener noreferrer" target="_blank" className="inline-block text-[#f39c12] font-bold text-sm hover:underline" title="Apostar na Sorte Online" aria-label="Apostar na Sorte Online">Visitar Plataforma →</a>
+                    <a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline" rel="nofollow sponsored noopener noreferrer" target="_blank" className="inline-block text-[#f39c12] font-bold text-sm hover:underline" title="Apostar na Sorte Online" aria-label="Apostar na Sorte Online">Visitar Plataforma →</a>
                   </div>
                 </div>
 
@@ -463,15 +463,15 @@ export default function FlamengoVsFluminense() {
                   <p className="text-gray-300 z-10 relative mb-6 max-w-2xl">
                     Com mais de 18 milhões de clientes globais, a Lottoland traz os prêmios das maiores loterias do mundo para a tela do seu celular e está oficialmente regulamentada no Brasil!
                   </p>
-                  <a href="https://www.lottoland.bet.br/?utm_source=dfolgabet" rel="noopener noreferrer" target="_blank" className="inline-block bg-[#a8cd45] text-[#0A051A] font-black uppercase tracking-widest px-8 py-3 rounded-xl hover:bg-white hover:text-[#0A051A] transition-all relative z-10 shadow-[0_0_20px_rgba(168,205,69,0.3)]" title="Apostar na Lottoland" aria-label="Apostar na Lottoland">
+                  <a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland" rel="nofollow sponsored noopener noreferrer" target="_blank" className="inline-block bg-[#a8cd45] text-[#0A051A] font-black uppercase tracking-widest px-8 py-3 rounded-xl hover:bg-white hover:text-[#0A051A] transition-all relative z-10 shadow-[0_0_20px_rgba(168,205,69,0.3)]" title="Apostar na Lottoland" aria-label="Apostar na Lottoland">
                     Abra O Melhor Da Sua Vida
                   </a>
                 </div>
 
                 <div className="mt-10 mb-6"><h2 className="text-2xl font-black text-white mb-2">Referências</h2><div className="h-[1px] w-full bg-[#311B92]"></div></div>
                 <ul className="list-disc marker:text-[#50C0CC] pl-5 space-y-2 text-[#b0b0b0] mb-6">
-                  <li><a href="https://www.lottoland.bet.br/?utm_source=dfolgabet" rel="noopener noreferrer" target="_blank" className="hover:text-[#50C0CC] underline" title="Apostar na Lottoland" aria-label="Acesso Lottoland Brasil">Lottoland - Apostas Esportivas Online Brasil</a></li>
-                  <li><a href="https://www.sorteonline.bet.br/?utm_source=dfolgabet" rel="noopener noreferrer" target="_blank" className="hover:text-[#50C0CC] underline" title="Apostar na Sorte Online" aria-label="Acesso Sorte Online">Sorte Online - Apostas Esportivas</a></li>
+                  <li><a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=lottoland" rel="nofollow sponsored noopener noreferrer" target="_blank" className="hover:text-[#50C0CC] underline" title="Apostar na Lottoland" aria-label="Acesso Lottoland Brasil">Lottoland - Apostas Esportivas Online Brasil</a></li>
+                  <li><a href="https://track.levanteaffiliates.com.br/visit/?bta=73332&brand=sorteonline" rel="nofollow sponsored noopener noreferrer" target="_blank" className="hover:text-[#50C0CC] underline" title="Apostar na Sorte Online" aria-label="Acesso Sorte Online">Sorte Online - Apostas Esportivas</a></li>
                   <li>Portaria SPA/MF nº 259, de 7 de fevereiro de 2025 - Secretaria de Prêmios e Apostas do Ministério da Fazenda</li>
                 </ul>
 
@@ -479,7 +479,7 @@ export default function FlamengoVsFluminense() {
                   <SocialShareRibbon />
                 </div>
 
-                <AuthorBox name="Erico Gomes" image={authorImage || "/assets/dfolga-logo-novo.png"} />
+                <AuthorBox name="Erico Gomes" image={authorImage || "/assets/logos/dfolga/dfolga-logo-novo.webp"} />
 
                 <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
   <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>

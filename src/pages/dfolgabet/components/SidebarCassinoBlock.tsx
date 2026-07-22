@@ -7,10 +7,10 @@ export default function SidebarCassinoBlock() {
   const [featuredPost, setFeaturedPost] = useState<any>(null);
 
   useEffect(() => {
-    async function fetchAviator() {
+    async function fetchCasinoPost() {
       try {
-        const query = `*[_type == "post" && slug.current == "como-jogar-aviator-confira-bets-que-pagam"][0] {
-          title, mainImage, slug
+        const query = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections || (!defined(area) && !defined(promotedCategory) && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")))] | order(isFeatured desc, publishedAt desc, _createdAt desc)[0] {
+          title, mainImage, slug, "categoryName": categories[0]->title, area
         }`;
         const data = await client.fetch(query);
         if (data) {
@@ -18,8 +18,27 @@ export default function SidebarCassinoBlock() {
         }
       } catch (e) {}
     }
-    fetchAviator();
+    fetchCasinoPost();
   }, []);
+
+  if (!featuredPost) {
+     return (
+       <div className="bg-[#120826] border border-[#311B92] rounded-[2rem] p-6 shadow-2xl relative overflow-hidden group">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-[#50C0CC]/10 border border-[#50C0CC]/30 flex items-center justify-center">
+                <PlayCircle className="text-[#50C0CC]" size={18} />
+              </div>
+              <h3 className="text-white font-black text-sm uppercase tracking-wider">Cassino DfolgaBet</h3>
+            </div>
+            <span className="bg-red-600/20 text-red-500 border border-red-600/30 text-[10px] px-2 py-0.5 rounded font-black">18+</span>
+          </div>
+          <p className="text-[#b0b0b0] text-[11px] leading-relaxed italic border-l-2 border-[#50C0CC] pl-3 mb-6">
+            Jogos populares, guias e ofertas em análise. Jogue com responsabilidade.
+          </p>
+       </div>
+     );
+  }
 
   return (
     <div className="bg-[#120826] border border-[#311B92] rounded-[2rem] p-6 shadow-2xl relative overflow-hidden group">
@@ -38,18 +57,18 @@ export default function SidebarCassinoBlock() {
         Jogos populares, guias e ofertas em análise. Jogue com responsabilidade.
       </p>
 
-      {/* Aviator Guide Banner */}
-      <Link to={featuredPost ? `/dfolgabet/post/${featuredPost.slug.current}` : "/dfolgabet/post/como-jogar-aviator-confira-bets-que-pagam"} className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-6 group/banner">
-        {featuredPost?.mainImage ? (
+      {/* Casino Guide Banner */}
+      <Link to={`/dfolgabet/post/${featuredPost.slug.current}`} className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-6 group/banner">
+        {featuredPost.mainImage ? (
           <img 
             src={urlFor(featuredPost.mainImage).width(800).height(450).url()} 
-            alt="Aviator Guide" 
+            alt={featuredPost.title} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover/banner:scale-110"
           />
         ) : (
           <img 
             src="https://images.unsplash.com/photo-1518133835878-5a93cc3f89e5?auto=format&fit=crop&w=800&q=80" 
-            alt="Aviator Guide" 
+            alt={featuredPost.title} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover/banner:scale-110"
           />
         )}
@@ -58,9 +77,11 @@ export default function SidebarCassinoBlock() {
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex justify-between items-end gap-2">
              <div className="flex-1">
-                <span className="bg-[#311B92] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded mb-1 inline-block">CRASH</span>
+                <span className="bg-[#311B92] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded mb-1 inline-block">
+                   {featuredPost.categoryName || 'CASSINO'}
+                </span>
                 <h4 className="text-white font-bold text-xs leading-snug drop-shadow-lg group-hover/banner:text-[#50C0CC] transition-colors line-clamp-2">
-                  {featuredPost?.title || "Como Jogar Aviator? Confira Bets que Pagam"}
+                  {featuredPost.title}
                 </h4>
              </div>
              <div className="flex flex-col items-end gap-1 shrink-0">

@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import AdBlockWarningModal from './components/AdBlockWarningModal';
+
 import { DarkModeProvider } from './hooks/useDarkMode';
-import VignetteAd from './components/VignetteAd';
 
 // DfolgaBet Pages
 import DfolgaBetLayout from './pages/dfolgabet/DfolgaBetLayout';
@@ -21,6 +23,7 @@ import DfolgaBetPost from './pages/dfolgabet/DfolgaBetPost';
 import DfolgaBetDicas from './pages/dfolgabet/DfolgaBetDicas';
 import DfolgaBetEstatisticas from './pages/dfolgabet/DfolgaBetEstatisticas';
 import DfolgaBetSaudeMental from './pages/dfolgabet/DfolgaBetSaudeMental';
+import DfolgaBetBookmakerPage from './pages/dfolgabet/DfolgaBetBookmakerPage';
 import DfolgaBetSobre from './pages/dfolgabet/DfolgaBetSobre';
 import DfolgaBetPredictionDetails from './pages/dfolgabet/DfolgaBetPredictionDetails';
 import DfolgaBetRestricoesApostadores from './pages/dfolgabet/DfolgaBetRestricoesApostadores';
@@ -30,7 +33,6 @@ import DfolgaBetCompetitionPage from './pages/dfolgabet/DfolgaBetCompetitionPage
 import CaliariVsBannon from './pages/dfolgabet/articles/CaliariVsBannon';
 import FlamengoVsFluminense from './pages/dfolgabet/articles/FlamengoVsFluminense';
 import AliceVsPolyana from './pages/dfolgabet/articles/AliceVsPolyana';
-import CopaDoMundo2026 from './pages/dfolgabet/competition/CopaDoMundo2026';
 
 // Sanity Studio
 import SanityStudio from './pages/SanityStudio';
@@ -40,10 +42,10 @@ import DfolgaBetPlaceholder from './pages/dfolgabet/DfolgaBetPlaceholder';
 export default function App() {
   return (
     <DarkModeProvider>
+      <AdBlockWarningModal />
+      
       <ScrollToTop />
       <ScrollToTopButton />
-      <VignetteAd />
-
       <Routes>
         {/* Sanity Studio Route */}
         <Route path="/studio/*" element={<SanityStudio />} />
@@ -51,11 +53,7 @@ export default function App() {
         {/* DfolgaBet Routes mapped to / */}
         <Route path="/" element={<DfolgaBetLayout />}>
           <Route index element={<DfolgaBetHome />} />
-
-          {/* PÁGINA DAS CASAS */}
           <Route path="casas-de-apostas" element={<DfolgaBetBookmakers />} />
-
-          {/* PÁGINAS PRINCIPAIS */}
           <Route path="prognosticos" element={<DfolgaBetPredictions />} />
           <Route path="bonus" element={<DfolgaBetBonuses />} />
           <Route path="guias" element={<DfolgaBetGuides />} />
@@ -63,29 +61,30 @@ export default function App() {
           <Route path="estatisticas" element={<DfolgaBetEstatisticas />} />
           <Route path="saude-mental" element={<DfolgaBetSaudeMental />} />
           <Route path="sobre" element={<DfolgaBetSobre />} />
-
-          {/* PÁGINAS LEGAIS */}
+          <Route path="dfolgabet/casas/7k" element={<DfolgaBetBookmakerPage bookmakerSlug="7k" />} />
+          <Route path="dfolgabet/casas/betwinner" element={<DfolgaBetBookmakerPage bookmakerSlug="betwinner" />} />
+          <Route path="dfolgabet/casas/cassino" element={<DfolgaBetBookmakerPage bookmakerSlug="cassino" />} />
+          <Route path="dfolgabet/casas/estrelabet" element={<DfolgaBetBookmakerPage bookmakerSlug="estrelabet" />} />
+          <Route path="dfolgabet/casas/lottoland" element={<DfolgaBetBookmakerPage bookmakerSlug="lottoland" />} />
+          <Route path="dfolgabet/casas/melbet" element={<DfolgaBetBookmakerPage bookmakerSlug="melbet" />} />
+          <Route path="dfolgabet/casas/novibet" element={<DfolgaBetBookmakerPage bookmakerSlug="novibet" />} />
+          <Route path="dfolgabet/casas/sorte-online" element={<DfolgaBetBookmakerPage bookmakerSlug="sorteonline" />} />
+          <Route path="dfolgabet/casas/stake" element={<DfolgaBetBookmakerPage bookmakerSlug="stake" />} />
+          <Route path="dfolgabet/casas/superbet" element={<DfolgaBetBookmakerPage bookmakerSlug="superbet" />} />
+          <Route path="dfolgabet/casas/verabet" element={<DfolgaBetBookmakerPage bookmakerSlug="verabet" />} />
+          <Route path="dfolgabet/casas/vupi" element={<DfolgaBetBookmakerPage bookmakerSlug="vupi" />} />
           <Route path="dfolgabet/jogo-responsavel" element={<DfolgaBetResponsibleGaming />} />
           <Route path="dfolgabet/restricoes-apostadores" element={<DfolgaBetRestricoesApostadores />} />
           <Route path="dfolgabet/termos-e-condicoes" element={<DfolgaBetTermosCondicoes />} />
           <Route path="dfolgabet/politica-de-privacidade" element={<DfolgaBetPoliticaPrivacidade />} />
-
-          {/* POSTS */}
+          <Route path="dfolgabet/competicao/:slug" element={<DfolgaBetCompetitionPage />} />
           <Route path="dfolgabet/post/:slug" element={<DfolgaBetPost />} />
-
-          {/* COMPETIÇÕES */}
-          <Route path="dfolgabet/competition/copa-do-mundo-2026" element={<CopaDoMundo2026 />} />
-          <Route path="dfolgabet/competition/:slug" element={<DfolgaBetCompetitionPage />} />
-
-          {/* PALPITES */}
           <Route path="palpite/:id" element={<DfolgaBetPredictionDetails />} />
-
-          {/* UFC / ESPORTES */}
           <Route path="ufc-caliari-vs-bannon" element={<CaliariVsBannon />} />
           <Route path="flamengo-x-fluminense-feminino-palpites-odds-15-05-2026" element={<FlamengoVsFluminense />} />
           <Route path="alice-ardelean-polyana-viana-ufc-fight-night" element={<AliceVsPolyana />} />
-
-          {/* PLACEHOLDERS */}
+          
+          {/* Outras rotas do DfolgaBet serão adicionadas aqui */}
           <Route path="prognosticos/:slug" element={<DfolgaBetPlaceholder />} />
           <Route path="casas-de-apostas/:slug" element={<DfolgaBetPlaceholder />} />
           <Route path="codigos-promocionais/:slug" element={<DfolgaBetPlaceholder />} />
@@ -94,7 +93,7 @@ export default function App() {
           <Route path="melhores-bonus" element={<DfolgaBetPlaceholder />} />
           <Route path="guias/:id" element={<DfolgaBetPlaceholder />} />
           <Route path="dicas/:id" element={<DfolgaBetPlaceholder />} />
-
+          
           <Route path="dfolgabet/prognosticos/:slug" element={<DfolgaBetPlaceholder />} />
           <Route path="dfolgabet/casas-de-apostas/:slug" element={<DfolgaBetPlaceholder />} />
           <Route path="dfolgabet/codigos-promocionais/:slug" element={<DfolgaBetPlaceholder />} />

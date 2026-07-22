@@ -30,50 +30,12 @@ export function RightSidebar() {
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
   const [activeArticleTab, setActiveArticleTab] = useState<'esportes'|'cassino'>('esportes');
 
-  const localArticles = [
-    {
-      _id: 'local-alice-vs-polyana',
-      title: 'Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night',
-      slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
-      isLocal: true,
-      publishedAt: '2026-05-13T12:00:00Z',
-      _createdAt: '2026-05-13T12:00:00Z',
-      categoryName: 'MMA',
-      img: '/assets/articles/capas/capa_alice_polyana_final%20(1).webp',
-      color: 'bg-[#50C0CC]',
-      _mock: true
-    },
-    {
-      _id: 'local-flamengo-vs-fluminense-fem',
-      title: 'Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026',
-      slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
-      isLocal: true,
-      publishedAt: '2026-05-13T10:00:00Z',
-      _createdAt: '2026-05-13T10:00:00Z',
-      categoryName: 'Futebol Feminino',
-      img: '/assets/articles/capas/capa_flamengo_fluminense_fem.webp',
-      color: 'bg-green-500',
-      _mock: true // we can use the existing mock rendering logic
-    },
-    {
-      _id: 'local-caliari-vs-bannon',
-      title: 'Palpites UFC: Nicolle Caliari vs. Shauna Bannon',
-      slug: { current: 'ufc-caliari-vs-bannon' },
-      isLocal: true,
-      publishedAt: '2026-05-12T00:00:00Z',
-      _createdAt: '2026-05-12T00:00:00Z',
-      categoryName: 'Luta',
-      img: '/assets/articles/capas/capa_caliari_bannon_ufc.webp',
-      color: 'bg-red-600',
-      _mock: true // use the mock rendering logic
-    }
-  ];
 
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const query = `*[_type == "post"] | order(_createdAt desc)[0...15] {
-          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug
+        const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] {
+          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
         }`;
         const data = await client.fetch(query);
         setBlogPosts(data);
@@ -84,17 +46,27 @@ export function RightSidebar() {
     fetchPosts();
   }, []);
 
-  let itemsToRender = [...localArticles, ...blogPosts];
+  let itemsToRender = [...blogPosts];
   
   // Custom filter logic based on categoryName or title containing cassino/crash/aviator terminology
   const isCasinoArticle = (post: any) => {
+    if (post.area === 'Cassino') return true;
+    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
+    if (post.area || post.promotedCategory) return false;
     const title = (post.title || '').toLowerCase();
     const cat = (post.categoryName || '').toLowerCase();
-    return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') || 
-           cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
+    return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
+            cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
   };
 
-  itemsToRender = itemsToRender.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : !isCasinoArticle(post));
+  
+  const isSportsArticle = (post: any) => {
+    if (post.area === 'Esportes') return true;
+    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
+    if (post.area || post.promotedCategory) return false;
+    return !isCasinoArticle(post);
+  };
+  itemsToRender = itemsToRender.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : (activeArticleTab === 'esportes' ? isSportsArticle(post) : true));
 
   return (
     <aside className="dfolgabet-right-sidebar order-2 lg:order-3 bg-[#120826] border-t lg:border-t-0 lg:border-l border-[#311B92]">
@@ -111,7 +83,7 @@ export function RightSidebar() {
           </div>
           <div className="space-y-3">
              {DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority).map((bookie, idx) => (
-                <div key={idx} onClick={() => window.open(getAffiliateLink(bookie.label), '_blank')} className="relative flex items-center bg-[#0A051A]/80 rounded-lg overflow-hidden shrink-0 shadow-lg cursor-pointer transition-all hover:bg-[#311B92]/20 hover:border-[#50C0CC]/50 border border-[#311B92]/50 p-2 gap-3 group" title={`Apostar na ${bookie.label}`} aria-label={`Apostar na ${bookie.label}`}>
+                <a key={idx} href={getAffiliateLink(bookie.label)} target="_blank" rel="noopener noreferrer" className="relative flex items-center bg-[#0A051A]/80 rounded-lg overflow-hidden shrink-0 shadow-lg cursor-pointer transition-all hover:bg-[#311B92]/20 hover:border-[#50C0CC]/50 border border-[#311B92]/50 p-2 gap-3 group" title={`Apostar na ${bookie.label}`} aria-label={`Apostar na ${bookie.label}`}>
                    <div className="w-10 h-8 rounded shrink-0 flex items-center justify-center overflow-hidden bg-[#0A051A]/50 text-white font-black text-[10px]">
                       {bookie.logo ? <img src={bookie.logo} alt={bookie.label} className="w-full h-full object-contain p-0.5" /> : idx + 1}
                    </div>
@@ -127,7 +99,7 @@ export function RightSidebar() {
                    <div className="shrink-0 flex flex-col items-center pl-2 border-l border-[#311B92]/50">
                       <span className="text-white font-black text-[10px] bg-[#50C0CC]/20 px-1.5 py-0.5 rounded text-[#50C0CC] group-hover:bg-[#50C0CC] group-hover:text-[#0A051A] transition-colors">ABRIR</span>
                    </div>
-                </div>
+                </a>
              ))}
           </div>
        </div>
@@ -166,7 +138,7 @@ export function RightSidebar() {
                {itemsToRender.map((post, idx) => (
                  <React.Fragment key={idx}>
                    {post._mock ? (
-                      post.isLocal ? (
+                      post.mainImage ? (
                         <Link to={`/${post.slug.current}`} className="group block">
                            <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
                               <img src={post.img} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
@@ -175,7 +147,7 @@ export function RightSidebar() {
                            <h4 className="text-white text-sm font-bold leading-tight group-hover:text-[#50C0CC] transition-colors line-clamp-2">{post.title}</h4>
                         </Link>
                       ) : (
-                        <Link to={`/dfolgabet/prognosticos/placeholder`} className="group cursor-pointer block">
+                        <Link to={`/dfolgabet/prognosticos/placeholder`} className="group cursor-default block">
                            <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
                               <img src={post.img} alt={post.categoryName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                               <div className={`absolute top-2 left-2 ${post.color || 'bg-green-500'} text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase`}>{post.categoryName || 'Notícias'}</div>
@@ -216,7 +188,7 @@ export function RightSidebar() {
              <div className="relative p-5 pb-8">
                 <div className="text-center mb-6 mt-2">
                    <div className="flex items-center justify-center gap-3">
-                      <img src="/assets/logos/partners/logo_eckoay.png" alt="ecKOay" className="w-[32px] h-[32px] object-contain" />
+                      <img src="/assets/logos/partners/logo_eckoay.webp" alt="ecKOay" className="w-[32px] h-[32px] object-contain" />
                       <h3 className="font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-[#a8cd45] text-[20px] italic tracking-widest mt-1">
                          Grupo ecKOay
                       </h3>
@@ -228,7 +200,7 @@ export function RightSidebar() {
                    {/* uTimeOff (Carro-chefe) */}
                    <a href="https://utimeoff.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-[#0A051A]/80 border border-[#8e44ad]/50 hover:bg-[#0A051A] hover:border-[#8e44ad] transition-all group/item hover:scale-[1.03] shadow-lg">
                       <div className="w-16 h-16 bg-white rounded-lg flex justify-center items-center p-2 border-2 border-[#8e44ad]">
-                         <img src="/assets/logos/partners/utimeoff-logo-original.png" alt="uTimeOff" className="max-w-full max-h-full object-contain" />
+                         <img src="/assets/logos/partners/utimeoff-logo-original.webp" alt="uTimeOff" className="max-w-full max-h-full object-contain" />
                       </div>
                       <div className="flex-1">
                          <h4 className="text-white text-sm font-bold uppercase tracking-wide group-hover/item:text-[#8e44ad] transition-colors">uTimeOff</h4>
@@ -242,7 +214,7 @@ export function RightSidebar() {
                    {/* Dfolga Turismo */}
                    <a href="https://dfolga.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-[#0A051A]/60 border border-[#311B92]/50 hover:bg-[#0A051A] hover:border-[#50C0CC] transition-all group/item hover:scale-[1.02]">
                       <div className="w-16 h-16 bg-white rounded-lg flex justify-center items-center p-2 border border-[#311B92]">
-                         <img src="/assets/logos/dfolga/dfolga-logo-novo.png" alt="Dfolga" className="max-w-full max-h-full object-contain" />
+                         <img src="/assets/logos/dfolga/dfolga-logo-novo.webp" alt="Dfolga" className="max-w-full max-h-full object-contain" />
                       </div>
                       <div className="flex-1">
                          <h4 className="text-white text-sm font-bold uppercase tracking-wide group-hover/item:text-[#50C0CC] transition-colors">Dfolga</h4>
@@ -256,7 +228,7 @@ export function RightSidebar() {
                    {/* DfolgaShop */}
                    <a href="https://dfolgashop.com.br" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-[#0A051A]/60 border border-[#311B92]/50 hover:bg-[#0A051A] hover:border-[#F37021] transition-all group/item hover:scale-[1.02]">
                       <div className="bg-white rounded-lg flex justify-center items-center border border-[#311B92]" style={{ width: '63.29px', height: '40.37px', overflow: 'hidden' }}>
-                         <img src="/assets/logos/dfolgashop/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="object-contain" style={{ width: '63.29px', height: '40.37px', paddingLeft: 0, paddingTop: 0 }} onError={(e) => { e.currentTarget.src = "/assets/dfolgashop-bg.png"; }} />
+                         <img src="/assets/logos/dfolgashop/logo-dfolgashop-2023.webp" alt="DfolgaShop" className="object-contain" style={{ width: '63.29px', height: '40.37px', paddingLeft: 0, paddingTop: 0 }} onError={(e) => { e.currentTarget.src = "/assets/dfolgashop-ecommerce-bg.png"; }} />
                       </div>
                       <div className="flex-1">
                          <h4 className="text-white text-sm font-bold uppercase tracking-wide group-hover/item:text-[#F37021] transition-colors">DfolgaShop</h4>

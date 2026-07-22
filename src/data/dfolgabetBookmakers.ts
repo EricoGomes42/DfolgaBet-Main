@@ -1,4 +1,3 @@
-// src/data/dfolgabetBookmakers.ts
 export interface Bookmaker {
   name: string;
   slug: string;

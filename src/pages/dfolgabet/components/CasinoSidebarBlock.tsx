@@ -12,8 +12,8 @@ export default function CasinoSidebarBlock() {
   useEffect(() => {
     async function fetchCasinoPosts() {
       try {
-        const query = `*[_type == "post" && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")] | order(_createdAt desc)[0...5] {
-          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug
+        const query = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections || (!defined(area) && !defined(promotedCategory) && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")))] | order(_createdAt desc)[0...5] {
+          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, area
         }`;
         const data = await client.fetch(query);
         setFetchedCasinoArticles(data || []);
@@ -22,8 +22,8 @@ export default function CasinoSidebarBlock() {
     fetchCasinoPosts();
   }, []);
 
-  // Fallback map + sanity data
-  const baseArticles = fetchedCasinoArticles.length > 0 ? fetchedCasinoArticles.map(p => ({
+  // Map sanity data
+  const baseArticles = fetchedCasinoArticles.map(p => ({
      title: p.title,
      description: 'Descubra mais dicas e informações exclusivas.',
      url: `/dfolgabet/post/${p.slug?.current}`,
@@ -32,18 +32,7 @@ export default function CasinoSidebarBlock() {
      image: p.mainImage ? urlFor(p.mainImage).width(400).height(300).url() : 'https://images.unsplash.com/photo-1662491106202-e2b20fb55cc1?q=80&w=400&auto=format&fit=crop',
      date: new Date(p.publishedAt || p._createdAt).toLocaleDateString('pt-BR'),
      cta: 'Ler guia'
-  })) : [
-    {
-      title: 'Como Jogar Aviator? Confira Bets que Pagam',
-      description: 'Aprenda as mecânicas básicas e entenda o funcionamento do multiplicador.',
-      url: '/dfolgabet/guias/aviator',
-      color: '#e67e22',
-      badge: 'APOSTAS',
-      image: 'https://images.unsplash.com/photo-1662491106202-e2b20fb55cc1?q=80&w=400&auto=format&fit=crop',
-      date: '10/05/2026',
-      cta: 'Ler guia'
-    }
-  ];
+  }));
 
   // Auto-slide simple logic
   useEffect(() => {

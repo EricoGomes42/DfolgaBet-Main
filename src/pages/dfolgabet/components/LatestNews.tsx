@@ -27,15 +27,7 @@ export default function LatestNews({ posts = [] }: { posts?: Post[] }) {
       id: post.slug?.current || `fallback-${index}`,
       title: post.title,
       excerpt: post.excerpt || (index === 0 ? 'Confira as últimas novidades e análises exclusivas preparadas por nossa equipe de especialistas para turbinar suas estratégias.' : ''),
-      image: post._id === 'local-alice-vs-polyana'
-        ? '/assets/articles/capas/capa_alice_polyana_final%20(1).webp'
-        : post._id === 'local-sao-paulo-vs-juventude-fem'
-          ? '/assets/Imagens%20Brasileir%C3%A3o%20Feminino/sao_paulo_juventude_capa.png'
-          : post._id === 'local-caliari-vs-bannon' 
-            ? '/assets/articles/capas/capa_caliari_bannon_ufc.webp'
-            : post._id === 'local-flamengo-vs-fluminense-fem'
-              ? '/assets/articles/capas/capa_flamengo_fluminense_fem.webp'
-              : post.mainImage 
+      image: post.mainImage 
               ? urlFor(post.mainImage).width(800).height(500).url() 
               : 'https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=800&q=80',
       category: post.categoryName || 'Notícias',
@@ -48,8 +40,7 @@ export default function LatestNews({ posts = [] }: { posts?: Post[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {displayItems.map((item) => {
-        const localSlugs = ['ufc-caliari-vs-bannon', 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026', 'alice-ardelean-polyana-viana-ufc-fight-night'];
-        const linkTo = localSlugs.includes(item.id) ? `/${item.id}` : `/dfolgabet/post/${item.id}`;
+        const linkTo = `/dfolgabet/post/${item.id}`;
 
         if (item.layout === 'hero') {
           return (

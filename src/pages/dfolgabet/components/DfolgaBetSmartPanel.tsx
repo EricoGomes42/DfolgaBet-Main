@@ -66,7 +66,7 @@ export default function DfolgaBetSmartPanel() {
 
   const handleBookieClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(getAffiliateLink(currentBookie?.label || ''), '_blank');
+    window.open(getAffiliateLink(currentBookie?.label || ''), '_blank', 'noopener,noreferrer');
   };
 
   const handleNextBookie = (e: React.MouseEvent) => {
@@ -125,7 +125,7 @@ export default function DfolgaBetSmartPanel() {
             
             <button onClick={(e) => {
                if (realPick) {
-                 window.open(getAffiliateLink(realPick.bookmakerTitle), '_blank');
+                 window.open(getAffiliateLink(realPick.bookmakerTitle), '_blank', 'noopener,noreferrer');
                } else {
                  showToast('Link da casa em configuração.');
                }

@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { client, urlFor } from '../../lib/sanity';
 import { motion, AnimatePresence } from 'motion/react';
-import OddsHeroBanner from './components/OddsHeroBanner';
 import OddsSection from './components/OddsSection';
 import LatestNews from './components/LatestNews';
 import EducationalSeoSections from './components/EducationalSeoSections';
 import HotPredictionsCarousel from './components/HotPredictionsCarousel';
 import CasinoSidebarBlock from './components/CasinoSidebarBlock';
 import DfolgaBetLiveMatches from './components/DfolgaBetLiveMatches';
+import PromoSection from './components/PromoSection';
 
 interface Post {
   _id: string;
@@ -25,6 +25,7 @@ interface Post {
 
 export default function DfolgaBetHome() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [heroPostsState, setHeroPostsState] = useState<Post[]>([]);
   const [casinoPosts, setCasinoPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -35,111 +36,88 @@ export default function DfolgaBetHome() {
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
       try {
-        const query = `*[_type == "post"] | order(_createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image }`;
-        const data = await client.fetch(query, {}, { signal: controller.signal });
-        clearTimeout(timeoutId);
+        const heroQuery = `*[_type == "post" && (heroParticipation == true || (!defined(sections) || "homepage" in sections))] | order(coalesce(heroPriority, 999) asc, publishedAt desc, _createdAt desc)[0...10] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const sportsQuery = `*[_type == "post" && (area == "Esportes" || promotedCategory == "sports" || (!defined(sections) || "sports" in sections) || (!defined(area) && !defined(promotedCategory) && (!defined(sections) || "homepage" in sections)))] | order(publishedAt desc, _createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const casinoQuery = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections)] | order(publishedAt desc, _createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
         
-        // Add hardcoded local articles published via AI Studio
-        const localArticles: Post[] = [
-          {
-            _id: 'local-alice-vs-polyana',
-            title: 'Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night',
-            slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
-            mainImage: null,
-            publishedAt: '2026-05-13T12:00:00Z',
-            _createdAt: '2026-05-13T12:00:00Z',
-            categoryName: 'MMA'
-          },
-          {
-            _id: 'local-flamengo-vs-fluminense-fem',
-            title: 'Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026',
-            slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
-            mainImage: null, // we'll handle this in the UI
-            publishedAt: '2026-05-13T10:00:00Z',
-            _createdAt: '2026-05-13T10:00:00Z',
-            categoryName: 'Futebol Feminino'
-          },
-          {
-            _id: 'local-caliari-vs-bannon',
-            title: 'Palpites UFC: Nicolle Caliari vs. Shauna Bannon',
-            slug: { current: 'ufc-caliari-vs-bannon' },
-            mainImage: null, // we'll handle this in the UI
-            publishedAt: '2026-05-12T00:00:00Z',
-            _createdAt: '2026-05-12T00:00:00Z',
-            categoryName: 'MMA'
-          }
-        ];
+        const [heroData, sportsData, casinoData] = await Promise.all([
+          client.fetch(heroQuery, {}, { signal: controller.signal }),
+          client.fetch(sportsQuery, {}, { signal: controller.signal }),
+          client.fetch(casinoQuery, {}, { signal: controller.signal })
+        ]);
+        
+        clearTimeout(timeoutId);
 
-        // Combine and sort descending by date
         const isCasinoArticle = (post: any) => {
+          if (post.area === 'Cassino') return true;
+          if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
+          if (post.area || post.promotedCategory) return false;
           const title = (post.title || '').toLowerCase();
           const cat = (post.categoryName || '').toLowerCase();
-          return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') || 
-                 cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
+          return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
+                  cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
         };
 
-        const allPosts = [...localArticles, ...data];
+        const isSportsArticle = (post: any) => {
+          if (post.area === 'Esportes') return true;
+          if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
+          if (post.area || post.promotedCategory) return false;
+          return !isCasinoArticle(post);
+        };
+        
+        const combinedHero = [...heroData]
+          .reduce((acc, current) => {
+            if (!acc.find((item: any) => item._id === current._id)) acc.push(current);
+            return acc;
+          }, [])
+          .sort((a: any, b: any) => {
+            const priorityA = a.heroPriority ?? 999;
+            const priorityB = b.heroPriority ?? 999;
+            if (priorityA !== priorityB) return priorityA - priorityB;
+            const dateA = new Date(a.publishedAt || a._createdAt).getTime();
+            const dateB = new Date(b.publishedAt || b._createdAt).getTime();
+            return dateB - dateA;
+          });
 
-const casinoOnlyPosts = allPosts
-  .filter(isCasinoArticle)
-  .sort((a, b) => {
-    const dateA = new Date(a.publishedAt || a._createdAt).getTime();
-    const dateB = new Date(b.publishedAt || b._createdAt).getTime();
-    return dateB - dateA;
-  });
+        const combinedSports = [...sportsData]
+          .filter(p => isSportsArticle(p))
+          .reduce((acc, current) => {
+            if (!acc.find((item: any) => item._id === current._id)) acc.push(current);
+            return acc;
+          }, [])
+          .sort((a: any, b: any) => {
+            const dateA = new Date(a.publishedAt || a._createdAt).getTime();
+            const dateB = new Date(b.publishedAt || b._createdAt).getTime();
+            return dateB - dateA;
+          });
 
-setCasinoPosts(casinoOnlyPosts.slice(0, 5));
+        const combinedCasino = [...casinoData]
+          .filter(p => isCasinoArticle(p))
+          .reduce((acc, current) => {
+            if (!acc.find((item: any) => item._id === current._id)) acc.push(current);
+            return acc;
+          }, [])
+          .sort((a: any, b: any) => {
+            const dateA = new Date(a.publishedAt || a._createdAt).getTime();
+            const dateB = new Date(b.publishedAt || b._createdAt).getTime();
+            return dateB - dateA;
+          });
 
-const combined = allPosts
-  .filter(p => !isCasinoArticle(p))
-  .sort((a, b) => {
-    const dateA = new Date(a.publishedAt || a._createdAt).getTime();
-    const dateB = new Date(b.publishedAt || b._createdAt).getTime();
-    return dateB - dateA;
-  });
-
-        // Limit to desired number of posts (e.g. 12)
-        setPosts(combined.slice(0, 12));
+        // The hero variable isn't in state directly, but we use posts.slice(0, 5) for heroPosts. 
+        // Let's set posts state for the hero mapping, we'll refactor heroPosts below.
+        setPosts(combinedSports.slice(0, 12));
+        setHeroPostsState(combinedHero.slice(0, 5));
+        setCasinoPosts(combinedCasino.slice(0, 4));
       } catch (error) {
-  console.error("Error fetching posts:", error);
-
-  setPosts([
-    {
-      _id: 'local-alice-vs-polyana',
-      title: 'Alice Ardelean x Polyana Viana: Análise Completa e Palpites para o UFC Fight Night',
-      slug: { current: 'alice-ardelean-polyana-viana-ufc-fight-night' },
-      mainImage: null,
-      publishedAt: '2026-05-13T12:00:00Z',
-      _createdAt: '2026-05-13T12:00:00Z',
-      categoryName: 'MMA'
-    },
-    {
-      _id: 'local-flamengo-vs-fluminense-fem',
-      title: 'Flamengo x Fluminense Feminino: Palpites e Odds para o Brasileirão 15/05/2026',
-      slug: { current: 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026' },
-      mainImage: null,
-      publishedAt: '2026-05-13T10:00:00Z',
-      _createdAt: '2026-05-13T10:00:00Z',
-      categoryName: 'Futebol Feminino'
-    },
-    {
-      _id: 'local-caliari-vs-bannon',
-      title: 'Palpites UFC: Nicolle Caliari vs. Shauna Bannon',
-      slug: { current: 'ufc-caliari-vs-bannon' },
-      mainImage: null,
-      publishedAt: '2026-05-12T00:00:00Z',
-      _createdAt: '2026-05-12T00:00:00Z',
-      categoryName: 'MMA'
-    }
-  ]);
-} finally {
-  setLoading(false);
-}
+        console.error("Error fetching posts:", error);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchPosts();
   }, []);
 
-  const heroPosts = posts.slice(0, 5);
+  const heroPosts = heroPostsState.length > 0 ? heroPostsState : posts.slice(0, 5);
 
   useEffect(() => {
     if (heroPosts.length <= 1) return;
@@ -176,34 +154,10 @@ const combined = allPosts
               className="absolute inset-0"
             >
               <Link 
-                to={['ufc-caliari-vs-bannon', 'flamengo-x-fluminense-feminino-palpites-odds-15-05-2026', 'alice-ardelean-polyana-viana-ufc-fight-night'].includes(heroPosts[heroIndex].slug?.current || '') ? `/${heroPosts[heroIndex].slug?.current}` : `/dfolgabet/post/${heroPosts[heroIndex].slug?.current}`} 
+                to={`/dfolgabet/post/${heroPosts[heroIndex].slug?.current}`} 
                 className="block w-full h-full"
               >
-                {heroPosts[heroIndex]._id === 'local-sao-paulo-vs-juventude-fem' ? (
-                  <img 
-                    src="/assets/Imagens%20Brasileir%C3%A3o%20Feminino/sao_paulo_juventude_capa.png" onError={(e) => { e.currentTarget.src = 'https://placehold.co/1200x675/1A0D35/50C0CC?text=Capa+Indisponivel' }} 
-                    alt={heroPosts[heroIndex].title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : heroPosts[heroIndex]._id === 'local-alice-vs-polyana' ? (
-                  <img 
-                    src="/assets/articles/capas/capa_alice_polyana_final%20(1).webp" 
-                    alt={heroPosts[heroIndex].title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : heroPosts[heroIndex]._id === 'local-caliari-vs-bannon' ? (
-                  <img 
-                    src="/assets/articles/capas/capa_caliari_bannon_ufc.webp" 
-                    alt={heroPosts[heroIndex].title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : heroPosts[heroIndex]._id === 'local-flamengo-vs-fluminense-fem' ? (
-                  <img 
-                    src="/assets/articles/capas/capa_flamengo_fluminense_fem.webp" 
-                    alt={heroPosts[heroIndex].title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : heroPosts[heroIndex].mainImage ? (
+                {heroPosts[heroIndex].mainImage ? (
                   <img 
                     src={urlFor(heroPosts[heroIndex].mainImage).width(1200).height(1600).url()} 
                     alt={heroPosts[heroIndex].title}
@@ -251,7 +205,7 @@ const combined = allPosts
                     
                     <div className="flex items-center gap-3 text-[11px] font-bold text-gray-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                         <span className="flex items-center gap-2">
-                          <img src="assets/avatars/authors/Erico_Gomes_Copywriter.jpg" alt={heroPosts[heroIndex].authorName || 'Erico Gomes'} className="w-8 h-8 rounded-full object-cover border-2 border-[#50C0CC]/60 shadow-lg" onError={(e) => { e.currentTarget.src = "/assets/dfolga-logo-novo.png"; }} />
+                          <img src="/assets/avatars/authors/Erico_Gomes_Copywriter.webp" alt={heroPosts[heroIndex].authorName || 'Erico Gomes'} className="w-8 h-8 rounded-full object-cover border-2 border-[#50C0CC]/60 shadow-lg" onError={(e) => { e.currentTarget.src = "/assets/logos/dfolga/dfolga-logo-novo.webp"; }} />
                           <span className="text-[#50C0CC] md:text-xs [text-shadow:_0_1px_2px_rgba(0,0,0,0.8)]">Por {heroPosts[heroIndex].authorName || 'Erico Gomes'}</span>
                        </span>
                        <span className="w-1 h-1 rounded-full bg-gray-400" />
@@ -268,11 +222,7 @@ const combined = allPosts
       {/* 2. MAIN CONTAINER */}
       <div className="max-w-[1300px] mx-auto px-4 lg:px-8 -mt-10 lg:-mt-20 relative z-40 pb-20">
         
-        {/* HERO 2 / Odds Banner */}
-        <div className="mb-12 mt-12 lg:mt-24">
-          <OddsHeroBanner />
-        </div>
-        
+
         {/* PALPITES DO DIA - Hot Prediction Carousel */}
         <section className="mb-16">
           <div className="flex items-center justify-between mb-4 px-1">
@@ -324,35 +274,30 @@ const combined = allPosts
 
           </aside>
         </div>
-                {/* LIVE MATCHES LAYOUT */}
+        
+        {/* LIVE MATCHES LAYOUT */}
         <DfolgaBetLiveMatches />
 
-        {/* CASINO HERO BLOCK */}
-        <section
-          id="casino"
-          className="mt-16 pt-12 border-t border-[#311B92]/30 relative z-40"
-        >
-          <div className="flex flex-col gap-2 mb-10 px-1">
-            <div className="flex items-center gap-2">
-              <Trophy size={16} className="text-[#50C0CC]" />
-              <span className="text-[#50C0CC] font-black text-[11px] uppercase tracking-[0.2em]">
-                O Melhor do Cassino
-              </span>
-            </div>
+        {/* NOVA SEÇÃO: CARROSSEL E NEWSLETTER */}
+        <PromoSection />
 
-            <h2 className="text-4xl sm:text-5xl md:text-[60px] font-black w-full text-white tracking-tighter leading-[1.05] mt-2">
-              Crash, Slots <span className="text-[#e67e22]">&amp; Roleta</span>
-            </h2>
-
-            <p className="text-gray-400 text-lg md:text-xl font-medium mt-4 w-full leading-relaxed">
-              Estratégias, tutoriais e as melhores dicas para você dominar os
-              jogos de cassino mais populares do mercado.
-            </p>
-          </div>
-
-          <LatestNews posts={casinoPosts} />
+        {/* NOVO BLOCO CASINO */}
+        <section className="mt-16 pt-12 border-t border-[#311B92]/30 relative z-40">
+           <div className="flex flex-col gap-2 mb-10 px-1">
+                 <div className="flex items-center gap-2">
+                    <Trophy size={16} className="text-[#50C0CC]" />
+                    <span className="text-[#50C0CC] font-black text-[11px] uppercase tracking-[0.2em]">O Melhor do Cassino</span>
+                 </div>
+                 <h2 className="text-4xl sm:text-5xl md:text-[60px] font-black w-full text-white tracking-tighter leading-[1.05] mt-2">
+                   Crash, Slots <span className="text-[#e67e22]">& Roleta</span>
+                 </h2>
+                 <p className="text-gray-400 text-lg md:text-xl font-medium mt-4 w-full leading-relaxed">
+                   Estratégias, tutoriais e as melhores dicas para você dominar os jogos de cassino mais populares do mercado.
+                 </p>
+           </div>
+           
+           <LatestNews posts={casinoPosts} />
         </section>
-
       </div>
     </div>
   );

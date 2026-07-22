@@ -25,8 +25,8 @@ export default function CaliariVsBannon() {
     "description": "Análise completa da luta Nicolle Caliari vs. Shauna Bannon no UFC Fight Night de 16 de maio de 2026. Confira estatísticas, odds, palpites e informações sobre plataformas licenciadas para apostas.",
     "image": [
       "https://dfolgabet.com/assets/articles/capas/capa_caliari_bannon_ufc.webp",
-      "https://dfolgabet.com/assets/articles/infograficos/tabela_comparativa_caliari_bannon.jpg",
-      "https://dfolgabet.com/assets/articles/infograficos/odds_e_palpites_caliari_bannon.jpg"
+      "https://dfolgabet.com/assets/articles/infograficos/tabela_comparativa_caliari_bannon.webp",
+      "https://dfolgabet.com/assets/articles/capas/odds_e_palpites_caliari_bannon.webp"
     ],
     "datePublished": "2026-05-12T10:00:00Z",
     "dateModified": "2026-05-12T10:00:00Z",
@@ -40,7 +40,7 @@ export default function CaliariVsBannon() {
       "name": "DfolgaBet",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://dfolgabet.com/logo.png",
+        "url": "https://dfolgabet.com/assets/logos/dfolgabet/dfolgabet-oficial.webp",
         "width": 600,
         "height": 60
       }
@@ -156,7 +156,7 @@ export default function CaliariVsBannon() {
         <meta property="og:image" content="https://dfolgabet.com/assets/articles/capas/capa_caliari_bannon_ufc.webp" />
         <meta property="og:image:width" content="2560" />
         <meta property="og:image:height" content="1440" />
-        <meta property="og:image:type" content="image/webp" />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:alt" content="Nicolle Caliari em postura ofensiva com iluminação roxo-azul vs. Shauna Bannon em postura técnica com iluminação laranja no octógono UFC" />
         <meta property="og:site_name" content="DfolgaBet" />
         <meta property="og:locale" content="pt_BR" />
@@ -228,7 +228,7 @@ export default function CaliariVsBannon() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
               <span className="flex items-center gap-2">
-                <img src={authorImage || "/assets/dfolga-logo-novo.png"} alt="Erico Gomes" className="w-6 h-6 rounded-full object-cover border border-[#50C0CC]" onError={(e) => { e.currentTarget.src = "/assets/dfolga-logo-novo.png"; }} />
+                <img src={authorImage || "/assets/logos/dfolga/dfolga-logo-novo.webp"} alt="Erico Gomes" className="w-6 h-6 rounded-full object-cover border border-[#50C0CC]" onError={(e) => { e.currentTarget.src = "/assets/logos/dfolga/dfolga-logo-novo.webp"; }} />
                 Erico Gomes
               </span>
               <span className="flex items-center gap-1"><Calendar size={14} /> 12 de Maio de 2026</span>
@@ -295,7 +295,7 @@ export default function CaliariVsBannon() {
                 
                 <div className="mb-10">
                   <img 
-                    src="/assets/articles/infograficos/tabela_comparativa_caliari_bannon.jpg" 
+                    src="/assets/articles/infograficos/tabela_comparativa_caliari_bannon.webp" 
                     alt="Tabela Comparativa Nicolle Caliari vs. Shauna Bannon" 
                     className="w-full rounded-xl border border-gray-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                   />
@@ -366,7 +366,7 @@ export default function CaliariVsBannon() {
 
                 <div className="mb-10">
                   <img 
-                    src="/assets/articles/infograficos/odds_e_palpites_caliari_bannon.jpg" 
+                    src="/assets/articles/capas/odds_e_palpites_caliari_bannon.webp" 
                     alt="Odds e Palpites de Apostas UFC" 
                     className="w-full rounded-xl border border-gray-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                   />
@@ -408,7 +408,7 @@ export default function CaliariVsBannon() {
 
                 <div className="mb-10">
                   <img 
-                    src="/assets/articles/infograficos/plataformas_afiliadas_caliari_bannon.jpg" 
+                    src="/assets/articles/infograficos/plataformas_afiliadas_caliari_bannon.webp" 
                     alt="Plataformas Afiliadas e Jogo Responsável" 
                     className="w-full rounded-xl border border-gray-800 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                   />
@@ -441,7 +441,7 @@ export default function CaliariVsBannon() {
                   <SocialShareRibbon />
                 </div>
 
-                <AuthorBox name="Erico Gomes" image={authorImage || "/assets/dfolga-logo-novo.png"} />
+                <AuthorBox name="Erico Gomes" image={authorImage || "/assets/logos/dfolga/dfolga-logo-novo.webp"} />
 
                 <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
   <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>

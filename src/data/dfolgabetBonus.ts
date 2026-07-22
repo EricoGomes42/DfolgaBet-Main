@@ -1,4 +1,3 @@
-// src/data/dfolgabetBonus.ts
 export interface Bonus {
   bookmakerSlug: string;
   bookmakerName: string;

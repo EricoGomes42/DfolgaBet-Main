@@ -65,7 +65,7 @@ export default function DfolgaBetFooter() {
           <div className="lg:col-span-2">
             <Link to="/" className="inline-block">
               <img 
-                src="/assets/logos/dfolgabet/dfolgabet-oficial.png" 
+                src="/assets/logos/dfolgabet/dfolgabet-oficial.webp" 
                 alt="DfolgaBet Logo" 
                 className="object-contain transition-transform hover:scale-105 duration-300"
                 style={{ marginRight: '4px', marginLeft: '-7px', paddingBottom: '0px', paddingRight: '13px', paddingTop: '0px', marginBottom: '22px', marginTop: '-72px', height: '159px', width: '255px' }}
@@ -92,7 +92,7 @@ export default function DfolgaBetFooter() {
               <li><Link to="/sobre" className="hover:text-white hover:translate-x-1 inline-block transition-all duration-300">Sobre o DfolgaBet</Link></li>
               <li><button onClick={() => setIsContactModalOpen(true)} className="hover:text-white hover:translate-x-1 inline-block transition-all duration-300 text-left cursor-pointer">Fale com a gente</button></li>
               <li><button onClick={() => setIsCareerModalOpen(true)} className="hover:text-white hover:translate-x-1 inline-block transition-all duration-300 text-left cursor-pointer">Trabalhe Conosco</button></li>
-              <li><a href="https://dfolgabet-cms.sanity.studio/" target="_blank" rel="noopener noreferrer" className="hover:text-[#50C0CC] hover:translate-x-1 inline-block transition-all duration-300 flex items-center gap-2">Área do Colaborador</a></li>
+              <li><a href="/studio" target="_blank" rel="noopener noreferrer" className="hover:text-[#50C0CC] hover:translate-x-1 inline-block transition-all duration-300 flex items-center gap-2">Área do Colaborador</a></li>
             </ul>
           </div>
 
@@ -108,19 +108,19 @@ export default function DfolgaBetFooter() {
         </div>
 
         {/* Disclaimers & Responsible Gaming */}
-        <div className="border-t border-gray-800/60 pt-8 pb-8 flex flex-col items-center text-center gap-6">
+        <div className="border-t border-gray-800/60 pt-8 pb-2 flex flex-col items-center text-center gap-6">
           <div className="flex items-center gap-6 justify-center flex-wrap">
             <div className="w-12 h-12 rounded-full border-2 border-gray-700 flex items-center justify-center text-gray-300 font-black text-[16px] shadow-[0_0_15px_rgba(80,192,204,0.1)] hover:border-[#50C0CC] hover:text-[#50C0CC] transition-colors duration-300">
               18+
             </div>
             <a href="https://gamblingtherapy.org/pt-br/" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-              <img src="/assets/logos/partners/gambling%20terapy.jpg" alt="Gambling Therapy" className="h-[28px] object-contain rounded-sm" />
+              <img src="/assets/logos/partners/gambling terapy.webp" alt="Gambling Therapy" className="h-[28px] object-contain rounded-sm" />
             </a>
             <a href="https://www.grupojaonline.com.br/" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-              <img src="/assets/logos/partners/JA-400__1_.jpg" alt="Jogadores Anônimos" className="h-[28px] object-contain rounded-sm" />
+              <img src="/assets/logos/partners/JA-400__1_.webp" alt="Jogadores Anônimos" className="h-[28px] object-contain rounded-sm" />
             </a>
             <a href="https://ibjr.org/" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-              <img src="/assets/logos/partners/logo-completo-IBJR.png" alt="Instituto Brasileiro de Jogo Responsável" className="h-[22px] object-contain brightness-0 invert" />
+              <img src="/assets/logos/partners/logo-completo-IBJR.webp" alt="Instituto Brasileiro de Jogo Responsável" className="h-[22px] object-contain brightness-0 invert" />
             </a>
           </div>
 
@@ -142,6 +142,19 @@ export default function DfolgaBetFooter() {
             </p>
             <p>
               Nossa equipe fornece prognósticos e dados esportivos buscando orientar o leitor de forma informativa e educacional. Apesar dessas análises representarem a opinião de profissionais de nossa equipe, as informações sobre partidas, resultados ou expectativas jamais devem ser seguidas de forma cega, pois o mundo esportivo é imprevisível. Nossas publicações não têm garantia de ganho ou à prova de erros. Cabe a você ser responsável por suas ações dentro de sites terceiros.
+            </p>
+          </div>
+        </div>
+
+        {/* Legal Warning Banner */}
+        <div className="w-full max-w-4xl mx-auto mt-2 mb-4 bg-gradient-to-r from-[#120826] to-[#0A051A] border border-[#311B92] rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 shadow-[0_5px_20px_rgba(0,0,0,0.3)] relative overflow-hidden group">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#50C0CC]" />
+          <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#50C0CC]/10 border border-[#50C0CC]/50 flex items-center justify-center shadow-[0_0_15px_rgba(80,192,204,0.1)]">
+            <span className="text-[#50C0CC] font-black text-lg md:text-xl tracking-tighter">18+</span>
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <p className="text-gray-300 text-[13px] md:text-[15px] leading-relaxed m-0">
+              Só para maiores de 18 anos. <strong className="text-white font-bold">Ministério da Fazenda adverte: apostar não é investimento!</strong>
             </p>
           </div>
         </div>

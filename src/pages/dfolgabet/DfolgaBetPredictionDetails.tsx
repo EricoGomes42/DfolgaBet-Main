@@ -1,3 +1,4 @@
+import { getAffiliateLink } from '../../config/dfolgabetBookmakers';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, ExternalLink } from 'lucide-react';
 import { MOCK_PREDICTIONS } from './components/HotPredictionsCarousel';
@@ -90,7 +91,7 @@ export default function DfolgaBetPredictionDetails() {
             </p>
 
             <div className="bg-[#50C0CC]/10 border border-[#50C0CC]/30 p-6 rounded-xl my-8 text-center">
-              <a href="#" className="inline-flex items-center gap-2 text-[#50C0CC] font-bold hover:text-white transition-colors text-lg">
+              <a href={getAffiliateLink(prediction.bookmaker)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[#50C0CC] font-bold hover:text-white transition-colors text-lg">
                 <ExternalLink size={20} />
                 Confira a oferta exclusiva na {prediction.bookmaker}
               </a>
