@@ -434,7 +434,7 @@ async function startServer() {
 
     const apiKey = process.env.ODDS_API_FREE || process.env.ODDS_API_IO_KEY || process.env.NEW_ODDS_API_KEY || process.env.VITE_ODDS_API_KEY || process.env.ODDS_API_KEY;
     if (!apiKey) {
-      console.warn("Missing NEW_ODDS_API_KEY environment variable. Returning empty array.");
+      console.warn("[Odds API] API key missing. Returning empty array.");
       return res.json([]);
     }
 
@@ -472,27 +472,29 @@ async function startServer() {
       res.json(normalizedData);
     } catch (error: any) {
       const status = error.response ? error.response.status : 500;
+      const isTimeout = error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT' || (error.message && error.message.includes('timeout'));
+      const isNetworkError = error.code === 'ECONNRESET' || error.code === 'ENOTFOUND' || error.message === 'Network Error';
       
-      // Do not log 401 to console.error as it triggers error alerts in AI Studio
-      if (status === 404 || status === 422 || status === 403) {
-         console.warn(`[WARNING] API Error ${status} for sport (${sport}). Returning empty array.`);
-         // Cache the empty result so we don't spam the API with 404 requests
-         oddsCache[cacheKey] = {
-            data: [],
-            timestamp: now
-         };
-         return res.json([]);
+      // Log errors on the server without propagating them to the frontend
+      if (status === 401 || status === 403) {
+         console.warn(`[Odds API] API key deactivated, invalid, or missing (${status}).`);
       } else if (status === 429) {
-         console.warn(`[RATE LIMIT] The Odds API limit reached (429).`);
-      } else if (status !== 401) {
-         console.error(`Error fetching from The Odds API (${status}):`, error.message);
+         console.warn(`[Odds API] Rate limit exceeded (429).`);
+      } else if (status === 404 || status === 422) {
+         console.warn(`[Odds API] Sport not found or unprocessable (${status}).`);
+         // Cache the empty result so we don't spam the API with 404 requests
+         oddsCache[cacheKey] = { data: [], timestamp: now };
+      } else if (isTimeout) {
+         console.warn(`[Odds API] External request timeout (${error.code || 'timeout'}).`);
+      } else if (isNetworkError) {
+         console.warn(`[Odds API] Network error (${error.code || 'unknown'}).`);
       } else {
-         console.warn(`[API KEY] The Odds API returned 401 Unauthorized. Check API key validity.`);
+         console.warn(`[Odds API] External request failed (${status}): ${error.message}`);
       }
       
-      // If we hit a rate limit (429) or other errors, fallback to cache if available
-      if (oddsCache[cacheKey]) {
-        console.warn(`API Failed (${status}). Returning stale cached odds for ${cacheKey}`);
+      // If we hit an error, fallback to stale cache if available
+      if (oddsCache[cacheKey] && oddsCache[cacheKey].data.length > 0) {
+        console.warn(`[Odds API] Returning stale cached odds for ${cacheKey} due to API failure`);
         const staleData = oddsCache[cacheKey].data.map((d: any) => ({
            ...d,
            meta: { ...d.meta, dataSource: 'cache_stale', _staleError: error.message }
@@ -500,11 +502,9 @@ async function startServer() {
         return res.json(staleData);
       }
 
-      res.status(status).json({
-        error: "Failed to fetch odds",
-        message: error.message,
-        details: error.response?.data
-      });
+      // Important: Always return HTTP 200 with an empty list for any external failure
+      // Never return 4xx or 5xx to the frontend for 3rd party API issues
+      return res.json([]);
     }
   });
 
