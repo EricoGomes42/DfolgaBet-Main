@@ -200,7 +200,6 @@ export default function EventDetailsModal({ event, onClose }: EventDetailsModalP
                 <div className="bg-[#1A0D35] border border-[#311B92] p-6 rounded-xl text-center">
                   <p className="text-gray-400">As odds detalhadas de casas de aposta para este evento não estão disponíveis no momento.</p>
                   
-                  {/* Mock Odds for display purposes if the event is mocked */}
                   {event.odds && (
                      <div className="mt-6">
                        <h4 className="text-white font-bold mb-4">Odds Consolidadas (Referência)</h4>

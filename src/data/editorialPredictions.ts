@@ -1,0 +1,62 @@
+export const EDITORIAL_PREDICTIONS = [
+  { 
+    id: "1",
+    league: "Futebol - Campeonato Brasileiro",
+    team1: "São Paulo", 
+    team1Logo: "https://upload.wikimedia.org/wikipedia/commons/2/2b/S%C3%A3o_Paulo_Futebol_Clube.png",
+    team2: "Botafogo",
+    team2Logo: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Escudo_Botafogo.png",
+    title: 'São Paulo vs Botafogo', 
+    predictionTitle: "Mercado de Gols",
+    prediction: 'São Paulo vence', 
+    initialOdd: 2.10, 
+    odd: 2.10, 
+    bookmaker: 'Superbet', 
+    description: 'O São Paulo vem de uma sequência de vitórias e enfrenta um Botafogo com desfalques.' 
+  },
+  { 
+    id: "2",
+    league: "Futebol - Campeonato Brasileiro",
+    team1: "Vitória",
+    team1Logo: "https://upload.wikimedia.org/wikipedia/pt/3/30/Esporte_Clube_Vit%C3%B3ria_logo.png",
+    team2: "Internacional",
+    team2Logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Escudo_do_Sport_Club_Internacional.svg",
+    title: 'Vitória vs Internacional', 
+    predictionTitle: "Mercado de Gols",
+    prediction: 'Ambas Marcam', 
+    initialOdd: 2.86, 
+    odd: 2.86, 
+    bookmaker: 'Betano', 
+    description: 'Duas equipes com alto poder ofensivo e defesas vulneráveis.' 
+  },
+  { 
+    id: "3",
+    league: "Futebol - Premier League",
+    team1: "Arsenal",
+    team1Logo: "https://upload.wikimedia.org/wikipedia/pt/5/53/Arsenal_FC.svg",
+    team2: "Liverpool",
+    team2Logo: "https://upload.wikimedia.org/wikipedia/pt/0/0c/Liverpool_FC.svg",
+    title: 'Arsenal vs Liverpool', 
+    predictionTitle: "Handicap Asiático",
+    prediction: 'Arsenal -0.5', 
+    initialOdd: 1.95, 
+    odd: 1.95, 
+    bookmaker: 'Pinnacle', 
+    description: 'Confronto direto pela liderança. O fator casa deve ser determinante.' 
+  },
+  { 
+    id: "4",
+    league: "Futebol - La Liga",
+    team1: "Real Madrid",
+    team1Logo: "https://upload.wikimedia.org/wikipedia/pt/9/98/Real_Madrid.png",
+    team2: "Barcelona",
+    team2Logo: "https://upload.wikimedia.org/wikipedia/pt/4/43/FCBarcelona.svg",
+    title: 'Real Madrid vs Barcelona', 
+    predictionTitle: "Mercado de Jogador",
+    prediction: 'Bellingham marca', 
+    initialOdd: 2.50, 
+    odd: 2.50, 
+    bookmaker: 'Bet365', 
+    description: 'El Clásico promete gols e Bellingham tem sido o artilheiro merengue.' 
+  }
+];

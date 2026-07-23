@@ -23,33 +23,7 @@ export default function DfolgaBetVoceGostar() {
         if (data && data.length > 0) {
           setPosts(data);
         } else {
-          // Fallback to mock data if no posts found
-          setPosts([
-            {
-              _id: 'fake-1',
-              title: 'BetMGM chegou ao Brasil: Vale a pena apostar na plataforma?',
-              slug: { current: 'fake-news-1' },
-              mainImage: null,
-              publishedAt: new Date().toISOString(),
-              categoryName: 'Análises de Casas'
-            },
-            {
-              _id: 'fake-2',
-              title: 'Apostas Esportivas: O Guia Definitivo para Iniciantes',
-              slug: { current: 'fake-news-2' },
-              mainImage: null,
-              publishedAt: new Date().toISOString(),
-              categoryName: 'Guias e Dicas'
-            },
-            {
-              _id: 'fake-3',
-              title: 'Brasileirão: As melhores estratégias para apostar online',
-              slug: { current: 'fake-news-3' },
-              mainImage: null,
-              publishedAt: new Date().toISOString(),
-              categoryName: 'Esportes'
-            }
-          ]);
+          setPosts([]);
         }
       } catch (error) {
         console.error("Error fetching posts:", error);

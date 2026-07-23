@@ -8,29 +8,6 @@ function formatOdd(num: any) {
 }
 
 function LiveCard({ match }: { match: any }) {
-  const parsedInitialOdd = parseFloat(String(match.initialOdd || 1.85));
-  const [odd, setOdd] = useState(isNaN(parsedInitialOdd) ? 1.85 : parsedInitialOdd);
-  const [minute, setMinute] = useState((typeof match.minute === 'number' && !isNaN(match.minute)) ? match.minute : Math.floor(Math.random() * 80) + 1);
-  const [isOddUp, setIsOddUp] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const updateInterval = setInterval(() => {
-      if (Math.random() > 0.7) {
-        setMinute((prv: number) => prv < 90 ? prv + 1 : prv);
-      }
-      if (Math.random() > 0.6) {
-        const fluctuate = (Math.random() * 0.1) - 0.05;
-        setOdd((prv: number) => {
-          const newOdd = Math.max(1.01, prv + fluctuate);
-          setIsOddUp(newOdd > prv);
-          setTimeout(() => setIsOddUp(null), 2000);
-          return newOdd;
-        });
-      }
-    }, 4000 + Math.random() * 4000);
-    return () => clearInterval(updateInterval);
-  }, []);
-
   let defaultBg = '#311B92';
   let defaultColor = '#FFFFFF';
   
@@ -48,11 +25,13 @@ function LiveCard({ match }: { match: any }) {
     <div className="bg-[#0A051A] rounded-2xl border border-[#311B92] relative overflow-hidden flex flex-col p-4 shadow-lg hover:border-[#50C0CC]/50 transition-colors w-[280px] sm:w-[320px] shrink-0 mx-2">
       
       {/* Live Badge Top Right */}
+      {typeof match.minute === 'number' && (
       <div className="absolute top-0 right-0 bg-red-600 rounded-bl-xl px-3 py-1 flex flex-col items-center justify-center z-10">
          <span className="text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">AO VIVO <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div></span>
          <div className="w-full h-px bg-white/20 my-0.5"></div>
-         <span className="text-white text-[10px] font-bold text-center">⏱ {minute}'</span>
+         <span className="text-white text-[10px] font-bold text-center">⏱ {match.minute}'</span>
       </div>
+      )}
 
       {/* League */}
       <div className="text-gray-400 text-[10px] font-bold uppercase tracking-widest pt-1 pr-16 truncate text-left whitespace-normal">
@@ -66,9 +45,11 @@ function LiveCard({ match }: { match: any }) {
           <span className="text-white text-[9px] text-center font-bold leading-tight uppercase line-clamp-2 min-h-[22px]">{match.team1}</span>
         </div>
         
+        {match.score && (
         <div className="flex items-center justify-center bg-[#120826] border border-[#311B92]/50 rounded-lg px-4 py-2">
-          <span className="text-white font-black text-xl tabular-nums">{match.score || '0 - 0'}</span>
+          <span className="text-white font-black text-xl tabular-nums">{match.score}</span>
         </div>
+        )}
 
         <div className="flex flex-col items-center w-[30%]">
           <img src={match.team2Logo} alt={match.team2} className="w-10 h-10 object-contain mb-2 mix-blend-screen" onError={(e) => (e.currentTarget.style.display = 'none')} />
@@ -77,18 +58,20 @@ function LiveCard({ match }: { match: any }) {
       </div>
 
       {/* Prediction Box with Real-time Odd */}
+      {match.prediction && (
       <div className="flex items-center justify-between mb-4 mt-2 px-2 whitespace-normal bg-[#120826] rounded-lg p-2 border border-[#311B92]/30">
         <div className="flex flex-col max-w-[60%]">
           <span className="text-gray-500 text-[9px] font-bold uppercase tracking-widest mb-0.5 text-left">PALPITES</span>
           <span className="text-[#50C0CC] font-black text-[11px] uppercase truncate text-left" title={match.prediction}>{match.prediction}</span>
         </div>
-        <div className={`rounded px-3 py-1 flex flex-col items-center border transition-colors duration-500 ${isOddUp === true ? 'bg-green-500/20 border-green-500 text-green-400' : isOddUp === false ? 'bg-red-500/20 border-red-500 text-red-400' : 'bg-white border-white'}`}>
-          <span className={`text-[8px] font-black uppercase leading-none mb-0.5 ${isOddUp === null ? 'text-[#0A051A]' : ''}`}>ODD</span>
-          <span className={`font-black text-sm tabular-nums leading-none flex items-center gap-1 ${isOddUp === null ? 'text-[#0A051A]' : ''}`}>
-            {formatOdd(odd)}
+        <div className={`rounded px-3 py-1 flex flex-col items-center border transition-colors duration-500 bg-white border-white`}>
+          <span className={`text-[8px] font-black uppercase leading-none mb-0.5 text-[#0A051A]`}>ODD</span>
+          <span className={`font-black text-sm tabular-nums leading-none flex items-center gap-1 text-[#0A051A]`}>
+            {formatOdd(match.initialOdd)}
           </span>
         </div>
       </div>
+      )}
 
       {/* Action Button */}
       <div className="mt-auto whitespace-normal">
@@ -128,45 +111,50 @@ export default function HotPredictionsCarousel() {
       }
 
       if (allLiveMatches.length === 0) {
-        allLiveMatches = [
-          { league: 'BRASIL SÉRIE A', home: 'São Paulo', away: 'Botafogo', odds: { home: 2.10 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Vitória', away: 'Internacional', odds: { home: 2.86 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Mirassol', away: 'Fluminense', odds: { home: 2.95 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Grêmio', away: 'Santos', odds: { home: 1.65 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Athletico-PR', away: 'Coritiba', odds: { home: 1.99 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Flamengo', away: 'Bahia', odds: { home: 1.27 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Cruzeiro', away: 'Atlético-MG', odds: { home: 2.10 }, scores: [{score: 0}, {score: 0}] },
-          { league: 'BRASIL SÉRIE A', home: 'Vasco', away: 'Goiás', odds: { home: 1.85 }, scores: [{score: 0}, {score: 0}] },
-        ];
+        setRow1Matches([]);
+        setRow2Matches([]);
+        return;
       }
 
       const priorityBookies = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
       const generatedCards: any[] = [];
       
-      const targetCount = priorityBookies.length;
-      
-      for (let i = 0; i < targetCount; i++) {
-         const bookie = priorityBookies[i];
-         const matchIndex = i % (allLiveMatches.length || 1);
-         const liveMatch = allLiveMatches[matchIndex];
+      for (let i = 0; i < allLiveMatches.length; i++) {
+         const liveMatch = allLiveMatches[i];
          
-         if (liveMatch) {
-            generatedCards.push({
-               id: `${bookie.key}-${i}`,
-               league: liveMatch.tournament || liveMatch.league || 'BRASIL SÉRIE A',
-               team1: liveMatch.home || 'Time 1',
-               team2: liveMatch.away || 'Time 2',
-               team1Logo: liveMatch.homeLogo || `https://ui-avatars.com/api/?name=${liveMatch.home}&background=random&color=fff`,
-               team2Logo: liveMatch.awayLogo || `https://ui-avatars.com/api/?name=${liveMatch.away}&background=random&color=fff`,
-               predictionTitle: 'Palpites',
-               prediction: `${liveMatch.home} vence`,
-               initialOdd: liveMatch.odds?.home || 1.85 + (Math.random()),
-               bookmaker: bookie.label,
-               bookmakerLogo: bookie.logo,
-               minute: Math.floor(Math.random() * 80) + 1,
-               score: liveMatch.scores ? `${liveMatch.scores[0]?.score || 0} - ${liveMatch.scores[1]?.score || 0}` : '0 - 0'
-            });
+         if (
+            !liveMatch || 
+            !liveMatch.home || 
+            !liveMatch.away || 
+            !liveMatch.odds?.home ||
+            liveMatch.minute === undefined ||
+            liveMatch.minute === null ||
+            !liveMatch.prediction ||
+            !liveMatch.scores ||
+            liveMatch.scores.length < 2 ||
+            liveMatch.scores[0]?.score === undefined ||
+            liveMatch.scores[1]?.score === undefined
+         ) {
+            continue;
          }
+
+         const bookie = priorityBookies[i % (priorityBookies.length || 1)];
+
+         generatedCards.push({
+            id: `${bookie?.key || 'default'}-${i}`,
+            league: liveMatch.tournament || liveMatch.league,
+            team1: liveMatch.home,
+            team2: liveMatch.away,
+            team1Logo: liveMatch.homeLogo,
+            team2Logo: liveMatch.awayLogo,
+            predictionTitle: 'Palpites',
+            prediction: liveMatch.prediction,
+            initialOdd: liveMatch.odds.home,
+            bookmaker: bookie?.label || 'Apostar',
+            bookmakerLogo: bookie?.logo,
+            minute: liveMatch.minute,
+            score: `${liveMatch.scores[0].score} - ${liveMatch.scores[1].score}`
+         });
       }
       
       if (generatedCards.length > 0) {
@@ -217,35 +205,3 @@ export default function HotPredictionsCarousel() {
   );
 }
 
-export const MOCK_PREDICTIONS = [
-  { 
-    id: "1",
-    league: "Futebol - Campeonato Brasileiro",
-    team1: "São Paulo", 
-    team1Logo: "https://upload.wikimedia.org/wikipedia/commons/2/2b/S%C3%A3o_Paulo_Futebol_Clube.png",
-    team2: "Botafogo",
-    team2Logo: "https://upload.wikimedia.org/wikipedia/commons/c/cb/Escudo_Botafogo.png",
-    title: 'São Paulo vs Botafogo', 
-    predictionTitle: "Mercado de Gols",
-    prediction: 'São Paulo vence', 
-    initialOdd: 2.10, 
-    odd: 2.10, 
-    bookmaker: 'Superbet', 
-    description: 'O São Paulo vem de uma sequência de vitórias e enfrenta um Botafogo com desfalques.' 
-  },
-  { 
-    id: "2",
-    league: "Futebol - Campeonato Brasileiro",
-    team1: "Vitória",
-    team1Logo: "https://upload.wikimedia.org/wikipedia/pt/3/30/Esporte_Clube_Vit%C3%B3ria_logo.png",
-    team2: "Internacional",
-    team2Logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Escudo_do_Sport_Club_Internacional.svg",
-    title: 'Vitória vs Internacional', 
-    predictionTitle: "Mercado de Gols",
-    prediction: 'Ambas Marcam', 
-    initialOdd: 2.86, 
-    odd: 2.86, 
-    bookmaker: 'Betano', 
-    description: 'Duas equipes com alto poder ofensivo e defesas vulneráveis.' 
-  },
-];

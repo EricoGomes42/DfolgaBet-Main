@@ -28,7 +28,7 @@ export default function SkyscannerCategory({ posts, title, hasMore, onLoadMore, 
         </p>
       </div>
 
-      {/* Skyscanner Interactive Widget Mockup (Complex version) */}
+      {/* Skyscanner Interactive Widget Preview (Complex version) */}
       <div className="bg-[#4fb9c9] rounded-xl p-5 md:p-7 mb-16 shadow-lg relative font-sans w-full max-w-5xl mx-auto">
         
         {/* Header / Tabs */}

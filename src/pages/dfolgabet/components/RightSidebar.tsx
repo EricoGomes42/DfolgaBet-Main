@@ -137,25 +137,6 @@ export function RightSidebar() {
              <div className="p-3 space-y-4">
                {itemsToRender.map((post, idx) => (
                  <React.Fragment key={idx}>
-                   {post._mock ? (
-                      post.mainImage ? (
-                        <Link to={`/${post.slug.current}`} className="group block">
-                           <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
-                              <img src={post.img} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                              <div className={`absolute top-2 left-2 ${post.color || 'bg-green-500'} text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase`}>{post.categoryName || 'Notícias'}</div>
-                           </div>
-                           <h4 className="text-white text-sm font-bold leading-tight group-hover:text-[#50C0CC] transition-colors line-clamp-2">{post.title}</h4>
-                        </Link>
-                      ) : (
-                        <Link to={`/dfolgabet/prognosticos/placeholder`} className="group cursor-default block">
-                           <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
-                              <img src={post.img} alt={post.categoryName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                              <div className={`absolute top-2 left-2 ${post.color || 'bg-green-500'} text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase`}>{post.categoryName || 'Notícias'}</div>
-                           </div>
-                           <h4 className="text-white text-sm font-bold leading-tight group-hover:text-[#50C0CC] transition-colors line-clamp-2">{post.title}</h4>
-                        </Link>
-                      )
-                   ) : (
                       <Link to={`/dfolgabet/post/${post.slug?.current || '#'}`} className="group block">
                          <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
                             {post.mainImage ? (
@@ -167,7 +148,6 @@ export function RightSidebar() {
                          </div>
                          <h4 className="text-white text-sm font-bold leading-tight group-hover:text-[#50C0CC] transition-colors line-clamp-2">{post.title}</h4>
                       </Link>
-                   )}
                    
                    {idx < itemsToRender.length - 1 && (
                       <div className="border-t border-[#311B92]"></div>

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import AdBlockWarningModal from './components/AdBlockWarningModal';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 import { DarkModeProvider } from './hooks/useDarkMode';
 
@@ -42,6 +43,7 @@ import DfolgaBetPlaceholder from './pages/dfolgabet/DfolgaBetPlaceholder';
 export default function App() {
   return (
     <DarkModeProvider>
+      <GoogleAnalytics />
       <AdBlockWarningModal />
       
       <ScrollToTop />

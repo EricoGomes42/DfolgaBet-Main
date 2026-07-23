@@ -12,7 +12,7 @@ export const client = createClient({
   useCdn: false, // Ensure we get fresh data immediately instead of cached
 });
 
-// Mock client.fetch to avoid CORS issues by proxying through our backend
+// Proxy client.fetch to avoid CORS issues by proxying through our backend
 const originalFetch = client.fetch.bind(client);
 
 client.fetch = async (query: string, params?: any, options?: any) => {

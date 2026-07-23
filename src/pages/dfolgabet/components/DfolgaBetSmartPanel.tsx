@@ -43,22 +43,8 @@ export default function DfolgaBetSmartPanel() {
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-simulate live odds moving if no real odd
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (realPick) return;
-      const change = Math.random();
-      if (change > 0.7) {
-        setCurrentOdd(prev => Number((prev + 0.05).toFixed(2)));
-        setOddsStatus('up');
-      } else if (change < 0.3) {
-        setCurrentOdd(prev => Number((prev - 0.05).toFixed(2)));
-        setOddsStatus('down');
-      } else {
-        setOddsStatus('stable');
-      }
-    }, 8000);
-    return () => clearInterval(interval);
+    // Only use real updates, no auto-simulate
   }, [realPick]);
 
   const activeBookies = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled);
@@ -77,6 +63,16 @@ export default function DfolgaBetSmartPanel() {
     e.stopPropagation();
     setBookieIndex(prev => (prev - 1 + activeBookies.length) % activeBookies.length);
   };
+
+  if (!realPick || currentOdd === null) {
+     return (
+        <div className="w-full flex flex-col gap-3 font-sans relative mt-6 lg:mt-0">
+           <div className="text-gray-400 text-sm text-center py-8 bg-[#120826] rounded-xl border border-[#311B92]">
+              Aguardando dados da API...
+           </div>
+        </div>
+     );
+  }
 
   return (
     <div className="flex flex-col gap-4">

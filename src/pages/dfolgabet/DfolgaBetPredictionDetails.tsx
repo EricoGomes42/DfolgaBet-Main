@@ -1,12 +1,12 @@
 import { getAffiliateLink } from '../../config/dfolgabetBookmakers';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, ExternalLink } from 'lucide-react';
-import { MOCK_PREDICTIONS } from './components/HotPredictionsCarousel';
+import { EDITORIAL_PREDICTIONS } from '../../data/editorialPredictions';
 import SocialShareRibbon from './components/SocialShareRibbon';
 
 export default function DfolgaBetPredictionDetails() {
   const { id } = useParams();
-  const prediction = MOCK_PREDICTIONS.find(p => p.id === id) || MOCK_PREDICTIONS[0]; // fallback to first
+  const prediction = EDITORIAL_PREDICTIONS.find(p => p.id === id) || EDITORIAL_PREDICTIONS[0]; // fallback to first
 
   return (
     <div className="max-w-[1024px] mx-auto px-4 lg:px-8 py-8">
@@ -73,7 +73,7 @@ export default function DfolgaBetPredictionDetails() {
             Publicado em {new Date().toLocaleDateString('pt-BR')} por <span className="font-bold text-[#50C0CC]">Especialista DfolgaBet</span>
           </div>
 
-          {/* Article Content - Mocked */}
+          {/* Article Content - Editorial */}
           <div className="mb-6">
             <SocialShareRibbon />
           </div>
@@ -130,7 +130,7 @@ export default function DfolgaBetPredictionDetails() {
               Outros palpites interessantes
             </h3>
             <div className="space-y-4">
-              {MOCK_PREDICTIONS.filter(p => p.id !== prediction.id).slice(0, 3).map((p) => (
+              {EDITORIAL_PREDICTIONS.filter(p => p.id !== prediction.id).slice(0, 3).map((p) => (
                 <Link to={`/palpite/${p.id}`} key={`side-${p.id}`} className="block bg-[#1A0D35] p-3 rounded-lg border border-gray-800 hover:border-[#50C0CC]/50 transition-colors group">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-[10px] text-gray-500 font-bold uppercase">{p.league.split(' - ')[1] || p.league}</span>

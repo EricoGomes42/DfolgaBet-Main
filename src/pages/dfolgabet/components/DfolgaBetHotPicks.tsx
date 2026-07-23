@@ -6,7 +6,6 @@ import { showToast } from '../../../lib/toast';
 export default function DfolgaBetHotPicks() {
   const [picks, setPicks] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(3);
-  const [usingMocks, setUsingMocks] = useState(true);
 
   useEffect(() => {
     try {
@@ -34,63 +33,29 @@ export default function DfolgaBetHotPicks() {
               };
            });
            setPicks(realPicks);
-           setUsingMocks(false);
            return;
         }
       }
     } catch (e) {}
     
-    // Fallback to editorial mocks
-    setPicks([
-      {
-        id: 1,
-        player: 'Raphael Veiga',
-        match: 'Palmeiras x Flamengo',
-        market: 'Mais de 0.5 Gols',
-        odd: 2.32,
-        bookmaker: 'Betano',
-        trend: 'Alta procura',
-        trendUp: true
-      },
-      {
-        id: 2,
-        player: 'Hulk',
-        match: 'Atlético-MG x Cruzeiro',
-        market: 'Marcador a qualquer momento',
-        odd: 1.96,
-        bookmaker: 'Superbet',
-        trend: 'Odd subindo',
-        trendUp: true
-      },
-      {
-        id: 3,
-        player: 'Cano',
-        match: 'Fluminense x Vasco',
-        market: 'Mais de 1.5 Chutes ao Alvo',
-        odd: 2.09,
-        bookmaker: 'Pinnacle',
-        trend: 'Em alta',
-        trendUp: true
-      }
-    ]);
+    // No fallback
+    setPicks([]);
   }, []);
 
-  // Micro interaction for odds pulsing
-  useEffect(() => {
-    if (!usingMocks) return; // Don't pulse real odds unnecessarily
-    const interval = setInterval(() => {
-      setPicks(currentPicks => 
-        currentPicks.map(p => {
-          if (Math.random() > 0.7) {
-             const change = (Math.random() * 0.1) - 0.05;
-             return { ...p, odd: Number((p.odd + change).toFixed(2)) };
-          }
-          return p;
-        })
-      );
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [usingMocks]);
+  if (picks.length === 0) {
+     return (
+        <div className="mt-6 flex flex-col gap-4 relative">
+          <div className="flex items-center justify-between border-b border-[#311B92] pb-2">
+             <h3 className="text-[#e67e22] font-black text-[13px] tracking-widest uppercase flex items-center gap-2">
+                <Flame size={14} className="text-[#e67e22]" /> DESTAQUES DO MERCADO
+             </h3>
+          </div>
+          <div className="text-gray-400 text-sm text-center py-4 bg-[#120826] rounded-xl border border-[#311B92]">
+            Nenhum evento disponível para os filtros atuais.
+          </div>
+        </div>
+     );
+  }
 
   const handleShowMore = () => {
      if (visibleCount >= picks.length) {
@@ -108,7 +73,7 @@ export default function DfolgaBetHotPicks() {
             <h3 className="text-[#e67e22] font-black text-[13px] tracking-widest uppercase flex items-center gap-2">
                <Flame size={14} className="text-[#e67e22]" /> DESTAQUES DO MERCADO
             </h3>
-            <span className="text-gray-400 text-[10px] font-medium tracking-tight">{usingMocks ? 'Destaques editoriais' : 'Principais tendências escolhidas'}</span>
+            <span className="text-gray-400 text-[10px] font-medium tracking-tight">Principais tendências escolhidas</span>
          </div>
          <span className="bg-[#50C0CC]/20 text-[#50C0CC] border border-[#50C0CC]/30 text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest flex items-center gap-1">
              <span className="w-1.5 h-1.5 rounded-full bg-[#50C0CC]"></span> ATUALIZADO

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { MOCK_PREDICTIONS } from './HotPredictionsCarousel';
+import { EDITORIAL_PREDICTIONS } from '../../../data/editorialPredictions';
 import { AnimatePresence, motion } from 'motion/react';
 import { getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
@@ -9,11 +9,11 @@ export default function OddsHeroBanner() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % MOCK_PREDICTIONS.length);
+    setCurrentIndex((prev) => (prev + 1) % EDITORIAL_PREDICTIONS.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + MOCK_PREDICTIONS.length) % MOCK_PREDICTIONS.length);
+    setCurrentIndex((prev) => (prev - 1 + EDITORIAL_PREDICTIONS.length) % EDITORIAL_PREDICTIONS.length);
   };
 
   // Auto-play
@@ -24,7 +24,7 @@ export default function OddsHeroBanner() {
     return () => clearInterval(timer);
   }, []);
 
-  const pred = MOCK_PREDICTIONS[currentIndex];
+  const pred = EDITORIAL_PREDICTIONS[currentIndex];
 
   return (
     <div className="bg-gradient-to-br from-[#120826] to-[#311B92] rounded-[32px] p-6 md:p-12 mb-8 flex flex-col lg:flex-row justify-between items-center gap-10 border border-[#50C0CC]/20 overflow-hidden relative shadow-[0_20px_60px_-15px_rgba(10,5,26,0.8)]">

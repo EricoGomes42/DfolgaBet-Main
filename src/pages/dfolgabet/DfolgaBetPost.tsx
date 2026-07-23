@@ -37,46 +37,6 @@ export default function DfolgaBetPost() {
 
   useEffect(() => {
     async function fetchPost() {
-      if (decodedSlug.startsWith('fake-news-')) {
-        // Generate a fake post
-        setPost({
-          _id: 'fake-1',
-          title: 'BetMGM chegou ao Brasil: Vale a pena apostar na plataforma?',
-          mainImage: null, // We'll handle this in rendering
-          publishedAt: new Date().toISOString(),
-          _createdAt: new Date().toISOString(),
-          authorName: 'Equipe DfolgaBet',
-          categoryName: 'Apostas Esportivas',
-          excerpt: 'Entenda como as operações da plataforma impactarão o mercado de apostas e quais as principais vantagens para os jogadores brasileiros que buscam segurança e boas odds.',
-          body: [
-            {
-              _type: 'block',
-              children: [{ _type: 'span', text: 'A BetMGM, um dos maiores nomes do mercado global de cassinos e apostas esportivas, acaba de inaugurar suas operações no Brasil. Neste artigo, vamos destrinchar tudo o que a plataforma oferece para o público brasileiro, abordando pontos como o processo de cadastro, suporte ao cliente, e claro, as odds e promoções de boas-vindas.' }]
-            },
-            {
-              _type: 'block',
-              style: 'h2',
-              children: [{ _type: 'span', text: 'Bônus e Promoções' }]
-            },
-            {
-              _type: 'block',
-              children: [{ _type: 'span', text: 'Logo de cara, a operadora oferece um bônus agressivo. Mas será que as condições de rollover (requisitos de aposta) são realistas? Nossa análise minuciosa dos termos e condições revela que, embora o valor nominal seja alto, os jogadores precisam ter estratégias sólidas para conseguir converter o bônus em dinheiro real.' }]
-            },
-            {
-              _type: 'block',
-              style: 'h2',
-              children: [{ _type: 'span', text: 'Segurança e Confiabilidade' }]
-            },
-            {
-              _type: 'block',
-              children: [{ _type: 'span', text: 'Com licenças nas principais jurisdições do mundo, a marca chega com um sistema robusto de proteção de dados. Testamos o sistema de depósitos e saques com PIX, e o tempo médio de processamento surpreendeu positivamente. Além disso, a BetMGM possui convênio com entidades sérias focadas em saúde mental e jogo responsável, oferecendo limitação de depósito e ferramentas de auto-exclusão eficientes.' }]
-            }
-          ]
-        });
-        setLoading(false);
-        return;
-      }
-
       try {
         const query = `*[_type == "post" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
           _id,
@@ -289,16 +249,6 @@ export default function DfolgaBetPost() {
             <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
               <img 
                 src={urlFor(post.mainImage).width(1200).height(800).url()} 
-                alt={post.title}
-                className="w-full object-cover max-h-[600px]"
-              />
-            </div>
-          )}
-          
-          {slug?.startsWith('fake') && !post.mainImage && (
-            <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
-              <img 
-                src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=1200&q=80" 
                 alt={post.title}
                 className="w-full object-cover max-h-[600px]"
               />

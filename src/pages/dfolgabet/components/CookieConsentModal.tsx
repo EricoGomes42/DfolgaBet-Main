@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Cookie } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { updateConsent } from '../../../lib/analytics';
 
 export default function CookieConsentModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,9 @@ export default function CookieConsentModal() {
       
       if (isAgeVerified && !hasConsented) {
         setIsOpen(true);
+      } else if (hasConsented) {
+        // Initialize consent on load if already saved
+        updateConsent(hasConsented === 'all');
       }
     };
 
@@ -31,6 +35,7 @@ export default function CookieConsentModal() {
     setIsAnimatingOut(true);
     setTimeout(() => {
       localStorage.setItem('dfolgabet_cookie_consent', 'all');
+      updateConsent(true);
       setIsOpen(false);
     }, 500);
   };
@@ -39,6 +44,7 @@ export default function CookieConsentModal() {
     setIsAnimatingOut(true);
     setTimeout(() => {
       localStorage.setItem('dfolgabet_cookie_consent', 'essential');
+      updateConsent(false);
       setIsOpen(false);
     }, 500);
   };
