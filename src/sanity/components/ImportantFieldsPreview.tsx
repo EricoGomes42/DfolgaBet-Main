@@ -21,11 +21,19 @@ export function ImportantFieldsPreview() {
            </Box>
            <Box>
              <Text size={0} muted>Casas Promovidas</Text>
-             <Text size={2} weight="bold">{(Array.isArray(document?.bookmakerKey) ? document.bookmakerKey.length : 0)} selecionadas</Text>
+             <Text size={2} weight="bold">{(Array.isArray(document?.primaryCasinoOperator) ? document.primaryCasinoOperator.length : 0) + (Array.isArray(document?.bookmakerKey) ? document.bookmakerKey.length : 0)} selecionadas</Text>
            </Box>
            <Box>
              <Text size={0} muted>Tipo de Conteúdo</Text>
              <Text size={2} weight="bold">{document?.contentType || '-'}</Text>
+           </Box>
+           <Box>
+             <Text size={0} muted>Competição</Text>
+             <Text size={2} weight="bold">{document?.sportCompetition?._ref ? 'Selecionada' : 'Nenhuma'}</Text>
+           </Box>
+           <Box>
+             <Text size={0} muted>Modalidade</Text>
+             <Text size={2} weight="bold">{document?.modalidade?._ref ? 'Selecionada' : 'Nenhuma'}</Text>
            </Box>
         </div>
       </Stack>

@@ -204,7 +204,7 @@ function DfolgaBetLiveMatchesContent() {
     async function fetchBlogPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...5] {
-          primaryCategory, contentType, primaryCasinoOperator->{slug}, _id, title, slug, mainImage, _createdAt,
+          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, _id, title, slug, mainImage, _createdAt,
           "categoryName": categories[0]->title
         }`;
         const posts = await client.fetch(query);

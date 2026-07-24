@@ -48,8 +48,8 @@ export default function CasinoOperatorHub() {
         if (op) {
           setOperator(op);
           
-          const postsQuery = `*[_type == "post" && !(_id in path("drafts.**")) && (primaryCasinoOperator._ref == $opId || $opId in casinoOperators[]._ref)] | order(publishedAt desc)[0...100] {
-            _id, title, slug, mainImage, publishedAt, contentType, primaryCategory, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent,
+          const postsQuery = `*[_type == "post" && !(_id in path("drafts.**")) && ($opId in primaryCasinoOperator[]._ref || $opId in casinoOperators[]._ref)] | order(publishedAt desc)[0...100] {
+            _id, title, slug, mainImage, publishedAt, contentType, primaryCategory, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent,
             "categoryName": categories[0]->title, "authorName": author->name
           }`;
           const posts = await client.fetch(postsQuery, { opId: op._id });

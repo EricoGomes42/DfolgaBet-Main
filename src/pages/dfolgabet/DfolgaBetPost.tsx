@@ -57,7 +57,7 @@ export default function DfolgaBetPost() {
           "categoryName": categories[0]->title,
           primaryCategory,
           contentType,
-          primaryCasinoOperator->{slug},
+          primaryCasinoOperator[]->{slug, title},
           casinoOperators[]->{slug, title},
           sportCompetition->{slug, title},
           sportEvent,
@@ -285,8 +285,8 @@ export default function DfolgaBetPost() {
     if (pathParts[1] === 'guias') breadcrumbItems.push({ label: 'Guias', url: '/cassino/guias' });
     if (pathParts[1] === 'casas') {
       breadcrumbItems.push({ label: 'Casas', url: '/casas-de-apostas' });
-      if (post.primaryCasinoOperator) {
-        breadcrumbItems.push({ label: post.primaryCasinoOperator.title || pathParts[2], url: `/casas/${pathParts[2]}` });
+      if (post.primaryCasinoOperator && post.primaryCasinoOperator.length > 0) {
+        breadcrumbItems.push({ label: post.primaryCasinoOperator[0].title || pathParts[2], url: `/casas/${pathParts[2]}` });
       } else {
         breadcrumbItems.push({ label: pathParts[2], url: `/casas/${pathParts[2]}` });
       }

@@ -21,7 +21,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" ${currentPostId ? `&& _id != "${currentPostId}"` : ''}] | order(_createdAt desc)[0...5] {
-          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
+          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
           title,
           slug,
           mainImage,

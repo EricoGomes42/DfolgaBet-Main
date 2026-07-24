@@ -302,7 +302,7 @@ export default function DfolgaBetBookmakerPage(props: DfolgaBetBookmakerPageProp
       setLoading(true);
       try {
         const query = `*[_type == "post" && ($bookmakerKey in bookmakerKey || bookmakerKey == $bookmakerKey)] | order(publishedAt desc)[0...100] {
-          primaryCategory, contentType, primaryCasinoOperator->{slug}, _id, title, slug, mainImage, publishedAt, body,
+          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, _id, title, slug, mainImage, publishedAt, body,
           "categoryName": categories[0]->title,
           "authorName": author->name,
           "authorImage": author->image,

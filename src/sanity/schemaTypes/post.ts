@@ -124,11 +124,12 @@ export default {
     {
       name: 'primaryCasinoOperator',
       title: 'Operadora Principal (Cassino)',
-      type: 'reference',
+      type: 'array',
       group: 'classificacao',
-      to: [{ type: 'casinoOperator' }],
+      of: [{ type: 'reference', to: [{ type: 'casinoOperator' }] }],
       hidden: ({ document }: any) => document?.primaryCategory !== 'Cassino',
-      description: 'Obrigatório para artigos exclusivos de uma operadora (ex: Como depositar na 7K).'
+      description: 'Casas promovidas/relacionadas ao artigo.',
+      components: { input: PromotedBookmakersInput }
     },
     {
       name: 'sportCompetition',
@@ -245,6 +246,7 @@ export default {
       group: 'afiliados',
       of: [{ type: 'reference', to: [{ type: 'casinoOperator' }] }],
       hidden: ({ document }: any) => document?.primaryCategory !== 'Cassino',
+      components: { input: PromotedBookmakersInput },
       description: 'Casas citadas no artigo para gerar relacionamentos e cards.'
     },
     {

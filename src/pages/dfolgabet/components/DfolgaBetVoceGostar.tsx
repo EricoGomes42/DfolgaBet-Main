@@ -13,7 +13,7 @@ export default function DfolgaBetVoceGostar() {
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(publishedAt desc)[0...3] {
-          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
+          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
           title,
           slug,
           mainImage,

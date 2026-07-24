@@ -28,7 +28,7 @@ export function resolveContentType(post: any): string | null {
   
   if (category === 'Cassino') {
     if (post.casinoGame) return 'casinoGame';
-    if (post.primaryCasinoOperator) return 'casinoOperatorArticle';
+    if (post.primaryCasinoOperator && post.primaryCasinoOperator.length > 0) return 'casinoOperatorArticle';
   }
   
   if (category === 'Esportes') {
@@ -49,7 +49,7 @@ export function resolveCanonicalUrl(post: any): string {
     if (contentType === 'casinoGame') return `/cassino/jogos/${slug}`;
     if (contentType === 'casinoGuide') return `/cassino/guias/${slug}`;
     if (contentType === 'casinoOperatorArticle') {
-      const operatorSlug = post.primaryCasinoOperator?.slug?.current || ((Array.isArray(post.bookmakerKey) ? post.bookmakerKey[0] : post.bookmakerKey)) || 'casa';
+      const operatorSlug = post.primaryCasinoOperator?.[0]?.slug?.current || ((Array.isArray(post.bookmakerKey) ? post.bookmakerKey[0] : post.bookmakerKey)) || 'casa';
       return `/cassino/casas/${operatorSlug}/${slug}`;
     }
   }

@@ -49,7 +49,7 @@ export default function SportCompetitionHub() {
           setCompetition(comp);
           
           const postsQuery = `*[_type == "post" && !(_id in path("drafts.**")) && sportCompetition._ref == $compId] | order(publishedAt desc)[0...100] {
-            _id, title, slug, mainImage, publishedAt, contentType, primaryCategory, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent,
+            _id, title, slug, mainImage, publishedAt, contentType, primaryCategory, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent,
             "categoryName": categories[0]->title, "authorName": author->name
           }`;
           const posts = await client.fetch(postsQuery, { compId: comp._id });

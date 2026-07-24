@@ -14,7 +14,7 @@ export function SeoChecklistInput() {
     { label: 'Autor', passed: !!document?.author?._ref },
     { label: 'Data', passed: !!document?.publishedAt },
     { label: 'Casas Promovidas', passed: Array.isArray(document?.bookmakerKey) && document.bookmakerKey.length > 0 },
-    { label: 'Modalidade/Competição', passed: !!document?.modalidade?._ref || !!document?.sportCompetition?._ref || !!document?.primaryCasinoOperator?._ref },
+    { label: 'Modalidade/Competição', passed: !!document?.modalidade?._ref || !!document?.sportCompetition?._ref || !!(Array.isArray(document?.primaryCasinoOperator) && document.primaryCasinoOperator.length > 0) },
     { label: 'FAQ', passed: Array.isArray(document?.faq) && document.faq.length > 0 },
   ];
 
