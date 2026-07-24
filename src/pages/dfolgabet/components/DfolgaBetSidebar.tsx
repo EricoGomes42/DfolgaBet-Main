@@ -15,7 +15,7 @@ import SidebarPrognosticosBlock from './SidebarPrognosticosBlock';
 import SidebarStickyBanner from './SidebarStickyBanner';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
-export default function DfolgaBetSidebar() {
+export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookmakers?: string[] }) {
   const [activeSport, setActiveSport] = useState('Todos');
   const [activeDay, setActiveDay] = useState('Hoje');
   const [activeArticleTab, setActiveArticleTab] = useState<'esportes'|'cassino'>('esportes');
@@ -203,7 +203,7 @@ export default function DfolgaBetSidebar() {
 
         {/* 8. BÔNUS & CÓDIGOS */}
         <div className="mb-8">
-           <SidebarBonusBlock />
+           <SidebarBonusBlock promotedBookmakers={promotedBookmakers} />
         </div>
 
         {/* 9. PROGNÓSTICOS */}
@@ -217,7 +217,7 @@ export default function DfolgaBetSidebar() {
         </div>
 
         {/* 11. STICKY BANNER (Original Carousel - Absolute Last) */}
-        <SidebarStickyBanner />
+        <SidebarStickyBanner promotedBookmakers={promotedBookmakers} />
       </div>
     </aside>
   );

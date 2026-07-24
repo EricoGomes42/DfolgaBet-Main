@@ -25,6 +25,7 @@ interface Post {
   contentType?: string;
   categoryName?: string;
   authorName?: string;
+  bookmakerKey?: string | string[];
 }
 
 export default function SportCompetitionHub() {

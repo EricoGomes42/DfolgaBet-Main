@@ -22,6 +22,7 @@ interface Post {
   _createdAt: string;
   categoryName?: string;
   authorName?: string;
+  bookmakerKey?: string | string[];
   authorImage?: any;
 }
 

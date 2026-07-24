@@ -615,7 +615,7 @@ export default function DfolgaBetPost() {
 
         {/* Sidebar Area */}
         <aside className="category-sidebar-track">
-          <DfolgaBetSidebar />
+          <DfolgaBetSidebar promotedBookmakers={Array.isArray(post.bookmakerKey) ? post.bookmakerKey : (post.bookmakerKey ? [post.bookmakerKey] : [])} />
         </aside>
       </div>
       </div>

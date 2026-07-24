@@ -3,10 +3,16 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, Star, ShieldCheck, Zap } from 'lucide-react';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
-export default function SidebarStickyBanner() {
+export default function SidebarStickyBanner({ promotedBookmakers }: { promotedBookmakers?: string[] }) {
   const [index, setIndex] = useState(0);
 
-  const activeBookmakers = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
+  let activeBookmakers = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
+  if (promotedBookmakers && promotedBookmakers.length > 0) {
+    activeBookmakers = activeBookmakers.filter(b => promotedBookmakers.includes(b.key));
+    if (activeBookmakers.length === 0) {
+      activeBookmakers = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
+    }
+  }
 
   useEffect(() => {
     if (activeBookmakers.length === 0) return;

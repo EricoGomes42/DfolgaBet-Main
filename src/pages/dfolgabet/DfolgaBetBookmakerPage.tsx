@@ -19,6 +19,7 @@ interface Post {
   _createdAt?: string;
   categoryName?: string;
   authorName?: string;
+  bookmakerKey?: string | string[];
   authorImage?: any;
   promotedCategory?: string;
   sections?: string[];
@@ -300,7 +301,7 @@ export default function DfolgaBetBookmakerPage(props: DfolgaBetBookmakerPageProp
       
       setLoading(true);
       try {
-        const query = `*[_type == "post" && bookmakerKey == $bookmakerKey] | order(publishedAt desc)[0...100] {
+        const query = `*[_type == "post" && ($bookmakerKey in bookmakerKey || bookmakerKey == $bookmakerKey)] | order(publishedAt desc)[0...100] {
           primaryCategory, contentType, primaryCasinoOperator->{slug}, _id, title, slug, mainImage, publishedAt, body,
           "categoryName": categories[0]->title,
           "authorName": author->name,

@@ -5,8 +5,9 @@ export default {
   fields: [
     {
       name: 'bookmakerKey',
-      title: 'Casa de Aposta Promovida',
-      type: 'string',
+      title: 'Casas de Aposta Promovidas',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: '7K', value: '7k'},
@@ -23,7 +24,7 @@ export default {
           {title: 'Vupi', value: 'vupi'},
         ]
       },
-      description: 'A casa de apostas principal que este artigo promove.',
+      description: 'Selecione todas as casas de apostas promovidas ou mencionadas neste artigo.',
     },
     {
       name: 'sections',
@@ -44,7 +45,8 @@ export default {
     {
       name: 'promotedCategory',
       title: 'Categoria Promovida',
-      type: 'string',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Sports', value: 'sports'},
@@ -61,7 +63,8 @@ export default {
     {
       name: 'primaryCategory',
       title: 'Categoria Principal',
-      type: 'string',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           { title: 'Cassino', value: 'Cassino' },
@@ -73,7 +76,8 @@ export default {
     {
       name: 'contentType',
       title: 'Tipo de Conteúdo',
-      type: 'string',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           { title: 'Jogo de Cassino', value: 'casinoGame' },
@@ -140,7 +144,8 @@ export default {
     {
       name: 'area',
       title: 'Área (Legado)',
-      type: 'string',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Esportes', value: 'Esportes'},
