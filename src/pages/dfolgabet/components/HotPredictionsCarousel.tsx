@@ -25,7 +25,7 @@ function LiveCard({ match }: { match: any }) {
     <div className="bg-[#0A051A] rounded-2xl border border-[#311B92] relative overflow-hidden flex flex-col p-4 shadow-lg hover:border-[#50C0CC]/50 transition-colors w-[280px] sm:w-[320px] shrink-0 mx-2">
       
       {/* Live Badge Top Right */}
-      {typeof match.minute === 'number' && (
+      {match.minute != null && (
       <div className="absolute top-0 right-0 bg-red-600 rounded-bl-xl px-3 py-1 flex flex-col items-center justify-center z-10">
          <span className="text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">AO VIVO <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div></span>
          <div className="w-full h-px bg-white/20 my-0.5"></div>
@@ -99,17 +99,29 @@ export default function HotPredictionsCarousel() {
 
   useEffect(() => {
     const loadFromCache = () => {
-      const cached = localStorage.getItem('dfolgabet_live_odds_multi_cache');
+      let cached = null;
+      try {
+         cached = localStorage.getItem('dfolgabet_live_odds_multi_cache_v2');
+      } catch (err) {
+         console.error("Local storage error:", err);
+      }
+      
       let allLiveMatches: any[] = [];
       if (cached) {
-        const { payload } = JSON.parse(cached);
-        Object.keys(payload).forEach(key => {
-          if (key !== '_debug' && Array.isArray(payload[key])) {
-             allLiveMatches = allLiveMatches.concat(payload[key]);
-          }
-        });
+        try {
+           const { payload } = JSON.parse(cached);
+           if (payload) {
+             Object.keys(payload).forEach(key => {
+               if (key !== '_debug' && Array.isArray(payload[key])) {
+                  allLiveMatches = allLiveMatches.concat(payload[key]);
+               }
+             });
+           }
+        } catch (e) {
+           console.error("Cache parsing error", e);
+        }
       }
-
+      
       if (allLiveMatches.length === 0) {
         setRow1Matches([]);
         setRow2Matches([]);
@@ -122,38 +134,66 @@ export default function HotPredictionsCarousel() {
       for (let i = 0; i < allLiveMatches.length; i++) {
          const liveMatch = allLiveMatches[i];
          
-         if (
-            !liveMatch || 
-            !liveMatch.home || 
-            !liveMatch.away || 
-            !liveMatch.odds?.home ||
-            liveMatch.minute === undefined ||
-            liveMatch.minute === null ||
-            !liveMatch.prediction ||
-            !liveMatch.scores ||
-            liveMatch.scores.length < 2 ||
-            liveMatch.scores[0]?.score === undefined ||
-            liveMatch.scores[1]?.score === undefined
-         ) {
+         if (!liveMatch || !liveMatch.home || !liveMatch.away) {
             continue;
          }
 
+         const homeOdd = parseFloat(liveMatch.odds?.home);
+         const drawOdd = parseFloat(liveMatch.odds?.draw);
+         const awayOdd = parseFloat(liveMatch.odds?.away);
+         
+         let validOddsCount = 0;
+         if (!isNaN(homeOdd) && homeOdd > 0) validOddsCount++;
+         if (!isNaN(drawOdd) && drawOdd > 0) validOddsCount++;
+         if (!isNaN(awayOdd) && awayOdd > 0) validOddsCount++;
+
+         if (validOddsCount < 2) {
+             continue;
+         }
+
          const bookie = priorityBookies[i % (priorityBookies.length || 1)];
+         
+         let predictionText = liveMatch.prediction;
+         let bestOdd = homeOdd;
+         
+         if (!predictionText) {
+             let minOdd = 9999;
+             let predType = '';
+             if (!isNaN(homeOdd) && homeOdd > 0 && homeOdd < minOdd) { minOdd = homeOdd; predType = 'Casa'; }
+             if (!isNaN(drawOdd) && drawOdd > 0 && drawOdd < minOdd) { minOdd = drawOdd; predType = 'Empate'; }
+             if (!isNaN(awayOdd) && awayOdd > 0 && awayOdd < minOdd) { minOdd = awayOdd; predType = 'Fora'; }
+             
+             predictionText = predType;
+             bestOdd = minOdd;
+         } else {
+             if (!isNaN(homeOdd) && homeOdd > 0) {
+                bestOdd = homeOdd;
+             } else if (!isNaN(drawOdd) && drawOdd > 0) {
+                bestOdd = drawOdd;
+             } else if (!isNaN(awayOdd) && awayOdd > 0) {
+                bestOdd = awayOdd;
+             }
+         }
+
+         let scoreStr = null;
+         if (liveMatch.scores && liveMatch.scores.length >= 2 && liveMatch.scores[0]?.score !== undefined && liveMatch.scores[1]?.score !== undefined) {
+             scoreStr = `${liveMatch.scores[0].score} - ${liveMatch.scores[1].score}`;
+         }
 
          generatedCards.push({
-            id: `${bookie?.key || 'default'}-${i}`,
-            league: liveMatch.tournament || liveMatch.league,
+            id: `${bookie?.key || 'default'}-${liveMatch.id || i}`,
+            league: liveMatch.tournament || liveMatch.league || 'Competição',
             team1: liveMatch.home,
             team2: liveMatch.away,
             team1Logo: liveMatch.homeLogo,
             team2Logo: liveMatch.awayLogo,
             predictionTitle: 'Palpites',
-            prediction: liveMatch.prediction,
-            initialOdd: liveMatch.odds.home,
+            prediction: predictionText,
+            initialOdd: bestOdd,
             bookmaker: bookie?.label || 'Apostar',
             bookmakerLogo: bookie?.logo,
             minute: liveMatch.minute,
-            score: `${liveMatch.scores[0].score} - ${liveMatch.scores[1].score}`
+            score: scoreStr
          });
       }
       
@@ -161,15 +201,25 @@ export default function HotPredictionsCarousel() {
         const half = Math.ceil(generatedCards.length / 2);
         setRow1Matches(generatedCards.slice(0, half));
         setRow2Matches(generatedCards.slice(half));
+      } else {
+        setRow1Matches([]);
+        setRow2Matches([]);
       }
     };
 
     loadFromCache();
     const interval = setInterval(loadFromCache, 15000);
-    return () => clearInterval(interval);
+    window.addEventListener('dfolgabet:odds-updated', loadFromCache);
+    
+    return () => {
+       clearInterval(interval);
+       window.removeEventListener('dfolgabet:odds-updated', loadFromCache);
+    };
   }, []);
 
-  if (row1Matches.length === 0) return null;
+  if (row1Matches.length === 0) {
+        return null;
+  }
 
   return (
     <div className="w-full bg-[#120826]/40 border border-[#311B92] rounded-2xl py-8 shadow-2xl relative overflow-hidden">
@@ -204,4 +254,3 @@ export default function HotPredictionsCarousel() {
     </div>
   );
 }
-

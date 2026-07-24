@@ -23,7 +23,7 @@ export default function DfolgaBetLiveMatches() {
 }
 
 function DfolgaBetLiveMatchesContent() {
-  const { state: filters, setSearchTerm, setSportTab } = useDfolgaBetFilters();
+    const { state: filters, setSearchTerm, setSportTab } = useDfolgaBetFilters();
   const search = filters.searchTerm;
   const activeSportFilter = filters.sportTab;
 
@@ -38,8 +38,7 @@ function DfolgaBetLiveMatchesContent() {
   const [dataSource, setDataSource] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
-  const loadedEndpointsRef = useRef<Set<string>>(new Set());
-
+  
   const showPopup = (msg: string) => {
     setPopupMessage(msg);
     setTimeout(() => setPopupMessage(''), 3000);
@@ -205,7 +204,7 @@ function DfolgaBetLiveMatchesContent() {
     async function fetchBlogPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...5] {
-          _id, title, slug, mainImage, _createdAt,
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, _id, title, slug, mainImage, _createdAt,
           "categoryName": categories[0]->title
         }`;
         const posts = await client.fetch(query);
@@ -218,28 +217,32 @@ function DfolgaBetLiveMatchesContent() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function fetchData() {
       try {
-        if (loadedEndpointsRef.current.size === 0) {
-          const cached = localStorage.getItem(CACHE_KEY);
-          if (cached) {
-            const { timestamp, payload } = JSON.parse(cached);
-            if (Date.now() - timestamp < CACHE_TIME) {
+        let hasInitialData = false;
+        
+        let cached = null;
+        try {
+           cached = localStorage.getItem(CACHE_KEY);
+        } catch (cacheErr) {
+           console.error("Local storage error:", cacheErr);
+        }
+        if (cached) {
+          try {
+            const { payload } = JSON.parse(cached);
+            if (payload && Object.keys(payload).length > 0) {
               setData(payload);
-              const initialEndpoints = [
-                 `/api/odds?sport=soccer_brazil_campeonato`,
-                 `/api/odds?sport=soccer_brazil_serie_b`,
-                 `/api/odds?sport=soccer_epl`,
-                 `/api/odds?sport=basketball_nba`
-              ];
-              initialEndpoints.forEach(ep => loadedEndpointsRef.current.add(ep));
-              setLoading(false);
-              return;
+              hasInitialData = true;
             }
+          } catch (e) {
+             console.error("Cache parsing error", e);
           }
         }
         
-        setLoading(true);
+        setLoading(!hasInitialData);
 
         const payloadAggregated: Record<string, any[]> = {};
         
@@ -250,14 +253,18 @@ function DfolgaBetLiveMatchesContent() {
         
         // 1. Fetch debug info first
         try {
-           const debugRes = await fetch(typeof window !== 'undefined' ? `${window.location.origin}/api/odds/debug` : 'http://127.0.0.1:3000/api/odds/debug');
+           const debugRes = await fetch(typeof window !== 'undefined' ? `${window.location.origin}/api/odds/debug` : 'http://127.0.0.1:3000/api/odds/debug', { signal });
            debugInfo = await debugRes.json();
            
            if (!debugInfo.hasApiKey) {
               console.warn("NEW_ODDS_API_KEY não carregada");
            }
-        } catch (err) {
-           console.error("Debug endpoint falhou, usando fallback:", err);
+        } catch (err: any) {
+           if (err.name === 'AbortError' || (err.message && err.message.includes('aborted'))) {
+              console.log('Debug fetch aborted');
+              return;
+           }
+           console.error("Debug endpoint falhou, usando fallback:", err.message || err);
         }
 
         const ENDPOINTS_MAP: Record<string, {name: string, url: string}[]> = {
@@ -298,13 +305,10 @@ function DfolgaBetLiveMatchesContent() {
            endpoints = [...ENDPOINTS_MAP[activeSportFilter]];
         }
         
-        endpoints = endpoints.filter(ep => !loadedEndpointsRef.current.has(ep.url));
         if (endpoints.length === 0) {
            setLoading(false);
            return;
         }
-
-        endpoints.forEach(ep => loadedEndpointsRef.current.add(ep.url));
 
         const getCountryCode = (league: string) => {
            const l = league.toLowerCase();
@@ -323,10 +327,7 @@ function DfolgaBetLiveMatchesContent() {
         
         for (const ep of endpoints) {
           try {
-             const controller = new AbortController();
-             const timeoutId = setTimeout(() => controller.abort(), 8000);
-             const res = await fetch(ep.url, { signal: controller.signal });
-             clearTimeout(timeoutId);
+             const res = await fetch(ep.url, { signal });
              
              if (res.ok) {
                 const rawData = await res.json();
@@ -334,10 +335,8 @@ function DfolgaBetLiveMatchesContent() {
                 if (arrayData.length > 0) {
                    hasData = true;
                    totalEvents += arrayData.length;
-                   // Use regex to extract sport from url for diagnostics
                    const sportMatch = ep.url.match(/sport=([^&]+)/);
                    if (sportMatch) loadedSports.push(sportMatch[1]);
-
                    if (arrayData[0]?.meta?.requestsRemaining !== undefined) {
                       setApiQuotaLeft(parseInt(arrayData[0].meta.requestsRemaining));
                    }
@@ -354,11 +353,10 @@ function DfolgaBetLiveMatchesContent() {
                       const awayTeamName = m.awayTeam || m.away_team || '';
                       const homeLogo = getTeamLogo(homeTeamName);
                       const awayLogo = getTeamLogo(awayTeamName);
-
                       let processedBookmakers = [];
                       if (m.bookmakers && Array.isArray(m.bookmakers)) {
                          processedBookmakers = m.bookmakers
-                            .map(bm => {
+                            .map((bm: any) => {
                                const rawName = bm.title || bm.key;
                                const normName = normalizeBookmakerName(rawName);
                                if (!normName) return null;
@@ -366,11 +364,10 @@ function DfolgaBetLiveMatchesContent() {
                                return { ...bm, normalizedTitle: normName, config };
                             })
                             .filter(Boolean)
-                            .sort((a, b) => (b.config.priority || 0) - (a.config.priority || 0));
+                            .sort((a: any, b: any) => (b.config.priority || 0) - (a.config.priority || 0));
                       }
                       
                       const cleanMatch = { ...m, bookmakers: processedBookmakers };
-
                       return {
                          ...cleanMatch,
                          id: m.id, 
@@ -393,16 +390,19 @@ function DfolgaBetLiveMatchesContent() {
              } else {
                   throw new Error(`Error ${res.status}`);
              }
-          } catch(err) { 
-             console.warn("Error fetching odds for", ep.url, err); 
+          } catch(err: any) {
+              if (err.name === 'AbortError' || (err.message && err.message.includes('aborted'))) {
+                 console.log('Fetch aborted:', ep.url);
+                 return; // abort whole loop if aborted
+              }
+              console.warn("Error fetching odds for", ep.url, err);
           }
         }
         
         if (!hasData && Object.keys(payloadAggregated).length === 0 && !error) {
-           setError("Nenhum evento disponível para os filtros atuais.");
+           // setError("Nenhum evento disponível para os filtros atuais.");
         }
 
-        // Attach some debug info to the aggregated payload if we want
         payloadAggregated['_debug'] = [{
            dataSource: _currentDataSource,
            apiQuotaLeft: debugInfo.headers?.['x-requests-remaining'] || apiQuotaLeft || 'N/A',
@@ -411,29 +411,42 @@ function DfolgaBetLiveMatchesContent() {
            lastUpdated: new Date().toLocaleTimeString()
         }];
 
+        let newTotalData: any = {};
         setData(prevData => {
            const newData = { ...prevData };
            Object.keys(payloadAggregated).forEach(k => {
               if (k !== '_debug') {
-                 const existingMatches = newData[k] || [];
-                 const newMatches = payloadAggregated[k].filter((m:any) => !existingMatches.find((em:any) => em.id === m.id));
-                 newData[k] = [...existingMatches, ...newMatches];
+                 newData[k] = payloadAggregated[k]; // Overwrite with fresh data, as we fetch everything for the active sport
               }
            });
            if (payloadAggregated['_debug']) {
               newData['_debug'] = payloadAggregated['_debug'];
            }
-           localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), payload: newData }));
+           newTotalData = newData;
            return newData;
         });
-      } catch (e) {
-        console.error(e);
+
+        try {
+           localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), payload: newTotalData }));
+           window.dispatchEvent(new CustomEvent('dfolgabet:odds-updated'));
+        } catch (e) {
+           console.error("Local storage set error:", e);
+        }
+
+      } catch (e: any) {
+        if (e.name !== 'AbortError' && !(e.message && e.message.includes('aborted'))) {
+           console.error(e);
+        }
       } finally {
         setLoading(false);
       }
     }
 
     fetchData();
+
+    return () => {
+       controller.abort();
+    };
   }, [activeSportFilter]);
 
   function extractOdds(match: any) {

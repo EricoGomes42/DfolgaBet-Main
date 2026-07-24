@@ -57,9 +57,89 @@ export default {
         ],
       },
     },
+
+    {
+      name: 'primaryCategory',
+      title: 'Categoria Principal',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Cassino', value: 'Cassino' },
+          { title: 'Esportes', value: 'Esportes' }
+        ]
+      },
+      description: 'Todo post novo DEVE ter uma categoria principal definida.'
+    },
+    {
+      name: 'contentType',
+      title: 'Tipo de Conteúdo',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Jogo de Cassino', value: 'casinoGame' },
+          { title: 'Guia de Cassino', value: 'casinoGuide' },
+          { title: 'Artigo de Operadora de Cassino', value: 'casinoOperatorArticle' },
+          { title: 'Evento Esportivo', value: 'sportEvent' },
+          { title: 'Guia de Esportes', value: 'sportGuide' },
+        ]
+      },
+      description: 'Define a estrutura da URL e o propósito do conteúdo.'
+    },
+    {
+      name: 'casinoGame',
+      title: 'Jogo de Cassino',
+      type: 'reference',
+      to: [{ type: 'casinoGame' }],
+      hidden: ({ document }: any) => document?.primaryCategory !== 'Cassino'
+    },
+    {
+      name: 'primaryCasinoOperator',
+      title: 'Operadora Principal (Cassino)',
+      type: 'reference',
+      to: [{ type: 'casinoOperator' }],
+      hidden: ({ document }: any) => document?.primaryCategory !== 'Cassino',
+      description: 'Obrigatório para artigos exclusivos de uma operadora (ex: Como depositar na 7K).'
+    },
+    {
+      name: 'casinoOperators',
+      title: 'Operadoras Relacionadas (Cassino)',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'casinoOperator' }] }],
+      hidden: ({ document }: any) => document?.primaryCategory !== 'Cassino',
+      description: 'Casas citadas no artigo para gerar relacionamentos e cards.'
+    },
+    {
+      name: 'sportEvent',
+      title: 'Evento Esportivo (Partida)',
+      type: 'string',
+      hidden: ({ document }: any) => document?.primaryCategory !== 'Esportes',
+      description: 'Ex: Brasil x EUA Feminino'
+    },
+    {
+      name: 'sportCompetition',
+      title: 'Competição Esportiva',
+      type: 'reference',
+      to: [{ type: 'sportCompetition' }],
+      hidden: ({ document }: any) => document?.primaryCategory !== 'Esportes'
+    },
+    {
+      name: 'faq',
+      title: 'Perguntas Frequentes (FAQ)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'question', title: 'Pergunta', type: 'string', validation: (Rule: any) => Rule.required() },
+            { name: 'answer', title: 'Resposta', type: 'text', validation: (Rule: any) => Rule.required() }
+          ]
+        }
+      ],
+      description: 'Obrigatório para novos posts. Adicione as perguntas frequentes do artigo.'
+    },
     {
       name: 'area',
-      title: 'Área',
+      title: 'Área (Legado)',
       type: 'string',
       options: {
         list: [
@@ -98,6 +178,7 @@ export default {
       name: 'title',
       title: 'Title',
       type: 'string',
+      description: 'Use {ano} para inserir automaticamente o ano corrente.',
     },
     {
       name: 'slug',
@@ -171,8 +252,11 @@ export default {
       media: 'mainImage',
     },
     prepare(selection: any) {
-      const {author} = selection
+      const {author, title} = selection
+      const currentYear = new Date().getFullYear().toString()
+      const resolvedTitle = title ? title.replace(/\{ano\}/gi, currentYear).replace(/\{year\}/gi, currentYear) : title
       return Object.assign({}, selection, {
+        title: resolvedTitle,
         subtitle: author && `by ${author}`,
       })
     },

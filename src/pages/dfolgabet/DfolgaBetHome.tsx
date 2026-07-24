@@ -1,3 +1,5 @@
+import { resolveCanonicalUrl } from '../../lib/urlResolver';
+import { resolveDynamicContent } from '../../lib/dynamicContent';
 import { ShieldCheck, Trophy, Gift, LineChart, Calendar, ArrowRight, ChevronLeft, ChevronRight, TrendingUp, Zap, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -36,9 +38,9 @@ export default function DfolgaBetHome() {
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
       try {
-        const heroQuery = `*[_type == "post" && (heroParticipation == true || (!defined(sections) || "homepage" in sections))] | order(coalesce(heroPriority, 999) asc, publishedAt desc, _createdAt desc)[0...10] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
-        const sportsQuery = `*[_type == "post" && (area == "Esportes" || promotedCategory == "sports" || (!defined(sections) || "sports" in sections) || (!defined(area) && !defined(promotedCategory) && (!defined(sections) || "homepage" in sections)))] | order(publishedAt desc, _createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
-        const casinoQuery = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections)] | order(publishedAt desc, _createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const heroQuery = `*[_type == "post" && (heroParticipation == true || (!defined(sections) || "homepage" in sections))] | order(coalesce(heroPriority, 999) asc, publishedAt desc, _createdAt desc)[0...10] { _id, title, slug, mainImage, publishedAt, _createdAt, primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, bookmakerKey, "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const sportsQuery = `*[_type == "post" && (primaryCategory == "Esportes" || area == "Esportes" || promotedCategory == "sports" || (!defined(sections) || "sports" in sections) || (!defined(area) && !defined(primaryCategory) && !defined(promotedCategory) && (!defined(sections) || "homepage" in sections)))] | order(publishedAt desc, _createdAt desc)[0...12] { _id, title, slug, mainImage, publishedAt, _createdAt, primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, bookmakerKey, "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const casinoQuery = `*[_type == "post" && (primaryCategory == "Cassino" || area == "Cassino" || promotedCategory == "casino" || "casino" in sections)] | order(publishedAt desc, _createdAt desc)[0...12] { _id, title, slug, mainImage, publishedAt, _createdAt, primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, bookmakerKey, "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
         
         const [heroData, sportsData, casinoData] = await Promise.all([
           client.fetch(heroQuery, {}, { signal: controller.signal }),
@@ -49,19 +51,21 @@ export default function DfolgaBetHome() {
         clearTimeout(timeoutId);
 
         const isCasinoArticle = (post: any) => {
-          if (post.area === 'Cassino') return true;
-          if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-          if (post.area || post.promotedCategory) return false;
-          const title = (post.title || '').toLowerCase();
+          if (post.primaryCategory === 'Cassino') return true;
+    if (post.area === 'Cassino') return true;
+    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
+    if (post.primaryCategory || post.area || post.promotedCategory) return false;
+          const title = (resolveDynamicContent(post.title) || '').toLowerCase();
           const cat = (post.categoryName || '').toLowerCase();
           return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
                   cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
         };
 
         const isSportsArticle = (post: any) => {
-          if (post.area === 'Esportes') return true;
-          if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-          if (post.area || post.promotedCategory) return false;
+          if (post.primaryCategory === 'Esportes') return true;
+    if (post.area === 'Esportes') return true;
+    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
+    if (post.primaryCategory || post.area || post.promotedCategory) return false;
           return !isCasinoArticle(post);
         };
         
@@ -154,7 +158,7 @@ export default function DfolgaBetHome() {
               className="absolute inset-0"
             >
               <Link 
-                to={`/dfolgabet/post/${heroPosts[heroIndex].slug?.current}`} 
+                to={resolveCanonicalUrl(heroPosts[heroIndex])} 
                 className="block w-full h-full"
               >
                 {heroPosts[heroIndex].mainImage ? (

@@ -13,7 +13,7 @@ export default function DfolgaBetSmartPanel() {
 
   useEffect(() => {
     try {
-      const cached = localStorage.getItem('dfolgabet_live_odds_multi_cache');
+      const cached = localStorage.getItem('dfolgabet_live_odds_multi_cache_v2');
       if (cached) {
         const { payload } = JSON.parse(cached);
         const matchesLists = Object.values(payload).filter(v => Array.isArray(v)) as any[][];

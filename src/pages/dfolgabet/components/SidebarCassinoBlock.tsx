@@ -10,7 +10,7 @@ export default function SidebarCassinoBlock() {
     async function fetchCasinoPost() {
       try {
         const query = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections || (!defined(area) && !defined(promotedCategory) && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")))] | order(isFeatured desc, publishedAt desc, _createdAt desc)[0] {
-          title, mainImage, slug, "categoryName": categories[0]->title, area
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, primaryCategory, contentType, primaryCasinoOperator->{slug}, title, mainImage, slug, "categoryName": categories[0]->title, area
         }`;
         const data = await client.fetch(query);
         if (data) {

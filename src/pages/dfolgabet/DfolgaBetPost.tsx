@@ -1,8 +1,10 @@
+import { resolveCanonicalUrl } from '../../lib/urlResolver';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PortableText } from '@portabletext/react';
 import { Helmet } from 'react-helmet-async';
 import { client, urlFor } from '../../lib/sanity';
+import { resolveDynamicContent } from '../../lib/dynamicContent';
 import { 
   Calendar, ArrowLeft, Home, Zap, Clock, MessageCircle, Eye, Bookmark,
   Facebook, Linkedin, Twitter, Send, Info, ShieldCheck
@@ -38,9 +40,10 @@ export default function DfolgaBetPost() {
   useEffect(() => {
     async function fetchPost() {
       try {
-        const query = `*[_type == "post" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
+                const query = `*[_type == "post" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
           _id,
           title,
+          slug,
           mainImage,
           publishedAt,
           _createdAt,
@@ -51,7 +54,18 @@ export default function DfolgaBetPost() {
           seoCustomCode,
           "authorName": author->name,
           "authorImage": author->image,
-          "categoryName": categories[0]->title
+          "categoryName": categories[0]->title,
+          primaryCategory,
+          contentType,
+          primaryCasinoOperator->{slug},
+          casinoOperators[]->{slug, title},
+          sportCompetition->{slug, title},
+          sportEvent,
+          faq,
+          bookmakerKey,
+          area,
+          sections,
+          promotedCategory
         }`;
         const data = await client.fetch(query, { slug: decodedSlug });
         setPost(data);
@@ -78,7 +92,9 @@ export default function DfolgaBetPost() {
         head.appendChild(cloned);
       });
 
-      return () => {
+      
+
+  return () => {
         nodes.forEach(node => {
           if (head.contains(node)) {
             head.removeChild(node);
@@ -89,20 +105,52 @@ export default function DfolgaBetPost() {
   }, [post?.seoCustomCode]);
 
   if (loading) {
-    return (
+    
+
+  return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#50C0CC]"></div>
       </div>
     );
   }
 
+  const dynamicTitle = post ? resolveDynamicContent(post.title) : "";
+  const dynamicSeoTitle = post ? resolveDynamicContent(post.seoTitle || post.title) : "";
+  const dynamicSeoDesc = post ? resolveDynamicContent(post.seoDescription || post.excerpt || "") : "";
+
   if (!post) {
-    return (
+    
+
+  return (
       <>
-        <Helmet>
-          <title>Post não encontrado | DfolgaBet</title>
-          <meta name="robots" content="noindex, follow" />
-        </Helmet>
+              <Helmet>
+        <title>{dynamicSeoTitle} | DfolgaBet</title>
+        <meta name="description" content={dynamicSeoDesc} />
+        <meta property="og:title" content={dynamicSeoTitle} />
+        <meta property="og:description" content={dynamicSeoDesc} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={dynamicSeoTitle} />
+        <meta name="twitter:description" content={dynamicSeoDesc} />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <link rel="canonical" href={`https://dfolgabet.com.br${resolveCanonicalUrl(post)}`} />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": "${dynamicSeoTitle}",
+              "description": "${dynamicSeoDesc}"
+            }
+          `}
+        </script>
+      
+
+
+              <script type="application/ld+json">
+          {JSON.stringify(breadcrumbList)}
+        </script>
+      </Helmet>
         <div className="max-w-[800px] mx-auto px-4 py-24 text-center">
           <h1 className="text-3xl font-black text-white mb-4">Post não encontrado</h1>
           <p className="text-gray-400 mb-8">O post que você está procurando não existe ou foi removido.</p>
@@ -135,9 +183,11 @@ export default function DfolgaBetPost() {
         const block = rawFilteredBody[i];
         
         // --- 1. H2 HEADINGS ---
+        
         if (block._type === 'block' && block.style === 'h2' && block.children) {
             const text = block.children.map((c: any) => c.text).join('').toLowerCase();
-            inFaq = (text.includes('perguntas frequentes') || text.includes('faq'));
+            inFaq = (text.includes('perguntas frequentes') || text.includes('faq')) && (!post.faq || post.faq.length === 0);
+
             const isTipsHeading = (text.includes('palpite') || text.includes('dica'));
             
             if (currentTip) {
@@ -222,13 +272,90 @@ export default function DfolgaBetPost() {
     }
   }
 
+  
+
+  // Generate Breadcrumbs
+  const canonicalUrl = resolveCanonicalUrl(post);
+  const pathParts = canonicalUrl.split('/').filter(Boolean);
+  
+  let breadcrumbItems: any[] = [];
+  if (pathParts[0] === 'cassino') {
+    breadcrumbItems.push({ label: 'Cassino', url: '/cassino' });
+    if (pathParts[1] === 'jogos') breadcrumbItems.push({ label: 'Jogos', url: '/cassino/jogos' });
+    if (pathParts[1] === 'guias') breadcrumbItems.push({ label: 'Guias', url: '/cassino/guias' });
+    if (pathParts[1] === 'casas') {
+      breadcrumbItems.push({ label: 'Casas', url: '/casas-de-apostas' });
+      if (post.primaryCasinoOperator) {
+        breadcrumbItems.push({ label: post.primaryCasinoOperator.title || pathParts[2], url: `/casas/${pathParts[2]}` });
+      } else {
+        breadcrumbItems.push({ label: pathParts[2], url: `/casas/${pathParts[2]}` });
+      }
+    }
+  } else if (pathParts[0] === 'esportes') {
+    breadcrumbItems.push({ label: 'Esportes', url: '/esportes' });
+    if (pathParts[1] === 'eventos') breadcrumbItems.push({ label: 'Eventos', url: '/esportes/eventos' });
+    if (pathParts[1] === 'guias') breadcrumbItems.push({ label: 'Guias', url: '/esportes/guias' });
+    if (pathParts[1] === 'competicoes') breadcrumbItems.push({ label: 'Competições', url: '/esportes/competicoes' });
+  } else {
+    // Legacy fallback
+    breadcrumbItems.push({ label: 'DfolgaBet', url: '/dfolgabet' });
+    if (post.categoryName) {
+      breadcrumbItems.push({ label: post.categoryName, url: '#' });
+    }
+  }
+  
+  // BreadcrumbList JSON-LD
+  const breadcrumbList = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Início",
+        "item": "https://dfolgabet.com.br"
+      },
+      ...breadcrumbItems.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 2,
+        "name": item.label,
+        "item": `https://dfolgabet.com.br${item.url}`
+      })),
+      {
+        "@type": "ListItem",
+        "position": breadcrumbItems.length + 2,
+        "name": dynamicTitle,
+        "item": `https://dfolgabet.com.br${canonicalUrl}`
+      }
+    ]
+  };
+
   return (
     <>
       <Helmet>
-        <title>{post.seoTitle || post.title} | DfolgaBet</title>
-        <meta name="description" content={post.seoDescription || post.excerpt || ''} />
+        <title>{dynamicSeoTitle} | DfolgaBet</title>
+        <meta name="description" content={dynamicSeoDesc} />
+        <meta property="og:title" content={dynamicSeoTitle} />
+        <meta property="og:description" content={dynamicSeoDesc} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={dynamicSeoTitle} />
+        <meta name="twitter:description" content={dynamicSeoDesc} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <link rel="canonical" href={`https://dfolgabet.com.br/dfolgabet/post/${decodedSlug}`} />
+        <link rel="canonical" href={`https://dfolgabet.com.br${resolveCanonicalUrl(post)}`} />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Article",
+              "headline": "${dynamicSeoTitle}",
+              "description": "${dynamicSeoDesc}"
+            }
+          `}
+        </script>
+      
+
+
       </Helmet>
       <div className="pt-8 pb-16 bg-[#0A051A]">
         <div className="max-w-[1024px] mx-auto px-4 lg:px-8 mb-4">
@@ -236,20 +363,22 @@ export default function DfolgaBetPost() {
           {/* Breadcrumbs */}
           <div className="flex items-center gap-2 text-xs text-gray-400 mb-6 flex-wrap">
             <Home size={12} />
-            <Link to="/dfolgabet" className="hover:text-[#50C0CC] transition-colors">Início</Link>
+            <Link to="/" className="hover:text-[#50C0CC] transition-colors">Início</Link>
+            {breadcrumbItems.map((item, i) => (
+              <span key={i} className="flex items-center gap-2">
+                <span>/</span>
+                <Link to={item.url} className="hover:text-[#50C0CC] transition-colors">{item.label}</Link>
+              </span>
+            ))}
             <span>/</span>
-            <span className="hover:text-[#50C0CC] cursor-pointer transition-colors">Notícias</span>
-            <span>/</span>
-            <span className="hover:text-[#50C0CC] cursor-pointer transition-colors">{post.categoryName || 'Atualidades'}</span>
-            <span>/</span>
-            <span className="text-gray-300">{post.title}</span>
+            <span className="text-gray-300">{dynamicTitle}</span>
           </div>
 
           {post.mainImage && (
             <div className="mb-10 w-full rounded-xl overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.5)] border border-[#311B92]/50">
               <img 
                 src={urlFor(post.mainImage).width(1200).height(800).url()} 
-                alt={post.title}
+                alt={dynamicTitle}
                 className="w-full object-cover max-h-[600px]"
               />
             </div>
@@ -267,7 +396,7 @@ export default function DfolgaBetPost() {
 
           {/* Title */}
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-white max-w-[900px] leading-tight mb-5">
-            {post.title}
+            {dynamicTitle}
           </h1>
 
           {/* Excerpt */}
@@ -357,7 +486,9 @@ export default function DfolgaBetPost() {
                       types: {
                         tipItem: ({ value }: any) => {
                           const isPrincipal = value.isPrincipal;
-                          return (
+                          
+
+  return (
                             <div className={`bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6 mb-4 ${isPrincipal ? 'border-l-4 border-l-[#e67e22] bg-[#0A051A]/80' : ''}`}>
                               <h3 className="text-white font-bold text-lg mb-3">{value.title}</h3>
                               <div className="text-[#b0b0b0] text-[15px] leading-relaxed space-y-4">
@@ -378,7 +509,9 @@ export default function DfolgaBetPost() {
                           if (!value?.asset?._ref) {
                             return null;
                           }
-                          return (
+                          
+
+  return (
                             <img
                               alt={value.alt || 'Imagem do artigo'}
                               loading="lazy"
@@ -412,7 +545,9 @@ export default function DfolgaBetPost() {
                             }
                           }
 
-                          return (
+                          
+
+  return (
                             <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#50C0CC] hover:underline">
                               {children}
                             </a>
@@ -422,6 +557,25 @@ export default function DfolgaBetPost() {
                     }} 
                   />
                 </div>
+                
+                
+                {post.faq && post.faq.length > 0 && (
+                  <div className="mt-12 mb-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <Zap className="text-[#e67e22]" size={28} />
+                      <h2 className="text-2xl font-black text-white uppercase m-0">Perguntas Frequentes</h2>
+                    </div>
+                    <div className="h-[1px] w-full bg-[#311B92] mb-6"></div>
+                    <div className="space-y-4">
+                      {post.faq.map((item: any, index: number) => (
+                        <div key={index} className="bg-[#120826] border border-[#311B92] rounded-xl p-4 md:p-6">
+                          <h3 className="text-white font-bold mb-2 text-lg">{item.question}</h3>
+                          <p className="text-[#b0b0b0] text-[15px] leading-relaxed">{item.answer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 
                 {/* Bottom Social Share Ribbon */}
                 <div className="mt-8">

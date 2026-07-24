@@ -1,3 +1,5 @@
+import { resolveCanonicalUrl } from '../../../lib/urlResolver';
+import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { client, urlFor } from '../../../lib/sanity';
@@ -19,7 +21,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" ${currentPostId ? `&& _id != "${currentPostId}"` : ''}] | order(_createdAt desc)[0...5] {
-          _id,
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
           title,
           slug,
           mainImage,
@@ -41,7 +43,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
   const relatedPosts = posts.slice(1, 5); // take up to 4 more for related
 
   const getLinkUrl = (post: RelatedPost) => {
-    return `/dfolgabet/post/${(post.slug as {current: string}).current}`;
+    return resolveCanonicalUrl(post);
   };
 
   const renderImage = (post: RelatedPost, width: number, height: number, className: string) => {
@@ -49,7 +51,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
        return (
           <img 
             src={`https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=${width}&h=${height}&q=80`}
-            alt={post.title} 
+            alt={resolveDynamicContent(post.title)} 
             className={className} 
           />
        );
@@ -58,7 +60,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
     return (
       <img 
         src={urlFor(post.mainImage).width(width).height(height).url()} 
-        alt={post.title} 
+        alt={resolveDynamicContent(post.title)} 
         className={className} 
       />
     );
@@ -99,7 +101,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
                   {renderImage(post, 600, 400, "w-full h-full object-cover transition-transform duration-500 group-hover:scale-110")}
                 </div>
                 <h4 className="text-sm font-bold text-white group-hover:text-[#50C0CC] transition-colors leading-snug mb-2">
-                  {post.title}
+                  {resolveDynamicContent(post.title)}
                 </h4>
                 <span className="text-gray-500 text-[10px] tracking-wider flex items-center gap-1">
                   <Clock size={10} /> {new Date(post._createdAt).toLocaleDateString('pt-BR')}

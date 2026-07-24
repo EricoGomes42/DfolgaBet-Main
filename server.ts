@@ -472,6 +472,9 @@ async function startServer() {
       res.json(normalizedData);
     } catch (error: any) {
       const status = error.response ? error.response.status : 500;
+      
+
+
       const isTimeout = error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT' || (error.message && error.message.includes('timeout'));
       const isNetworkError = error.code === 'ECONNRESET' || error.code === 'ENOTFOUND' || error.message === 'Network Error';
       
@@ -502,8 +505,6 @@ async function startServer() {
         return res.json(staleData);
       }
 
-      // Important: Always return HTTP 200 with an empty list for any external failure
-      // Never return 4xx or 5xx to the frontend for 3rd party API issues
       return res.json([]);
     }
   });
@@ -537,15 +538,122 @@ async function startServer() {
 
   // Vite middleware for development (Single Instance)
   let vite: any;
+
+  // Sitemap Generation
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const sanityProjectId = process.env.VITE_SANITY_PROJECT_ID || 'isnjdgzr';
+      const sanityDataset = process.env.VITE_SANITY_DATASET || 'production';
+      
+      const { createClient } = await import('@sanity/client');
+      const client = createClient({
+        projectId: sanityProjectId,
+        dataset: sanityDataset,
+        apiVersion: '2023-05-03',
+        useCdn: false,
+      });
+
+      const query = `*[(_type == "post" || _type == "casinoOperator" || _type == "sportCompetition") && !(_id in path("drafts.**"))] {
+        _type,
+        slug,
+        primaryCategory,
+        contentType,
+        primaryCasinoOperator->{slug},
+        publishedAt,
+        _updatedAt
+      }`;
+      const results = await client.fetch(query);
+      
+      let urls = [];
+      const baseUrl = 'https://dfolgabet.com.br';
+
+      // Static routes
+      const staticRoutes = [
+        '',
+        '/casas-de-apostas',
+        '/prognosticos',
+        '/bonus',
+        '/guias',
+        '/dicas',
+        '/estatisticas',
+        '/sobre'
+      ];
+      staticRoutes.forEach(route => {
+        urls.push(`<url><loc>${baseUrl}${route}</loc><changefreq>daily</changefreq><priority>0.8</priority></url>`);
+      });
+
+      results.forEach((doc: any) => {
+        if (!doc.slug || !doc.slug.current) return;
+        const slug = doc.slug.current;
+        let urlPath = '';
+
+        if (doc._type === 'casinoOperator') {
+          urlPath = `/casas/${slug}`;
+        } else if (doc._type === 'sportCompetition') {
+          urlPath = `/esportes/competicoes/${slug}`;
+        } else if (doc._type === 'post') {
+          // logic from resolveCanonicalUrl
+          const category = doc.primaryCategory;
+          const contentType = doc.contentType;
+          if (category === 'Cassino') {
+            if (contentType === 'casinoGame') urlPath = `/cassino/jogos/${slug}`;
+            else if (contentType === 'casinoGuide') urlPath = `/cassino/guias/${slug}`;
+            else if (contentType === 'casinoOperatorArticle') {
+              const opSlug = doc.primaryCasinoOperator?.slug?.current || 'casa';
+              urlPath = `/cassino/casas/${opSlug}/${slug}`;
+            } else {
+              urlPath = `/dfolgabet/post/${slug}`;
+            }
+          } else if (category === 'Esportes') {
+            if (contentType === 'sportEvent') urlPath = `/esportes/eventos/${slug}`;
+            else if (contentType === 'sportGuide') urlPath = `/esportes/guias/${slug}`;
+            else {
+              urlPath = `/dfolgabet/post/${slug}`;
+            }
+          } else {
+            urlPath = `/dfolgabet/post/${slug}`;
+          }
+        }
+        
+        if (urlPath) {
+          urls.push(`<url><loc>${baseUrl}${urlPath}</loc><lastmod>${doc.publishedAt || doc._updatedAt}</lastmod></url>`);
+        }
+      });
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${urls.join('\n  ')}
+</urlset>`;
+
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (e: any) {
+      console.error("Sitemap error:", e);
+      res.status(500).send("Error generating sitemap");
+    }
+  });
+
   if (process.env.NODE_ENV !== "production") {
+
     vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
   }
 
+
   // SEO Interception for DfolgaBet Posts
-  app.get("/dfolgabet/post/:slug", async (req, res, next) => {
+  const seoRoutes = [
+    "/dfolgabet/post/:slug",
+    "/cassino/jogos/:slug",
+    "/cassino/guias/:slug",
+    "/cassino/casas/:operatorSlug/:slug",
+    "/esportes/eventos/:slug",
+    "/esportes/guias/:slug"
+  ];
+  
+  app.get(seoRoutes, async (req, res, next) => {
+
     const slug = req.params.slug;
     const url = req.originalUrl;
     
@@ -576,12 +684,11 @@ async function startServer() {
       } else {
         template = fs.readFileSync(path.resolve(process.cwd(), 'dist/index.html'), 'utf-8');
       }
-
       if (post) {
         const title = post.seoTitle || post.title || 'DfolgaBet';
         const description = post.seoDescription || post.excerpt || '';
-        const canonical = `https://dfolgabet.com.br/dfolgabet/post/${slug}`;
-
+        // Use the requested URL as canonical for now, or build it based on category
+        const canonical = `https://dfolgabet.com.br${url.split('?')[0]}`;
         template = template.replace(/<title>.*?<\/title>/, `<title>${title} | DfolgaBet</title>`);
         template = template.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${description.replace(/"/g, '&quot;')}">`);
         

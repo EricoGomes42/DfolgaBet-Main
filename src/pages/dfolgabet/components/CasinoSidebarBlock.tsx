@@ -1,3 +1,4 @@
+import { resolveCanonicalUrl } from '../../../lib/urlResolver';
 import React, { useState, useEffect } from 'react';
 import { PlayCircle, ShieldCheck, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -13,7 +14,7 @@ export default function CasinoSidebarBlock() {
     async function fetchCasinoPosts() {
       try {
         const query = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections || (!defined(area) && !defined(promotedCategory) && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")))] | order(_createdAt desc)[0...5] {
-          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, area
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, area
         }`;
         const data = await client.fetch(query);
         setFetchedCasinoArticles(data || []);
@@ -26,7 +27,7 @@ export default function CasinoSidebarBlock() {
   const baseArticles = fetchedCasinoArticles.map(p => ({
      title: p.title,
      description: 'Descubra mais dicas e informações exclusivas.',
-     url: `/dfolgabet/post/${p.slug?.current}`,
+     url: resolveCanonicalUrl(p),
      color: '#e67e22',
      badge: (p.categoryName || 'APOSTAS').toUpperCase(),
      image: p.mainImage ? urlFor(p.mainImage).width(400).height(300).url() : 'https://images.unsplash.com/photo-1662491106202-e2b20fb55cc1?q=80&w=400&auto=format&fit=crop',

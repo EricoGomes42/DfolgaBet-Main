@@ -1,3 +1,5 @@
+import { resolveCanonicalUrl } from '../../../lib/urlResolver';
+import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import { Link } from 'react-router-dom';
 import { Bookmark, Play } from 'lucide-react';
 import { urlFor } from '../../../lib/sanity';
@@ -25,7 +27,8 @@ export default function LatestNews({ posts = [] }: { posts?: Post[] }) {
   const displayItems = posts.map((post, index) => {
     return {
       id: post.slug?.current || `fallback-${index}`,
-      title: post.title,
+      originalPost: post,
+      title: resolveDynamicContent(post.title),
       excerpt: post.excerpt || (index === 0 ? 'Confira as últimas novidades e análises exclusivas preparadas por nossa equipe de especialistas para turbinar suas estratégias.' : ''),
       image: post.mainImage 
               ? urlFor(post.mainImage).width(800).height(500).url() 
@@ -40,7 +43,7 @@ export default function LatestNews({ posts = [] }: { posts?: Post[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {displayItems.map((item) => {
-        const linkTo = `/dfolgabet/post/${item.id}`;
+        const linkTo = resolveCanonicalUrl(item.originalPost);
 
         if (item.layout === 'hero') {
           return (

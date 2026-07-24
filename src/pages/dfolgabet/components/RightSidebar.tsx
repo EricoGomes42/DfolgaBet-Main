@@ -1,3 +1,5 @@
+import { resolveCanonicalUrl } from '../../../lib/urlResolver';
+import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronDown, ChevronUp, Star, MessageSquare, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -35,7 +37,7 @@ export function RightSidebar() {
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] {
-          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
         }`;
         const data = await client.fetch(query);
         setBlogPosts(data);
@@ -50,10 +52,11 @@ export function RightSidebar() {
   
   // Custom filter logic based on categoryName or title containing cassino/crash/aviator terminology
   const isCasinoArticle = (post: any) => {
+    if (post.primaryCategory === 'Cassino') return true;
     if (post.area === 'Cassino') return true;
     if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-    if (post.area || post.promotedCategory) return false;
-    const title = (post.title || '').toLowerCase();
+    if (post.primaryCategory || post.area || post.promotedCategory) return false;
+    const title = (resolveDynamicContent(post.title) || '').toLowerCase();
     const cat = (post.categoryName || '').toLowerCase();
     return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
             cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
@@ -61,9 +64,10 @@ export function RightSidebar() {
 
   
   const isSportsArticle = (post: any) => {
+    if (post.primaryCategory === 'Esportes') return true;
     if (post.area === 'Esportes') return true;
     if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-    if (post.area || post.promotedCategory) return false;
+    if (post.primaryCategory || post.area || post.promotedCategory) return false;
     return !isCasinoArticle(post);
   };
   itemsToRender = itemsToRender.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : (activeArticleTab === 'esportes' ? isSportsArticle(post) : true));
@@ -137,16 +141,16 @@ export function RightSidebar() {
              <div className="p-3 space-y-4">
                {itemsToRender.map((post, idx) => (
                  <React.Fragment key={idx}>
-                      <Link to={`/dfolgabet/post/${post.slug?.current || '#'}`} className="group block">
+                      <Link to={resolveCanonicalUrl(post)} className="group block">
                          <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
                             {post.mainImage ? (
-                               <img src={urlFor(post.mainImage).width(800).height(450).url()} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                               <img src={urlFor(post.mainImage).width(800).height(450).url()} alt={resolveDynamicContent(post.title)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             ) : (
-                               <img src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=800&q=80" alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                               <img src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=800&q=80" alt={resolveDynamicContent(post.title)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             )}
                             <div className="absolute top-2 left-2 bg-[#50C0CC] text-[#0A051A] text-[10px] font-bold px-2 py-0.5 rounded uppercase">{post.categoryName || 'Notícias'}</div>
                          </div>
-                         <h4 className="text-white text-sm font-bold leading-tight group-hover:text-[#50C0CC] transition-colors line-clamp-2">{post.title}</h4>
+                         <h4 className="text-white text-sm font-bold leading-tight group-hover:text-[#50C0CC] transition-colors line-clamp-2">{resolveDynamicContent(post.title)}</h4>
                       </Link>
                    
                    {idx < itemsToRender.length - 1 && (

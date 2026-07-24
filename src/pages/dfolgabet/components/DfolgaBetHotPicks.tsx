@@ -9,19 +9,23 @@ export default function DfolgaBetHotPicks() {
 
   useEffect(() => {
     try {
-      const cached = localStorage.getItem('dfolgabet_live_odds_multi_cache');
+      const cached = localStorage.getItem('dfolgabet_live_odds_multi_cache_v2');
       if (cached) {
         const { payload } = JSON.parse(cached);
         const matchesLists = Object.values(payload).filter(v => Array.isArray(v)) as any[][];
         const flatMatches = matchesLists.flat().filter(m => m.bookmakers && m.bookmakers.length > 0);
         
         if (flatMatches.length >= 3) {
-           const realPicks = flatMatches.map((match: any, index: number) => {
-              const bookie = match.bookmakers[0];
-              const market = bookie.markets?.[0];
-              const outcome = market?.outcomes?.[0] || { price: 2.10 };
+           const realPicks = flatMatches.reduce((acc: any[], match: any, index: number) => {
+              const bookie = match.bookmakers?.[0];
+              const market = bookie?.markets?.[0];
+              const outcome = market?.outcomes?.[0];
               
-              return {
+              if (!match.home_team || !match.away_team || !outcome?.price || !bookie?.title) {
+                 return acc;
+              }
+              
+              acc.push({
                  id: match.id || index,
                  player: 'Evento Principal',
                  match: `${match.home_team} x ${match.away_team}`,
@@ -30,8 +34,10 @@ export default function DfolgaBetHotPicks() {
                  bookmaker: bookie.title,
                  trend: index % 2 === 0 ? 'Alta procura' : 'Em alta',
                  trendUp: true
-              };
-           });
+              });
+              
+              return acc;
+           }, []);
            setPicks(realPicks);
            return;
         }

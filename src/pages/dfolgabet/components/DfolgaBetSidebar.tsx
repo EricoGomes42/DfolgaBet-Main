@@ -1,3 +1,5 @@
+import { resolveCanonicalUrl } from '../../../lib/urlResolver';
+import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, ChevronDown, Star } from 'lucide-react';
@@ -26,7 +28,7 @@ export default function DfolgaBetSidebar() {
       const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] {
-          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
         }`;
         const data = await client.fetch(query, {}, { signal: controller.signal });
         clearTimeout(timeoutId);
@@ -39,10 +41,11 @@ export default function DfolgaBetSidebar() {
   }, []);
 
   const isCasinoArticle = (post: any) => {
+    if (post.primaryCategory === 'Cassino') return true;
     if (post.area === 'Cassino') return true;
     if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-    if (post.area || post.promotedCategory) return false;
-    const title = (post.title || '').toLowerCase();
+    if (post.primaryCategory || post.area || post.promotedCategory) return false;
+    const title = (resolveDynamicContent(post.title) || '').toLowerCase();
     const cat = (post.categoryName || '').toLowerCase();
     return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
             cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
@@ -50,9 +53,10 @@ export default function DfolgaBetSidebar() {
 
   
   const isSportsArticle = (post: any) => {
+    if (post.primaryCategory === 'Esportes') return true;
     if (post.area === 'Esportes') return true;
     if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-    if (post.area || post.promotedCategory) return false;
+    if (post.primaryCategory || post.area || post.promotedCategory) return false;
     return !isCasinoArticle(post);
   };
   const popularArticles = popularArticlesRaw.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : (activeArticleTab === 'esportes' ? isSportsArticle(post) : true)).slice(0, 4);
@@ -155,7 +159,7 @@ export default function DfolgaBetSidebar() {
           </div>
           <div className="space-y-6">
             {popularArticles.map((article, i) => (
-              <Link key={i} to={`/dfolgabet/post/${article.slug?.current}`} className="group flex gap-4">
+              <Link key={i} to={resolveCanonicalUrl(article)} className="group flex gap-4">
                 <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0">
                   {article.mainImage ? (
                     <img src={urlFor(article.mainImage).width(200).height(200).url()} alt={article.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />

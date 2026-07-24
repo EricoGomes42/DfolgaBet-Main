@@ -1,3 +1,4 @@
+import { resolveCanonicalUrl } from '../../../lib/urlResolver';
 import { TrendingUp, Search, X, Star, Newspaper, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -12,7 +13,7 @@ export default function DfolgaBetTopBar() {
     async function fetchNews() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] { 
-          title, 
+          primaryCategory, contentType, primaryCasinoOperator->{slug}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, title, 
           slug,
           "category": categories[0]->title
         }`;
@@ -45,7 +46,7 @@ export default function DfolgaBetTopBar() {
                   news.map((item, i) => (
                     <div key={`a-${i}`} className="flex items-center">
                       <Link 
-                        to={`/dfolgabet/post/${item.slug?.current}`}
+                        to={resolveCanonicalUrl(item)}
                         className="text-[10px] md:text-[11px] font-bold text-gray-300 hover:text-[#50C0CC] transition-colors flex items-center gap-2 px-6 whitespace-nowrap"
                       >
                         <span className="text-[#50C0CC] opacity-60">[{item.category || 'TIPS'}]</span>
@@ -63,7 +64,7 @@ export default function DfolgaBetTopBar() {
                 {news.map((item, i) => (
                   <div key={`b-${i}`} className="flex items-center">
                     <Link 
-                       to={`/dfolgabet/post/${item.slug?.current}`}
+                       to={resolveCanonicalUrl(item)}
                       className="text-[10px] md:text-[11px] font-bold text-gray-300 hover:text-[#50C0CC] transition-colors flex items-center gap-2 px-6 whitespace-nowrap"
                     >
                       <span className="text-[#50C0CC] opacity-60">[{item.category || 'TIPS'}]</span>
