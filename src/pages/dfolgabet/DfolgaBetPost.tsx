@@ -510,15 +510,38 @@ export default function DfolgaBetPost() {
                             return null;
                           }
                           
-
-  return (
+                          const baseClass = value.customClass || "w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800";
+                          const hasCaption = !!value.caption;
+                          
+                          const imgEl = (
                             <img
                               alt={value.alt || 'Imagem do artigo'}
                               loading="lazy"
                               src={urlFor(value).url()}
-                              className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
+                              className={hasCaption ? baseClass.replace('my-8', 'mt-8 mb-2') : baseClass}
+                              id={value.htmlId || undefined}
                             />
                           );
+                          
+                          const wrapperEl = (
+                            <>
+                              {value.url ? (
+                                <a 
+                                  href={value.url} 
+                                  target={value.openInNewTab ? "_blank" : "_self"} 
+                                  rel={value.openInNewTab || value.isAffiliate ? "noopener noreferrer sponsored" : undefined}
+                                  className={value.isAffiliate ? "affiliate-image-link block" : "block"}
+                                >
+                                  {imgEl}
+                                </a>
+                              ) : imgEl}
+                              {hasCaption && (
+                                <p className="text-center italic text-[#b0b0b0] text-[13px] mb-8 mt-1 px-4">{value.caption}</p>
+                              )}
+                            </>
+                          );
+
+                          return wrapperEl;
                         }
                       },
                       marks: {
@@ -615,7 +638,7 @@ export default function DfolgaBetPost() {
 
         {/* Sidebar Area */}
         <aside className="category-sidebar-track">
-          <DfolgaBetSidebar promotedBookmakers={Array.isArray(post.bookmakerKey) ? post.bookmakerKey : (post.bookmakerKey ? [post.bookmakerKey] : [])} />
+          <DfolgaBetSidebar />
         </aside>
       </div>
       </div>
