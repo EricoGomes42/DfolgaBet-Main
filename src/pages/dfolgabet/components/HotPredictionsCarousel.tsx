@@ -25,7 +25,7 @@ function LiveCard({ match }: { match: any }) {
     <div className="bg-[#0A051A] rounded-2xl border border-[#311B92] relative overflow-hidden flex flex-col p-4 shadow-lg hover:border-[#50C0CC]/50 transition-colors w-[280px] sm:w-[320px] shrink-0 mx-2">
       
       {/* Live Badge Top Right */}
-      {match.minute != null && (
+      {typeof match.minute === 'number' && (
       <div className="absolute top-0 right-0 bg-red-600 rounded-bl-xl px-3 py-1 flex flex-col items-center justify-center z-10">
          <span className="text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">AO VIVO <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div></span>
          <div className="w-full h-px bg-white/20 my-0.5"></div>

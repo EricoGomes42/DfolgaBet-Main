@@ -1,3 +1,4 @@
+import { resolveDynamicContent } from "../../../lib/dynamicContent";
 import { PlayCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -9,9 +10,7 @@ export default function SidebarCassinoBlock() {
   useEffect(() => {
     async function fetchCasinoPost() {
       try {
-        const query = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections || (!defined(area) && !defined(promotedCategory) && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")))] | order(isFeatured desc, publishedAt desc, _createdAt desc)[0] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, title, mainImage, slug, "categoryName": categories[0]->title, area
-        }`;
+        const query = `*[_type == "post" && (area == "Cassino" || (!defined(area) && (promotedCategory == "casino" || "casino" in sections)))] | order(isFeatured desc, publishedAt desc, _createdAt desc)[0] { title, mainImage, slug, "categoryName": categories[0]->title, area }`;
         const data = await client.fetch(query);
         if (data) {
           setFeaturedPost(data);
@@ -62,13 +61,13 @@ export default function SidebarCassinoBlock() {
         {featuredPost.mainImage ? (
           <img 
             src={urlFor(featuredPost.mainImage).width(800).height(450).url()} 
-            alt={featuredPost.title} 
+            alt={resolveDynamicContent(featuredPost.title)} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover/banner:scale-110"
           />
         ) : (
           <img 
             src="https://images.unsplash.com/photo-1518133835878-5a93cc3f89e5?auto=format&fit=crop&w=800&q=80" 
-            alt={featuredPost.title} 
+            alt={resolveDynamicContent(featuredPost.title)} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover/banner:scale-110"
           />
         )}
@@ -81,7 +80,7 @@ export default function SidebarCassinoBlock() {
                    {featuredPost.categoryName || 'CASSINO'}
                 </span>
                 <h4 className="text-white font-bold text-xs leading-snug drop-shadow-lg group-hover/banner:text-[#50C0CC] transition-colors line-clamp-2">
-                  {featuredPost.title}
+                  {resolveDynamicContent(featuredPost.title)}
                 </h4>
              </div>
              <div className="flex flex-col items-end gap-1 shrink-0">

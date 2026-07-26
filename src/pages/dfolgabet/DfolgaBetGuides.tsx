@@ -1,3 +1,4 @@
+import { resolveDynamicContent } from "../../lib/dynamicContent";
 import { BookOpen, GraduationCap, TrendingUp, Lightbulb, PlayCircle, ArrowRight, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -108,7 +109,7 @@ export default function DfolgaBetGuides() {
                 </span>
               </div>
               <h3 className="text-lg md:text-xl font-bold text-[#ffffff] mb-2 group-hover:text-[#50c0cc] transition-colors">
-                {guide.title}
+                {resolveDynamicContent(guide.title)}
               </h3>
               <p className="text-xs md:text-sm text-[#a2d9ce] line-clamp-2">
                 {guide.description}

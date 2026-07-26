@@ -2,14 +2,8 @@ import { Star, Gift } from 'lucide-react';
 import React from 'react';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
-export default function SidebarBonusBlock({ promotedBookmakers }: { promotedBookmakers?: string[] }) {
-  let activeBookies = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
-  if (promotedBookmakers && promotedBookmakers.length > 0) {
-    activeBookies = activeBookies.filter(b => promotedBookmakers.includes(b.key));
-    if (activeBookies.length === 0) {
-      activeBookies = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
-    }
-  }
+export default function SidebarBonusBlock() {
+  const activeBookies = DFOLOGABET_PRIORITY_BOOKMAKERS.filter(b => b.enabled).sort((a,b) => b.priority - a.priority);
 
   return (
     <div className="bg-[#120826] border border-[#311B92] rounded-xl p-4 overflow-hidden shadow-[0_0_20px_rgba(49,27,146,0.15)] flex flex-col mb-6">

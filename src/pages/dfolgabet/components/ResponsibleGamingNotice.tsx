@@ -10,12 +10,6 @@ export default function ResponsibleGamingNotice() {
           <ShieldAlert className="text-[#e67e22] w-7 h-7" />
           Aviso Importante: Jogo Responsável
         </h2>
-        <div className="bg-red-900/30 border border-red-500 rounded-md p-4 mb-6 text-center">
-          <p className="text-white text-base font-bold m-0">
-            Ministério da Fazenda adverte: aposta não é investimento.
-          </p>
-        </div>
-
 
         <p className="text-[#e0e0e0] text-base leading-relaxed mb-6 font-medium">
           A participação frequente em jogos expõe os participantes ao risco de dependência, distúrbios patológicos relacionados a jogos de apostas e perda de dinheiro apostado.

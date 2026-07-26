@@ -1,4 +1,4 @@
-import { resolveCanonicalUrl } from '../../../lib/urlResolver';
+import { isCasinoArticle, isSportsArticle } from '../../../lib/editorialClassification';
 import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronDown, ChevronUp, Star, MessageSquare, Info } from 'lucide-react';
@@ -37,7 +37,7 @@ export function RightSidebar() {
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
+          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
         }`;
         const data = await client.fetch(query);
         setBlogPosts(data);
@@ -51,25 +51,6 @@ export function RightSidebar() {
   let itemsToRender = [...blogPosts];
   
   // Custom filter logic based on categoryName or title containing cassino/crash/aviator terminology
-  const isCasinoArticle = (post: any) => {
-    if (post.primaryCategory === 'Cassino') return true;
-    if (post.area === 'Cassino') return true;
-    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-    const title = (resolveDynamicContent(post.title) || '').toLowerCase();
-    const cat = (post.categoryName || '').toLowerCase();
-    return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
-            cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
-  };
-
-  
-  const isSportsArticle = (post: any) => {
-    if (post.primaryCategory === 'Esportes') return true;
-    if (post.area === 'Esportes') return true;
-    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-    return !isCasinoArticle(post);
-  };
   itemsToRender = itemsToRender.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : (activeArticleTab === 'esportes' ? isSportsArticle(post) : true));
 
   return (
@@ -141,7 +122,7 @@ export function RightSidebar() {
              <div className="p-3 space-y-4">
                {itemsToRender.map((post, idx) => (
                  <React.Fragment key={idx}>
-                      <Link to={resolveCanonicalUrl(post)} className="group block">
+                      <Link to={`/dfolgabet/post/${post.slug?.current || '#'}`} className="group block">
                          <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
                             {post.mainImage ? (
                                <img src={urlFor(post.mainImage).width(800).height(450).url()} alt={resolveDynamicContent(post.title)} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />

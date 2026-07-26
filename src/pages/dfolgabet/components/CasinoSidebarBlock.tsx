@@ -1,4 +1,4 @@
-import { resolveCanonicalUrl } from '../../../lib/urlResolver';
+import { resolveDynamicContent } from "../../../lib/dynamicContent";
 import React, { useState, useEffect } from 'react';
 import { PlayCircle, ShieldCheck, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -13,9 +13,7 @@ export default function CasinoSidebarBlock() {
   useEffect(() => {
     async function fetchCasinoPosts() {
       try {
-        const query = `*[_type == "post" && (area == "Cassino" || promotedCategory == "casino" || "casino" in sections || (!defined(area) && !defined(promotedCategory) && (categories[0]->title match "*assino*" || categories[0]->title match "*rash*" || categories[0]->title match "*lot*" || title match "*viator*" || title match "*oleta*")))] | order(_createdAt desc)[0...5] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, area
-        }`;
+        const query = `*[_type == "post" && (area == "Cassino" || (!defined(area) && (promotedCategory == "casino" || "casino" in sections)))] | order(_createdAt desc)[0...5] { _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, area }`;
         const data = await client.fetch(query);
         setFetchedCasinoArticles(data || []);
       } catch(e) { }
@@ -25,9 +23,9 @@ export default function CasinoSidebarBlock() {
 
   // Map sanity data
   const baseArticles = fetchedCasinoArticles.map(p => ({
-     title: p.title,
+     title: resolveDynamicContent(p.title),
      description: 'Descubra mais dicas e informações exclusivas.',
-     url: resolveCanonicalUrl(p),
+     url: `/dfolgabet/post/${p.slug?.current}`,
      color: '#e67e22',
      badge: (p.categoryName || 'APOSTAS').toUpperCase(),
      image: p.mainImage ? urlFor(p.mainImage).width(400).height(300).url() : 'https://images.unsplash.com/photo-1662491106202-e2b20fb55cc1?q=80&w=400&auto=format&fit=crop',
@@ -79,12 +77,12 @@ export default function CasinoSidebarBlock() {
               >
                  {baseArticles.map((article, idx) => (
                     <div key={idx} className="w-full h-full flex-shrink-0 relative overflow-hidden">
-                       <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                       <img src={article.image} alt={resolveDynamicContent(article.title)} className="absolute inset-0 w-full h-full object-cover opacity-60" />
                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A051A] via-[#0A051A]/80 to-transparent p-3 flex flex-col justify-end">
                          <div className="flex justify-between items-end">
                             <div>
                                <span className="bg-[#311B92]/80 text-[#50C0CC] text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded mb-1 inline-block border border-[#50C0CC]/30">{article.badge}</span>
-                               <h4 className="text-white font-black text-sm leading-tight line-clamp-2">{article.title}</h4>
+                               <h4 className="text-white font-black text-sm leading-tight line-clamp-2">{resolveDynamicContent(article.title)}</h4>
                             </div>
                             <div className="text-right shrink-0 ml-2">
                                <span className={`text-[9px] font-bold uppercase tracking-tight block mb-1 text-green-400`}>Lançamento</span>

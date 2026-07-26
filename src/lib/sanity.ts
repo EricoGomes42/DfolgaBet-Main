@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
+import { applyDynamicContentToResult } from './dynamicContent';
 
 export const projectId = import.meta.env.VITE_SANITY_PROJECT_ID || 'isnjdgzr';
 export const dataset = import.meta.env.VITE_SANITY_DATASET || 'production';
@@ -29,10 +30,11 @@ client.fetch = async (query: string, params?: any, options?: any) => {
     const response = await fetch(proxyUrl, { signal: options?.signal });
     if (!response.ok) throw new Error(`Proxy fetch failed: ${response.statusText}`);
     const result = await response.json();
-    return result.result; 
+    return applyDynamicContentToResult(result.result); 
   } catch (error) {
     console.error("Proxy fetch failed, falling back", error);
-    return originalFetch(query, params, options);
+    const fallbackResult = await originalFetch(query, params, options);
+    return applyDynamicContentToResult(fallbackResult);
   }
 };
 

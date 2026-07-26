@@ -5,12 +5,13 @@ import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../confi
 
 export default function DfolgaBetHeader() {
   const location = useLocation();
-  const pathParts = location.pathname.split('/');
-  const isBookmakerPage = location.pathname.startsWith('/dfolgabet/casas/');
-  const bookmakerSlug = isBookmakerPage ? pathParts[pathParts.length - 1] : null;
-
-  const bookmakerConfig = bookmakerSlug ? DFOLOGABET_PRIORITY_BOOKMAKERS.find(b => b.slug === bookmakerSlug) : null;
-  const brandColor = isBookmakerPage && bookmakerConfig?.primaryColor ? bookmakerConfig.primaryColor : '#50C0CC';
+  const pathParts = location.pathname.split("/").filter(Boolean);
+  const lastPart = pathParts[pathParts.length - 1];
+  const isBookmakerPage = (location.pathname.includes("/casas/") || location.pathname.includes("/casas-de-apostas/")) && lastPart !== "casas" && lastPart !== "casas-de-apostas";
+  const bookmakerSlugRaw = isBookmakerPage ? lastPart : null;
+  const bookmakerSlug = bookmakerSlugRaw ? bookmakerSlugRaw.replace(/-/g, "").toLowerCase() : null;
+  const bookmakerConfig = bookmakerSlug ? DFOLOGABET_PRIORITY_BOOKMAKERS.find(b => b.slug.toLowerCase().replace(/-/g, "") === bookmakerSlug || b.key.toLowerCase().replace(/-/g, "") === bookmakerSlug) : null;
+  const brandColor = isBookmakerPage && bookmakerConfig?.primaryColor ? bookmakerConfig.primaryColor : "#50C0CC";
 
 
 
@@ -30,7 +31,8 @@ export default function DfolgaBetHeader() {
         <div className={`flex flex-col lg:flex-row items-center ${isBookmakerPage ? 'gap-8 lg:gap-12' : 'gap-6 lg:gap-8'}`}>          
           {/* Main Value Proposition */}
           <div className={`w-full ${isBookmakerPage ? 'lg:w-[550px] xl:w-[650px] h-[160px] md:h-[200px] lg:h-[240px]' : 'lg:w-[320px] h-[100px] md:h-[120px]'} text-center lg:text-left shrink-0 flex items-center justify-center lg:justify-start relative z-20`}>
-            {isBookmakerPage && bookmakerConfig && bookmakerConfig.logo ? (
+            {isBookmakerPage ? (
+              bookmakerConfig && bookmakerConfig.logo ? (
               <a href={getAffiliateLink(bookmakerConfig.label)} target="_blank" rel="noopener noreferrer"
                 className="relative w-full h-full rounded-2xl overflow-hidden border border-[var(--header-brand)]/40 bg-[#0A051A]/60 backdrop-blur-xl flex items-center justify-center group transition-all duration-700 hover:border-[var(--header-brand)]/80 cursor-pointer block"
                 style={{ 
@@ -61,6 +63,7 @@ export default function DfolgaBetHeader() {
                   className="w-full h-full object-contain relative z-20 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] p-0"
                 />
               </a>
+              ) : null
             ) : (
               <div className="flex flex-col items-center lg:items-start justify-center h-full">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--header-brand)]/10 rounded-full border border-[var(--header-brand)]/20 mb-3">

@@ -15,9 +15,23 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
-  // Add CORS headers for safety
+  // Security Headers
   app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("X-Content-Type-Options", "nosniff");
+    res.header("X-Frame-Options", "SAMEORIGIN");
+    res.header("X-XSS-Protection", "1; mode=block");
+    next();
+  });
+
+  // CORS headers
+  app.use((req, res, next) => {
+    const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173', 'https://dfolgabet.com.br'];
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+      res.header("Access-Control-Allow-Origin", origin);
+    } else {
+      res.header("Access-Control-Allow-Origin", "*"); // Keep * for preview environments but ideally this should be restricted further based on the preview URLs
+    }
     res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With");
     if (req.method === "OPTIONS") {
@@ -365,13 +379,13 @@ async function startServer() {
       });
 
       const contentType = response.headers['content-type'];
-      if (contentType) res.setHeader('Content-Type', contentType);
+      if (contentType) res.setHeader('Content-Type', contentType.toString());
       
       const wpTotal = response.headers['x-wp-total'];
-      if (wpTotal) res.setHeader('x-wp-total', wpTotal);
+      if (wpTotal) res.setHeader('x-wp-total', wpTotal.toString());
       
       const wpTotalPages = response.headers['x-wp-totalpages'];
-      if (wpTotalPages) res.setHeader('x-wp-totalpages', wpTotalPages);
+      if (wpTotalPages) res.setHeader('x-wp-totalpages', wpTotalPages.toString());
 
       res.status(response.status).send(response.data);
     } catch (error: any) {
@@ -394,6 +408,9 @@ async function startServer() {
   });
 
   app.get("/api/odds/debug", async (req, res) => {
+    if (process.env.NODE_ENV === "production") {
+      return res.status(403).json({ error: "Debug endpoint disabled in production" });
+    }
     const apiKey = process.env.ODDS_API_FREE || process.env.ODDS_API_IO_KEY || process.env.NEW_ODDS_API_KEY || process.env.VITE_ODDS_API_KEY || process.env.ODDS_API_KEY;
     const hasKey = !!apiKey;
     
@@ -472,9 +489,6 @@ async function startServer() {
       res.json(normalizedData);
     } catch (error: any) {
       const status = error.response ? error.response.status : 500;
-      
-
-
       const isTimeout = error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT' || (error.message && error.message.includes('timeout'));
       const isNetworkError = error.code === 'ECONNRESET' || error.code === 'ENOTFOUND' || error.message === 'Network Error';
       
@@ -505,6 +519,8 @@ async function startServer() {
         return res.json(staleData);
       }
 
+      // Important: Always return HTTP 200 with an empty list for any external failure
+      // Never return 4xx or 5xx to the frontend for 3rd party API issues
       return res.json([]);
     }
   });
@@ -528,7 +544,7 @@ async function startServer() {
       });
 
       const contentType = response.headers['content-type'];
-      if (contentType) res.setHeader('Content-Type', contentType);
+      if (contentType) res.setHeader('Content-Type', contentType.toString());
       res.status(response.status).send(response.data);
     } catch (error: any) {
       console.error("Generic Proxy error for", targetUrl, ":", error.message);
@@ -538,122 +554,15 @@ async function startServer() {
 
   // Vite middleware for development (Single Instance)
   let vite: any;
-
-  // Sitemap Generation
-  app.get("/sitemap.xml", async (req, res) => {
-    try {
-      const sanityProjectId = process.env.VITE_SANITY_PROJECT_ID || 'isnjdgzr';
-      const sanityDataset = process.env.VITE_SANITY_DATASET || 'production';
-      
-      const { createClient } = await import('@sanity/client');
-      const client = createClient({
-        projectId: sanityProjectId,
-        dataset: sanityDataset,
-        apiVersion: '2023-05-03',
-        useCdn: false,
-      });
-
-      const query = `*[(_type == "post" || _type == "casinoOperator" || _type == "sportCompetition") && !(_id in path("drafts.**"))] {
-        _type,
-        slug,
-        primaryCategory,
-        contentType,
-        primaryCasinoOperator->{slug},
-        publishedAt,
-        _updatedAt
-      }`;
-      const results = await client.fetch(query);
-      
-      let urls = [];
-      const baseUrl = 'https://dfolgabet.com.br';
-
-      // Static routes
-      const staticRoutes = [
-        '',
-        '/casas-de-apostas',
-        '/prognosticos',
-        '/bonus',
-        '/guias',
-        '/dicas',
-        '/estatisticas',
-        '/sobre'
-      ];
-      staticRoutes.forEach(route => {
-        urls.push(`<url><loc>${baseUrl}${route}</loc><changefreq>daily</changefreq><priority>0.8</priority></url>`);
-      });
-
-      results.forEach((doc: any) => {
-        if (!doc.slug || !doc.slug.current) return;
-        const slug = doc.slug.current;
-        let urlPath = '';
-
-        if (doc._type === 'casinoOperator') {
-          urlPath = `/casas/${slug}`;
-        } else if (doc._type === 'sportCompetition') {
-          urlPath = `/esportes/competicoes/${slug}`;
-        } else if (doc._type === 'post') {
-          // logic from resolveCanonicalUrl
-          const category = doc.primaryCategory;
-          const contentType = doc.contentType;
-          if (category === 'Cassino') {
-            if (contentType === 'casinoGame') urlPath = `/cassino/jogos/${slug}`;
-            else if (contentType === 'casinoGuide') urlPath = `/cassino/guias/${slug}`;
-            else if (contentType === 'casinoOperatorArticle') {
-              const opSlug = doc.primaryCasinoOperator?.slug?.current || 'casa';
-              urlPath = `/cassino/casas/${opSlug}/${slug}`;
-            } else {
-              urlPath = `/dfolgabet/post/${slug}`;
-            }
-          } else if (category === 'Esportes') {
-            if (contentType === 'sportEvent') urlPath = `/esportes/eventos/${slug}`;
-            else if (contentType === 'sportGuide') urlPath = `/esportes/guias/${slug}`;
-            else {
-              urlPath = `/dfolgabet/post/${slug}`;
-            }
-          } else {
-            urlPath = `/dfolgabet/post/${slug}`;
-          }
-        }
-        
-        if (urlPath) {
-          urls.push(`<url><loc>${baseUrl}${urlPath}</loc><lastmod>${doc.publishedAt || doc._updatedAt}</lastmod></url>`);
-        }
-      });
-
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${urls.join('\n  ')}
-</urlset>`;
-
-      res.header('Content-Type', 'application/xml');
-      res.send(sitemap);
-    } catch (e: any) {
-      console.error("Sitemap error:", e);
-      res.status(500).send("Error generating sitemap");
-    }
-  });
-
   if (process.env.NODE_ENV !== "production") {
-
     vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
   }
 
-
   // SEO Interception for DfolgaBet Posts
-  const seoRoutes = [
-    "/dfolgabet/post/:slug",
-    "/cassino/jogos/:slug",
-    "/cassino/guias/:slug",
-    "/cassino/casas/:operatorSlug/:slug",
-    "/esportes/eventos/:slug",
-    "/esportes/guias/:slug"
-  ];
-  
-  app.get(seoRoutes, async (req, res, next) => {
-
+  app.get("/dfolgabet/post/:slug", async (req, res, next) => {
     const slug = req.params.slug;
     const url = req.originalUrl;
     
@@ -684,11 +593,12 @@ async function startServer() {
       } else {
         template = fs.readFileSync(path.resolve(process.cwd(), 'dist/index.html'), 'utf-8');
       }
+
       if (post) {
         const title = post.seoTitle || post.title || 'DfolgaBet';
         const description = post.seoDescription || post.excerpt || '';
-        // Use the requested URL as canonical for now, or build it based on category
-        const canonical = `https://dfolgabet.com.br${url.split('?')[0]}`;
+        const canonical = `https://dfolgabet.com.br/dfolgabet/post/${slug}`;
+
         template = template.replace(/<title>.*?<\/title>/, `<title>${title} | DfolgaBet</title>`);
         template = template.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${description.replace(/"/g, '&quot;')}">`);
         

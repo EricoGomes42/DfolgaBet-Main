@@ -1,4 +1,3 @@
-import { resolveCanonicalUrl } from '../../../lib/urlResolver';
 import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -15,7 +14,9 @@ import SidebarPrognosticosBlock from './SidebarPrognosticosBlock';
 import SidebarStickyBanner from './SidebarStickyBanner';
 import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../../config/dfolgabetBookmakers';
 
-export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookmakers?: string[] }) {
+import { isCasinoArticle, isSportsArticle } from '../../../lib/editorialClassification';
+
+export default function DfolgaBetSidebar() {
   const [activeSport, setActiveSport] = useState('Todos');
   const [activeDay, setActiveDay] = useState('Hoje');
   const [activeArticleTab, setActiveArticleTab] = useState<'esportes'|'cassino'>('esportes');
@@ -28,7 +29,7 @@ export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookm
       const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...15] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
+          _id, title, mainImage, publishedAt, _createdAt, "categoryName": categories[0]->title, slug, promotedCategory, sections, area
         }`;
         const data = await client.fetch(query, {}, { signal: controller.signal });
         clearTimeout(timeoutId);
@@ -40,25 +41,6 @@ export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookm
     fetchPopular();
   }, []);
 
-  const isCasinoArticle = (post: any) => {
-    if (post.primaryCategory === 'Cassino') return true;
-    if (post.area === 'Cassino') return true;
-    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-    const title = (resolveDynamicContent(post.title) || '').toLowerCase();
-    const cat = (post.categoryName || '').toLowerCase();
-    return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
-            cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
-  };
-
-  
-  const isSportsArticle = (post: any) => {
-    if (post.primaryCategory === 'Esportes') return true;
-    if (post.area === 'Esportes') return true;
-    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-    return !isCasinoArticle(post);
-  };
   const popularArticles = popularArticlesRaw.filter(post => activeArticleTab === 'cassino' ? isCasinoArticle(post) : (activeArticleTab === 'esportes' ? isSportsArticle(post) : true)).slice(0, 4);
 
   const leagues = [
@@ -159,18 +141,18 @@ export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookm
           </div>
           <div className="space-y-6">
             {popularArticles.map((article, i) => (
-              <Link key={i} to={resolveCanonicalUrl(article)} className="group flex gap-4">
+              <Link key={i} to={`/dfolgabet/post/${article.slug?.current}`} className="group flex gap-4">
                 <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0">
                   {article.mainImage ? (
-                    <img src={urlFor(article.mainImage).width(200).height(200).url()} alt={article.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                    <img src={urlFor(article.mainImage).width(200).height(200).url()} alt={resolveDynamicContent(article.title)} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                   ) : (
-                    <img src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=200&q=80" alt={article.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                    <img src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?auto=format&fit=crop&w=200&q=80" alt={resolveDynamicContent(article.title)} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                   )}
                 </div>
                 <div className="flex flex-col justify-center">
                   <span className="text-[#50C0CC] text-[10px] font-black uppercase mb-1 tracking-widest">{article.categoryName || 'Notícias'}</span>
                   <h3 className="text-sm font-bold text-white group-hover:text-[#F37021] transition-colors line-clamp-3 leading-snug">
-                    {article.title}
+                    {resolveDynamicContent(article.title)}
                   </h3>
                   <span className="text-gray-500 text-[10px] mt-2">
                     {new Date(article.publishedAt || article._createdAt).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -203,7 +185,7 @@ export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookm
 
         {/* 8. BÔNUS & CÓDIGOS */}
         <div className="mb-8">
-           <SidebarBonusBlock promotedBookmakers={promotedBookmakers} />
+           <SidebarBonusBlock />
         </div>
 
         {/* 9. PROGNÓSTICOS */}
@@ -217,7 +199,7 @@ export default function DfolgaBetSidebar({ promotedBookmakers }: { promotedBookm
         </div>
 
         {/* 11. STICKY BANNER (Original Carousel - Absolute Last) */}
-        <SidebarStickyBanner promotedBookmakers={promotedBookmakers} />
+        <SidebarStickyBanner />
       </div>
     </aside>
   );

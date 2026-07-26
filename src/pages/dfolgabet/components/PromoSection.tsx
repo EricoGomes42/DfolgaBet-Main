@@ -119,7 +119,7 @@ export default function PromoSection() {
         {/* CAROUSEL - 70% (8 cols) */}
         <div className="lg:col-span-8 flex flex-col w-full">
           <div 
-            className="grid relative w-full aspect-[1.95/1] rounded-2xl overflow-hidden bg-[#120826] border border-[#311B92]/50 shadow-[0_10px_25px_rgba(0,0,0,0.5)] group"
+            className="grid relative w-full aspect-[1.9/1] rounded-2xl overflow-hidden bg-[#0A051A] border border-[#311B92]/50 shadow-[0_10px_25px_rgba(0,0,0,0.5)] group"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -135,7 +135,7 @@ export default function PromoSection() {
                   x: { type: "spring", stiffness: 300, damping: 30 },
                   opacity: { duration: 0.2 }
                 }}
-                className="col-start-1 row-start-1 w-full"
+                className="absolute inset-0 w-full h-full"
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={1}
@@ -156,8 +156,14 @@ export default function PromoSection() {
                 >
                   <img 
                     src={BANNERS[currentSlide].image} 
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125"
+                  />
+                  <img 
+                    src={BANNERS[currentSlide].image} 
                     alt={BANNERS[currentSlide].alt}
-                    className="w-full h-full object-contain"
+                    className="relative w-full h-full object-contain z-10"
                     loading="lazy"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';

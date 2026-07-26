@@ -29,8 +29,6 @@ import DfolgaBetSobre from './pages/dfolgabet/DfolgaBetSobre';
 import DfolgaBetPredictionDetails from './pages/dfolgabet/DfolgaBetPredictionDetails';
 import DfolgaBetRestricoesApostadores from './pages/dfolgabet/DfolgaBetRestricoesApostadores';
 import DfolgaBetTermosCondicoes from './pages/dfolgabet/DfolgaBetTermosCondicoes';
-import CasinoOperatorHub from './pages/dfolgabet/CasinoOperatorHub';
-import SportCompetitionHub from './pages/dfolgabet/SportCompetitionHub';
 import DfolgaBetPoliticaPrivacidade from './pages/dfolgabet/DfolgaBetPoliticaPrivacidade';
 import DfolgaBetCompetitionPage from './pages/dfolgabet/DfolgaBetCompetitionPage';
 import CaliariVsBannon from './pages/dfolgabet/articles/CaliariVsBannon';
@@ -65,24 +63,23 @@ export default function App() {
           <Route path="estatisticas" element={<DfolgaBetEstatisticas />} />
           <Route path="saude-mental" element={<DfolgaBetSaudeMental />} />
           <Route path="sobre" element={<DfolgaBetSobre />} />
+          <Route path="dfolgabet/casas/7k" element={<DfolgaBetBookmakerPage bookmakerSlug="7k" />} />
+          <Route path="dfolgabet/casas/betwinner" element={<DfolgaBetBookmakerPage bookmakerSlug="betwinner" />} />
+          <Route path="dfolgabet/casas/cassino" element={<DfolgaBetBookmakerPage bookmakerSlug="cassino" />} />
+          <Route path="dfolgabet/casas/estrelabet" element={<DfolgaBetBookmakerPage bookmakerSlug="estrelabet" />} />
+          <Route path="dfolgabet/casas/lottoland" element={<DfolgaBetBookmakerPage bookmakerSlug="lottoland" />} />
+          <Route path="dfolgabet/casas/melbet" element={<DfolgaBetBookmakerPage bookmakerSlug="melbet" />} />
+          <Route path="dfolgabet/casas/novibet" element={<DfolgaBetBookmakerPage bookmakerSlug="novibet" />} />
+          <Route path="dfolgabet/casas/sorte-online" element={<DfolgaBetBookmakerPage bookmakerSlug="sorteonline" />} />
+          <Route path="dfolgabet/casas/stake" element={<DfolgaBetBookmakerPage bookmakerSlug="stake" />} />
+          <Route path="dfolgabet/casas/superbet" element={<DfolgaBetBookmakerPage bookmakerSlug="superbet" />} />
+          <Route path="dfolgabet/casas/verabet" element={<DfolgaBetBookmakerPage bookmakerSlug="verabet" />} />
+          <Route path="dfolgabet/casas/vupi" element={<DfolgaBetBookmakerPage bookmakerSlug="vupi" />} />
           <Route path="dfolgabet/jogo-responsavel" element={<DfolgaBetResponsibleGaming />} />
           <Route path="dfolgabet/restricoes-apostadores" element={<DfolgaBetRestricoesApostadores />} />
           <Route path="dfolgabet/termos-e-condicoes" element={<DfolgaBetTermosCondicoes />} />
           <Route path="dfolgabet/politica-de-privacidade" element={<DfolgaBetPoliticaPrivacidade />} />
           <Route path="dfolgabet/competicao/:slug" element={<DfolgaBetCompetitionPage />} />
-          
-          {/* Novas rotas de Cassino e Esportes */}
-          <Route path="cassino/jogos/:slug" element={<DfolgaBetPost />} />
-          <Route path="cassino/guias/:slug" element={<DfolgaBetPost />} />
-          <Route path="cassino/casas/:operatorSlug/:slug" element={<DfolgaBetPost />} />
-          <Route path="esportes/eventos/:slug" element={<DfolgaBetPost />} />
-          <Route path="esportes/guias/:slug" element={<DfolgaBetPost />} />
-          {/* Páginas-hub */}
-          <Route path="casas/:operatorSlug" element={<CasinoOperatorHub />} />
-          <Route path="dfolgabet/casas/:operatorSlug" element={<CasinoOperatorHub />} />
-          <Route path="esportes/competicoes/:competitionSlug" element={<SportCompetitionHub />} />
-
-
           <Route path="dfolgabet/post/:slug" element={<DfolgaBetPost />} />
           <Route path="palpite/:id" element={<DfolgaBetPredictionDetails />} />
           <Route path="ufc-caliari-vs-bannon" element={<CaliariVsBannon />} />

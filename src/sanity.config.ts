@@ -1,4 +1,3 @@
-import React from 'react';
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
@@ -19,37 +18,25 @@ export default defineConfig({
   basePath: '/studio',
 
   plugins: [
-    structureTool({
-      defaultDocumentNode: (S, { schemaType }) => {
-        if (schemaType === 'post') {
-          return S.document().views([
-            S.view.form(),
-            S.view
-              .component((props: any) => {
-                 const slug = props?.document?.displayed?.slug?.current;
-                 if (!slug) {
-                    return (
-React.createElement('div', { style: { padding: 20, fontFamily: 'sans-serif' } }, 
-                          React.createElement('h2', null, 'Nenhum Slug definido'),
-                          React.createElement('p', null, 'Adicione um slug para ver o preview do artigo.')
-                       )
-                    );
-                 }
-                 const url = `/api/preview?slug=${slug}`;
-                 return (
-                    React.createElement('iframe', { src: url, style: { width: '100%', height: '100%', border: 'none' }, title: 'Preview' })
-                 );
-              })
-              .title('Preview Web')
-          ])
-        }
-        return S.document().views([S.view.form()])
-      }
-    }),
+    structureTool(),
     visionTool(),
   ],
 
   schema: {
     types: schemaTypes,
   },
+  document: {
+    productionUrl: async (prev, context) => {
+      const { document } = context;
+      if (document._type === 'post') {
+        const slug = (document.slug as any)?.current;
+        if (!slug) return prev;
+        
+        // Make it an absolute URL so Sanity opens it in a new tab instead of routing internally
+        return `${window.location.origin}/dfolgabet/post/${slug}`;
+      }
+      return prev;
+    }
+  }
+
 });

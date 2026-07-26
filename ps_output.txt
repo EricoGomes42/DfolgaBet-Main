@@ -1,0 +1,11 @@
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.1  14988  5472 ?        Ss   10:19   0:00 /bin/bash ./start.sh
+root         5  0.0  0.2  22836 11276 ?        S    10:19   0:00 nginx: master process nginx -g daemon off;
+root         6  0.8  2.2 1313880 92904 ?       Sl   10:19   0:00 /app/control-plane-api/control-plane-api --listen-addr=:8000 --app-dir=/app/applet --default-app-port=3000
+nobody      11  0.3  0.1  23364  8004 ?        S    10:19   0:00 nginx: worker process
+nobody      12  0.3  0.2  23532 11156 ?        S    10:19   0:00 nginx: worker process
+root        16  0.0  0.0  13552  2824 ?        S    10:19   0:00 tail -f /dev/null
+root        19 89.1  4.7 1502940 197512 ?      Sl   10:20   0:05 bun install
+root        76 96.0  3.0 11856436 129388 ?     Rl   10:20   0:00 node install.mjs
+root       112  0.0  0.0  10632  3024 ?        D    10:20   0:00 sh -c ps aux > ps_output.txt && cat ps_output.txt
+root       113  0.0  0.1  17860  5584 ?        R    10:20   0:00 ps aux

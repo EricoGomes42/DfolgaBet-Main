@@ -88,21 +88,21 @@ export default function DfolgaBetResponsibleGaming() {
               Encorajamos apostadores problemáticos a contatar as seguintes organizações especializadas:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <a href="https://www.cvv.org.br" target="_blank" rel="noreferrer" className="block bg-[#1A0D35] p-6 rounded-2xl border border-[#311B92] hover:border-[#00d4ff] transition-all group">
+              <a href="https://www.cvv.org.br" target="_blank" rel="noopener noreferrer" className="block bg-[#1A0D35] p-6 rounded-2xl border border-[#311B92] hover:border-[#00d4ff] transition-all group">
                 <h3 className="font-bold text-[#00d4ff] mb-2 flex items-center justify-between">
                   CVV
                   <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </h3>
                 <p className="text-sm text-gray-400">Atendimento e apoio gratuito, focado em suporte emocional.</p>
               </a>
-              <a href="https://www.jogoresponsavel.org.br" target="_blank" rel="noreferrer" className="block bg-[#1A0D35] p-6 rounded-2xl border border-[#311B92] hover:border-[#00d4ff] transition-all group">
+              <a href="https://www.jogoresponsavel.org.br" target="_blank" rel="noopener noreferrer" className="block bg-[#1A0D35] p-6 rounded-2xl border border-[#311B92] hover:border-[#00d4ff] transition-all group">
                 <h3 className="font-bold text-[#00d4ff] mb-2 flex items-center justify-between">
                   Jogo Responsável
                   <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </h3>
                 <p className="text-sm text-gray-400">Conscientização para uma conduta de respeito sem transtornos.</p>
               </a>
-              <a href="https://gamblersanonymous.org/ga/?q=address/brazil" target="_blank" rel="noreferrer" className="block bg-[#1A0D35] p-6 rounded-2xl border border-[#311B92] hover:border-[#00d4ff] transition-all group">
+              <a href="https://gamblersanonymous.org/ga/?q=address/brazil" target="_blank" rel="noopener noreferrer" className="block bg-[#1A0D35] p-6 rounded-2xl border border-[#311B92] hover:border-[#00d4ff] transition-all group">
                 <h3 className="font-bold text-[#00d4ff] mb-2 flex items-center justify-between">
                   Jogadores Anônimos
                   <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -1,4 +1,3 @@
-import { resolveCanonicalUrl } from '../../lib/urlResolver';
 import { resolveDynamicContent } from '../../lib/dynamicContent';
 import { ShieldCheck, Trophy, Gift, LineChart, Calendar, ArrowRight, ChevronLeft, ChevronRight, TrendingUp, Zap, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -22,9 +21,10 @@ interface Post {
   _createdAt: string;
   categoryName?: string;
   authorName?: string;
-  bookmakerKey?: string | string[];
   authorImage?: any;
 }
+
+import { isCasinoArticle, isSportsArticle } from '../../lib/editorialClassification';
 
 export default function DfolgaBetHome() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -39,9 +39,9 @@ export default function DfolgaBetHome() {
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
       try {
-        const heroQuery = `*[_type == "post" && (heroParticipation == true || (!defined(sections) || "homepage" in sections))] | order(coalesce(heroPriority, 999) asc, publishedAt desc, _createdAt desc)[0...10] { _id, title, slug, mainImage, publishedAt, _createdAt, primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, bookmakerKey, "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
-        const sportsQuery = `*[_type == "post" && (primaryCategory == "Esportes" || area == "Esportes" || promotedCategory == "sports" || (!defined(sections) || "sports" in sections) || (!defined(area) && !defined(primaryCategory) && !defined(promotedCategory) && (!defined(sections) || "homepage" in sections)))] | order(publishedAt desc, _createdAt desc)[0...12] { _id, title, slug, mainImage, publishedAt, _createdAt, primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, bookmakerKey, "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
-        const casinoQuery = `*[_type == "post" && (primaryCategory == "Cassino" || area == "Cassino" || promotedCategory == "casino" || "casino" in sections)] | order(publishedAt desc, _createdAt desc)[0...12] { _id, title, slug, mainImage, publishedAt, _createdAt, primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, bookmakerKey, "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const heroQuery = `*[_type == "post" && (heroParticipation == true || (!defined(sections) || "homepage" in sections))] | order(coalesce(heroPriority, 999) asc, publishedAt desc, _createdAt desc)[0...10] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const sportsQuery = `*[_type == "post" && (area == "Esportes" || (!defined(area) && (promotedCategory == "sports" || "sports" in sections || (!defined(promotedCategory) && (!defined(sections) || "homepage" in sections)))))] | order(publishedAt desc, _createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
+        const casinoQuery = `*[_type == "post" && (area == "Cassino" || (!defined(area) && (promotedCategory == "casino" || "casino" in sections)))] | order(publishedAt desc, _createdAt desc)[0...12] { ..., "categoryName": categories[0]->title, "authorName": author->name, "authorImage": author->image, promotedCategory, sections, area }`;
         
         const [heroData, sportsData, casinoData] = await Promise.all([
           client.fetch(heroQuery, {}, { signal: controller.signal }),
@@ -51,25 +51,6 @@ export default function DfolgaBetHome() {
         
         clearTimeout(timeoutId);
 
-        const isCasinoArticle = (post: any) => {
-          if (post.primaryCategory === 'Cassino') return true;
-    if (post.area === 'Cassino') return true;
-    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-          const title = (resolveDynamicContent(post.title) || '').toLowerCase();
-          const cat = (post.categoryName || '').toLowerCase();
-          return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') ||
-                  cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
-        };
-
-        const isSportsArticle = (post: any) => {
-          if (post.primaryCategory === 'Esportes') return true;
-    if (post.area === 'Esportes') return true;
-    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-          return !isCasinoArticle(post);
-        };
-        
         const combinedHero = [...heroData]
           .reduce((acc, current) => {
             if (!acc.find((item: any) => item._id === current._id)) acc.push(current);
@@ -159,19 +140,19 @@ export default function DfolgaBetHome() {
               className="absolute inset-0"
             >
               <Link 
-                to={resolveCanonicalUrl(heroPosts[heroIndex])} 
+                to={`/dfolgabet/post/${heroPosts[heroIndex].slug?.current}`} 
                 className="block w-full h-full"
               >
                 {heroPosts[heroIndex].mainImage ? (
                   <img 
                     src={urlFor(heroPosts[heroIndex].mainImage).width(1200).height(1600).url()} 
-                    alt={heroPosts[heroIndex].title}
+                    alt={resolveDynamicContent(heroPosts[heroIndex].title)}
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <img 
                     src={`https://images.unsplash.com/photo-${['1596838132731-3301c3fd4317','1605379685333-e5e54d89faaf','1606167668580-2a543e5ec774','1610484557991-314207869677','1549719386-74dfcbf7dbed'][heroIndex % 5]}?auto=format&fit=crop&w=1200&q=80`}
-                    alt={heroPosts[heroIndex].title}
+                    alt={resolveDynamicContent(heroPosts[heroIndex].title)}
                     className="w-full h-full object-cover"
                   />
                 )}
@@ -205,7 +186,7 @@ export default function DfolgaBetHome() {
                     </div>
                     
                     <h1 className="text-2xl md:text-3xl lg:text-5xl font-black text-white leading-[1.1] md:leading-tight mb-4 tracking-tighter drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] [text-shadow:_0_2px_10px_rgba(0,0,0,0.9)]">
-                       {heroPosts[heroIndex].title}
+                       {resolveDynamicContent(heroPosts[heroIndex].title)}
                     </h1>
                     
                     <div className="flex items-center gap-3 text-[11px] font-bold text-gray-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">

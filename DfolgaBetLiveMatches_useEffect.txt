@@ -1,0 +1,221 @@
+  useEffect(() => {
+        async function fetchData() {
+            try {
+        let hasInitialData = false;
+        if (loadedEndpointsRef.current.size === 0) {
+                    let cached = null;
+          try {
+             cached = localStorage.getItem(CACHE_KEY);
+                       } catch (cacheErr) {
+                       }
+          if (cached) {
+            try {
+              const { payload } = JSON.parse(cached);
+              if (payload && Object.keys(payload).length > 0) {
+                setData(payload);
+                hasInitialData = true;
+              }
+            } catch (e) {
+               console.error("Cache parsing error", e);
+            }
+          }
+        }
+        
+        setLoading(!hasInitialData);
+
+        const payloadAggregated: Record<string, any[]> = {};
+        
+        let hasData = false;
+        let loadedSports: string[] = [];
+        let totalEvents = 0;
+        let debugInfo: any = {};
+        
+        // 1. Fetch debug info first
+        try {
+           const debugRes = await fetch(typeof window !== 'undefined' ? `${window.location.origin}/api/odds/debug` : 'http://127.0.0.1:3000/api/odds/debug');
+           debugInfo = await debugRes.json();
+           
+           if (!debugInfo.hasApiKey) {
+              console.warn("NEW_ODDS_API_KEY não carregada");
+           }
+        } catch (err) {
+           console.error("Debug endpoint falhou, usando fallback:", err);
+        }
+
+        const ENDPOINTS_MAP: Record<string, {name: string, url: string}[]> = {
+          'Futebol': [
+            { name: 'Futebol', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=soccer_brazil_campeonato` : `http://127.0.0.1:3000/api/odds?sport=soccer_brazil_campeonato` },
+            { name: 'Futebol', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=soccer_brazil_serie_b` : `http://127.0.0.1:3000/api/odds?sport=soccer_brazil_serie_b` },
+            { name: 'Futebol', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=soccer_epl` : `http://127.0.0.1:3000/api/odds?sport=soccer_epl` }
+          ],
+          'Basquete': [
+            { name: 'Basquete', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=basketball_nba` : `http://127.0.0.1:3000/api/odds?sport=basketball_nba` }
+          ],
+          'Tênis': [
+            { name: 'Tênis', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=tennis_atp` : `http://127.0.0.1:3000/api/odds?sport=tennis_atp` },
+            { name: 'Tênis', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=tennis_wta` : `http://127.0.0.1:3000/api/odds?sport=tennis_wta` }
+          ],
+          'Luta': [
+            { name: 'Luta', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=mma_mixed_martial_arts` : `http://127.0.0.1:3000/api/odds?sport=mma_mixed_martial_arts` }
+          ],
+          'Voleibol': [
+            { name: 'Voleibol', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=volleyball` : `http://127.0.0.1:3000/api/odds?sport=volleyball` }
+          ],
+          'Futsal': [
+            { name: 'Futsal', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=soccer_futsal_brazil_liga_nacional` : `http://127.0.0.1:3000/api/odds?sport=soccer_futsal_brazil_liga_nacional` }
+          ],
+          'eSports': [
+            { name: 'eSports', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=esports_csgo` : `http://127.0.0.1:3000/api/odds?sport=esports_csgo` },
+            { name: 'eSports', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=esports_lol` : `http://127.0.0.1:3000/api/odds?sport=esports_lol` }
+          ],
+          'Futebol Americano': [
+            { name: 'Futebol Americano', url: typeof window !== 'undefined' ? `${window.location.origin}/api/odds?sport=americanfootball_nfl` : `http://127.0.0.1:3000/api/odds?sport=americanfootball_nfl` }
+          ]
+        };
+
+        let endpoints: {name: string, url: string}[] = [];
+        if (activeSportFilter === 'Todos' || activeSportFilter === 'Ao Vivo') {
+           endpoints = Object.values(ENDPOINTS_MAP).flat();
+        } else if (ENDPOINTS_MAP[activeSportFilter]) {
+           endpoints = [...ENDPOINTS_MAP[activeSportFilter]];
+        }
+        
+        endpoints = endpoints.filter(ep => !loadedEndpointsRef.current.has(ep.url));
+        if (endpoints.length === 0) {
+           setLoading(false);
+           return;
+        }
+
+        endpoints.forEach(ep => loadedEndpointsRef.current.add(ep.url));
+
+        const getCountryCode = (league: string) => {
+           const l = league.toLowerCase();
+           if (l.includes('brasil') || l.includes('brazil')) return 'br';
+           if (l.includes('england') || l.includes('epl') || l.includes('premier')) return 'gb-eng';
+           if (l.includes('spain') || l.includes('la liga')) return 'es';
+           if (l.includes('italy')) return 'it';
+           if (l.includes('germany') || l.includes('bundesliga')) return 'de';
+           if (l.includes('france') || l.includes('ligue 1')) return 'fr';
+           if (l.includes('usa') || l.includes('nba')) return 'us';
+           if (l.includes('wimbledon') || l.includes('atp')) return 'gb';
+           return null;
+        }
+
+        let _currentDataSource = "SEM CHAVE";
+        
+        for (const ep of endpoints) {
+          try {
+             const controller = new AbortController();
+             const timeoutId = setTimeout(() => controller.abort(), 8000);
+                        const res = await fetch(ep.url, { signal: controller.signal });
+             clearTimeout(timeoutId);
+             
+             if (res.ok) {
+                const rawData = await res.json();
+                const arrayData = Array.isArray(rawData) ? rawData : [];
+                if (arrayData.length > 0) {
+                   hasData = true;
+                   totalEvents += arrayData.length;
+                   // Use regex to extract sport from url for diagnostics
+                   const sportMatch = ep.url.match(/sport=([^&]+)/);
+                   if (sportMatch) loadedSports.push(sportMatch[1]);
+
+                   if (arrayData[0]?.meta?.requestsRemaining !== undefined) {
+                      setApiQuotaLeft(parseInt(arrayData[0].meta.requestsRemaining));
+                   }
+                   if (arrayData[0]?.meta?.dataSource) {
+                      const src = arrayData[0].meta.dataSource;
+                      _currentDataSource = src === 'real' ? 'API REAL' : (src.includes('cache') ? 'CACHE' : src);
+                      setDataSource(_currentDataSource);
+                   }
+                   
+                   const mapped = arrayData.map((m: any) => {
+                      let tournamentName = (m.league || '').replace('Brazil', 'Brasil');
+                      const countryCode = getCountryCode(tournamentName);
+                      const homeTeamName = m.homeTeam || m.home_team || '';
+                      const awayTeamName = m.awayTeam || m.away_team || '';
+                      const homeLogo = getTeamLogo(homeTeamName);
+                      const awayLogo = getTeamLogo(awayTeamName);
+
+                      let processedBookmakers = [];
+                      if (m.bookmakers && Array.isArray(m.bookmakers)) {
+                         processedBookmakers = m.bookmakers
+                            .map(bm => {
+                               const rawName = bm.title || bm.key;
+                               const normName = normalizeBookmakerName(rawName);
+                               if (!normName) return null;
+                               const config = getBookmakerConfig(normName) || { priority: 0 };
+                               return { ...bm, normalizedTitle: normName, config };
+                            })
+                            .filter(Boolean)
+                            .sort((a, b) => (b.config.priority || 0) - (a.config.priority || 0));
+                      }
+                      
+                      const cleanMatch = { ...m, bookmakers: processedBookmakers };
+
+                      return {
+                         ...cleanMatch,
+                         id: m.id, 
+                         tournament: tournamentName, 
+                         countryCode,
+                         time: m.time || m.commence_time, 
+                         home: m.homeTeam || m.home_team, 
+                         homeLogo,
+                         away: m.awayTeam || m.away_team, 
+                         awayLogo,
+                         odds: extractOdds(cleanMatch)
+                      };
+                   });
+                   
+                   if (!payloadAggregated[ep.name]) {
+                      payloadAggregated[ep.name] = [];
+                   }
+                   payloadAggregated[ep.name] = [...payloadAggregated[ep.name], ...mapped];
+                }
+             } else {
+                  throw new Error(`Error ${res.status}`);
+             }
+          } catch(err) { 
+             console.warn("Error fetching odds for", ep.url, err); 
+          }
+        }
+        
+        if (!hasData && Object.keys(payloadAggregated).length === 0 && !error) {
+           setError("Nenhum evento disponível para os filtros atuais.");
+        }
+
+        // Attach some debug info to the aggregated payload if we want
+        payloadAggregated['_debug'] = [{
+           dataSource: _currentDataSource,
+           apiQuotaLeft: debugInfo.headers?.['x-requests-remaining'] || apiQuotaLeft || 'N/A',
+           loadedSports: loadedSports.map(s => s.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')).join(', '),
+           totalEvents,
+           lastUpdated: new Date().toLocaleTimeString()
+        }];
+
+        setData(prevData => {
+           const newData = { ...prevData };
+           Object.keys(payloadAggregated).forEach(k => {
+              if (k !== '_debug') {
+                 const existingMatches = newData[k] || [];
+                 const newMatches = payloadAggregated[k].filter((m:any) => !existingMatches.find((em:any) => em.id === m.id));
+                 newData[k] = [...existingMatches, ...newMatches];
+              }
+           });
+           if (payloadAggregated['_debug']) {
+              newData['_debug'] = payloadAggregated['_debug'];
+           }
+           localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), payload: newData }));
+           return newData;
+        });
+      } catch (e) {
+                console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [activeSportFilter]);
+
+  function extractOdds(match: any) {

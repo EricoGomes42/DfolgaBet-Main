@@ -1,4 +1,4 @@
-import { resolveCanonicalUrl } from '../../lib/urlResolver';
+import { isCasinoArticle, isSportsArticle } from '../../lib/editorialClassification';
 import { resolveDynamicContent } from '../../lib/dynamicContent';
 import { getAffiliateLink } from '../../config/dfolgabetBookmakers';
 import { useEffect, useState } from 'react';
@@ -19,7 +19,6 @@ interface Post {
   _createdAt?: string;
   categoryName?: string;
   authorName?: string;
-  bookmakerKey?: string | string[];
   authorImage?: any;
   promotedCategory?: string;
   sections?: string[];
@@ -92,7 +91,7 @@ const BookmakerSection = ({
                 {posts[currentSlide]?.mainImage ? (
                   <img
                     src={urlFor(posts[currentSlide].mainImage).width(1200).height(600).url()}
-                    alt={posts[currentSlide].title}
+                    alt={resolveDynamicContent(posts[currentSlide].title)}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -120,9 +119,9 @@ const BookmakerSection = ({
                       {posts[currentSlide].categoryName}
                     </span>
                   )}
-                  <Link to={resolveCanonicalUrl(posts[currentSlide])}>
+                  <Link to={`/dfolgabet/post/${posts[currentSlide]?.slug.current}`}>
                     <h3 className="text-2xl md:text-4xl font-black text-white leading-tight mb-4 hover:text-[var(--brand-color)] transition-colors line-clamp-2 md:line-clamp-none">
-                      {posts[currentSlide]?.title}
+                      {resolveDynamicContent(posts[currentSlide]?.title)}
                     </h3>
                   </Link>
                   <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm text-gray-300 font-medium">
@@ -203,7 +202,7 @@ const BookmakerSection = ({
               {posts.slice(5, visibleCount).map((post) => (
                 <Link
                   key={post._id}
-                  to={resolveCanonicalUrl(post)}
+                  to={`/dfolgabet/post/${post.slug.current}`}
                   className="group flex flex-col bg-[#120826] rounded-xl overflow-hidden border border-[var(--brand-color)]/20 hover:border-[#50C0CC]/50 transition-all shadow-lg hover:shadow-[0_10px_30px_var(--brand-color)] hover:-translate-y-1"
                 >
                   <div className="w-full aspect-[16/10] overflow-hidden relative">
@@ -277,12 +276,7 @@ const BookmakerSection = ({
   );
 };
 
-import { useParams } from 'react-router-dom';
-
-export default function DfolgaBetBookmakerPage(props: DfolgaBetBookmakerPageProps) {
-  const params = useParams();
-  const bookmakerSlug = props.bookmakerSlug || params.operatorSlug || '';
-
+export default function DfolgaBetBookmakerPage({ bookmakerSlug }: DfolgaBetBookmakerPageProps) {
   const [sportsPosts, setSportsPosts] = useState<Post[]>([]);
   const [casinoPosts, setCasinoPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -301,8 +295,8 @@ export default function DfolgaBetBookmakerPage(props: DfolgaBetBookmakerPageProp
       
       setLoading(true);
       try {
-        const query = `*[_type == "post" && ($bookmakerKey in bookmakerKey || bookmakerKey == $bookmakerKey)] | order(publishedAt desc)[0...100] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, _id, title, slug, mainImage, publishedAt, body,
+        const query = `*[_type == "post" && (bookmakerKey == $bookmakerKey || $bookmakerKey in bookmakerKey || $bookmakerKey in promotedBookmakers || featuredBookmaker == $bookmakerKey || $bookmakerKey in featuredBookmaker)] | order(publishedAt desc)[0...100] {
+          _id, title, slug, mainImage, publishedAt, body,
           "categoryName": categories[0]->title,
           "authorName": author->name,
           "authorImage": author->image,
@@ -314,24 +308,6 @@ export default function DfolgaBetBookmakerPage(props: DfolgaBetBookmakerPageProp
         const data = await client.fetch(query, { 
           bookmakerKey: bookmakerConfig.key
         });
-        
-        const isCasinoArticle = (post: any) => {
-          if (post.primaryCategory === 'Cassino') return true;
-    if (post.area === 'Cassino') return true;
-    if (post.promotedCategory === 'casino' || (post.sections && post.sections.includes('casino'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-          const title = (resolveDynamicContent(post.title) || '').toLowerCase();
-          const cat = (post.categoryName || '').toLowerCase();
-          return title.includes('aviator') || title.includes('cassino') || title.includes('roleta') || title.includes('slots') || cat.includes('cassino') || cat.includes('crash') || cat.includes('slot');
-        };
-
-        const isSportsArticle = (post: any) => {
-          if (post.primaryCategory === 'Esportes') return true;
-    if (post.area === 'Esportes') return true;
-    if (post.promotedCategory === 'sports' || (post.sections && post.sections.includes('sports'))) return true;
-    if (post.primaryCategory || post.area || post.promotedCategory) return false;
-          return !isCasinoArticle(post);
-        };
         
         setSportsPosts(data.filter(isSportsArticle));
         setCasinoPosts(data.filter(isCasinoArticle));

@@ -1,0 +1,5 @@
+
+> react-example@0.0.0 build
+> cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist/server.cjs
+
+sh: 1: cross-env: not found

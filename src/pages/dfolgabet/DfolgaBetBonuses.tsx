@@ -5,9 +5,9 @@ import { DFOLOGABET_PRIORITY_BOOKMAKERS, getAffiliateLink } from '../../config/d
 const BannerImage = ({ src, alt }: { src: string; alt: string }) => {
   const [hasError, setHasError] = useState(false);
   return (
-    <div className="relative w-full aspect-[16/9] overflow-hidden">
+    <div className="relative w-full flex overflow-hidden">
       {hasError ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-red-900/10 p-4 border border-red-500/20 m-2 rounded backdrop-blur-sm">
+        <div className="w-full aspect-[16/9] flex flex-col items-center justify-center z-10 bg-red-900/10 p-4 border border-red-500/20 m-2 rounded backdrop-blur-sm">
           <span className="font-mono font-bold text-xs uppercase text-center leading-tight text-white">
             <span className="text-red-500 mb-1 block uppercase">Arquivo não encontrado</span>
             <span className="text-white/60 normal-case mt-1 block">O caminho abaixo não resolve na VM:</span>
@@ -18,7 +18,7 @@ const BannerImage = ({ src, alt }: { src: string; alt: string }) => {
         <img 
           src={src} 
           alt={alt} 
-          className="absolute inset-0 h-full w-full object-cover object-bottom transition-transform duration-500 z-10" 
+          className="w-full h-auto object-contain transition-transform duration-500 z-10 block" 
           onError={() => setHasError(true)}
         />
       )}
@@ -56,7 +56,7 @@ export default function DfolgaBetBonuses() {
             target="_blank" 
             rel="noopener noreferrer" 
             key={bonus.key} 
-            className="relative h-fit self-start outline-none overflow-hidden rounded-[15px] cursor-pointer transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-2 border-[#7c3aed] bg-gradient-to-br from-[#140a28]/90 to-[#280f3c]/90 hover:scale-[1.03] hover:-translate-y-1 hover:shadow-[0_15px_50px_rgba(124,58,237,0.4)] hover:border-[#ff6b35] group block" 
+            className="relative h-fit self-start outline-none overflow-hidden rounded-[15px] cursor-pointer transition-all duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-2 border-[#7c3aed] bg-black hover:scale-[1.03] hover:-translate-y-1 hover:shadow-[0_15px_50px_rgba(124,58,237,0.4)] hover:border-[#ff6b35] group block" 
             title={`Apostar na ${bonus.label}`} 
             aria-label={`Apostar na ${bonus.label}`}
           >

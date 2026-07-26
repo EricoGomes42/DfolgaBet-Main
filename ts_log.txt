@@ -1,0 +1,10 @@
+src/pages/dfolgabet/DfolgaBetPost.tsx(151,27): error TS2448: Block-scoped variable 'breadcrumbList' used before its declaration.
+src/pages/dfolgabet/DfolgaBetPost.tsx(189,95): error TS2339: Property 'faq' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(189,107): error TS2339: Property 'faq' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(288,16): error TS2339: Property 'primaryCasinoOperator' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(288,46): error TS2339: Property 'primaryCasinoOperator' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(289,44): error TS2339: Property 'primaryCasinoOperator' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(585,23): error TS2339: Property 'faq' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(585,35): error TS2339: Property 'faq' does not exist on type 'Post'.
+src/pages/dfolgabet/DfolgaBetPost.tsx(593,29): error TS2339: Property 'faq' does not exist on type 'Post'.
+DONE_TSC

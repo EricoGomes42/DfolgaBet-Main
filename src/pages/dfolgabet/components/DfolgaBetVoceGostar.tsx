@@ -1,4 +1,3 @@
-import { resolveCanonicalUrl } from '../../../lib/urlResolver';
 import { resolveDynamicContent } from '../../../lib/dynamicContent';
 'use client';
 import { useEffect, useState } from 'react';
@@ -13,7 +12,7 @@ export default function DfolgaBetVoceGostar() {
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(publishedAt desc)[0...3] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
+          _id,
           title,
           slug,
           mainImage,
@@ -51,7 +50,7 @@ export default function DfolgaBetVoceGostar() {
           'https://images.unsplash.com/photo-1606167668580-2a543e5ec774?auto=format&fit=crop&w=400&q=80'
         ];
         return (
-        <Link key={post._id} to={resolveCanonicalUrl(post)} className="block group">
+        <Link key={post._id} to={`/dfolgabet/post/${post.slug?.current}`} className="block group">
           {post.mainImage ? (
             <div className="relative rounded-2xl overflow-hidden aspect-video">
               <img 

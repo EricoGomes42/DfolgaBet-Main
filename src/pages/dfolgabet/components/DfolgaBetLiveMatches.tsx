@@ -38,7 +38,8 @@ function DfolgaBetLiveMatchesContent() {
   const [dataSource, setDataSource] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
-  
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   const showPopup = (msg: string) => {
     setPopupMessage(msg);
     setTimeout(() => setPopupMessage(''), 3000);
@@ -204,7 +205,7 @@ function DfolgaBetLiveMatchesContent() {
     async function fetchBlogPosts() {
       try {
         const query = `*[_type == "post" && (!defined(sections) || "homepage" in sections)] | order(_createdAt desc)[0...5] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, _id, title, slug, mainImage, _createdAt,
+          _id, title, slug, mainImage, _createdAt,
           "categoryName": categories[0]->title
         }`;
         const posts = await client.fetch(query);
@@ -217,9 +218,6 @@ function DfolgaBetLiveMatchesContent() {
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     async function fetchData() {
       try {
         let hasInitialData = false;
@@ -244,6 +242,12 @@ function DfolgaBetLiveMatchesContent() {
         
         setLoading(!hasInitialData);
 
+        if (abortControllerRef.current) {
+           abortControllerRef.current.abort();
+        }
+        abortControllerRef.current = new AbortController();
+        const signal = abortControllerRef.current.signal;
+
         const payloadAggregated: Record<string, any[]> = {};
         
         let hasData = false;
@@ -260,11 +264,8 @@ function DfolgaBetLiveMatchesContent() {
               console.warn("NEW_ODDS_API_KEY não carregada");
            }
         } catch (err: any) {
-           if (err.name === 'AbortError' || (err.message && err.message.includes('aborted'))) {
-              console.log('Debug fetch aborted');
-              return;
-           }
-           console.error("Debug endpoint falhou, usando fallback:", err.message || err);
+           if (err.name === 'AbortError') return;
+           console.error("Debug endpoint falhou, usando fallback:", err);
         }
 
         const ENDPOINTS_MAP: Record<string, {name: string, url: string}[]> = {
@@ -327,6 +328,7 @@ function DfolgaBetLiveMatchesContent() {
         
         for (const ep of endpoints) {
           try {
+             // Abort inner timeout logic removed. Handled by top-level AbortController.
              const res = await fetch(ep.url, { signal });
              
              if (res.ok) {
@@ -391,7 +393,7 @@ function DfolgaBetLiveMatchesContent() {
                   throw new Error(`Error ${res.status}`);
              }
           } catch(err: any) {
-              if (err.name === 'AbortError' || (err.message && err.message.includes('aborted'))) {
+              if (err.name === 'AbortError') {
                  console.log('Fetch aborted:', ep.url);
                  return; // abort whole loop if aborted
               }
@@ -434,7 +436,7 @@ function DfolgaBetLiveMatchesContent() {
         }
 
       } catch (e: any) {
-        if (e.name !== 'AbortError' && !(e.message && e.message.includes('aborted'))) {
+        if (e.name !== 'AbortError') {
            console.error(e);
         }
       } finally {
@@ -443,10 +445,6 @@ function DfolgaBetLiveMatchesContent() {
     }
 
     fetchData();
-
-    return () => {
-       controller.abort();
-    };
   }, [activeSportFilter]);
 
   function extractOdds(match: any) {

@@ -1,4 +1,3 @@
-import { resolveCanonicalUrl } from '../../../lib/urlResolver';
 import { resolveDynamicContent } from '../../../lib/dynamicContent';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -21,7 +20,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
     async function fetchPosts() {
       try {
         const query = `*[_type == "post" ${currentPostId ? `&& _id != "${currentPostId}"` : ''}] | order(_createdAt desc)[0...5] {
-          primaryCategory, contentType, primaryCasinoOperator[]->{slug, title}, casinoOperators[]->{slug, title}, sportCompetition->{slug, title}, sportEvent, _id,
+          _id,
           title,
           slug,
           mainImage,
@@ -43,7 +42,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
   const relatedPosts = posts.slice(1, 5); // take up to 4 more for related
 
   const getLinkUrl = (post: RelatedPost) => {
-    return resolveCanonicalUrl(post);
+    return `/dfolgabet/post/${(post.slug as {current: string}).current}`;
   };
 
   const renderImage = (post: RelatedPost, width: number, height: number, className: string) => {
@@ -82,7 +81,7 @@ export default function RelatedPosts({ currentPostId }: { currentPostId?: string
             </span>
           )}
           <h3 className="text-2xl md:text-4xl font-black text-white max-w-2xl leading-tight group-hover:text-[#e67e22] transition-colors drop-shadow-md">
-            {nextPost.title}
+            {resolveDynamicContent(nextPost.title)}
           </h3>
         </div>
       </Link>
