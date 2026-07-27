@@ -38,6 +38,7 @@ export default {
     },
     {
       type: 'image',
+      name: 'image',
       options: {hotspot: true},
       fields: [
         {
@@ -53,7 +54,7 @@ export default {
         },
         {
           name: 'href',
-          type: 'url',
+          type: 'string',
           title: 'URL de destino',
           description: 'Link opcional ao clicar na imagem',
         }
