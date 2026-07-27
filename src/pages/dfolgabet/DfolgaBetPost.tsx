@@ -536,13 +536,27 @@ export default function DfolgaBetPost() {
                           if (!value?.asset?._ref) {
                             return null;
                           }
-                          return (
+                          const imgElement = (
                             <img
                               alt={value.alt || 'Imagem do artigo'}
                               loading="lazy"
                               src={urlFor(value).url()}
-                              className="w-full rounded-2xl my-8 object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-gray-800"
+                              className="w-full rounded-2xl object-cover max-h-[600px] shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-[#311B92]"
                             />
+                          );
+                          const wrappedImg = value.href ? (
+                            <a href={value.href} target="_blank" rel="noopener noreferrer" className="block w-full cursor-pointer hover:opacity-90 transition-opacity">
+                              {imgElement}
+                            </a>
+                          ) : imgElement;
+
+                          return (
+                            <div className="my-8">
+                              {wrappedImg}
+                              {value.caption && (
+                                <p className="text-center text-gray-400 text-sm italic mt-2">{value.caption}</p>
+                              )}
+                            </div>
                           );
                         }
                       },
@@ -605,31 +619,7 @@ export default function DfolgaBetPost() {
                 </div>
 
 
-                {/* Fontes e Referências */}
-                {post.sources && post.sources.length > 0 && (
-                  <div className="mt-12 bg-[#0A051A]/80 border border-[#311B92] rounded-xl p-6 shadow-xl">
-                    <h3 className="text-[#e67e22] font-black text-xl mb-4 flex items-center gap-2"><Info size={20} /> Fontes e Referências</h3>
-                    <ul className="space-y-4">
-                      {post.sources.map((src: any, idx: number) => (
-                        <li key={idx} className="text-gray-300 text-sm flex flex-col gap-1 border-b border-[#311B92]/30 pb-3 last:border-0 last:pb-0">
-                          <span className="font-bold text-white">
-                            {src.url ? (
-                              <a href={src.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#50C0CC] transition-colors">{src.title}</a>
-                            ) : (
-                              src.title
-                            )}
-                          </span>
-                          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                            {src.institution && <span className="bg-[#120826] px-2 py-1 rounded text-[#c0c0c0] border border-[#311B92]/50">{src.institution}</span>}
-                            {src.type && <span className="text-[#50C0CC] uppercase font-bold text-[10px] tracking-wider px-2 py-1 bg-[#50C0CC]/10 rounded border border-[#50C0CC]/20">{src.type}</span>}
-                            {src.accessDate && <span className="flex items-center gap-1 opacity-80"><Clock size={12} /> Acesso em: {new Date(src.accessDate).toLocaleDateString('pt-BR')}</span>}
-                          </div>
-                          {src.observation && <p className="text-gray-400 mt-1 italic">{src.observation}</p>}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+
 
                 <div className="mt-8 border-l-4 border-l-[#e67e22] bg-[#0A051A]/50 p-6 rounded-r-xl">
                   <p className="mb-2 text-sm text-[#c0c0c0]"><strong>Aviso Legal:</strong> Este artigo é informativo e não constitui recomendação de aposta. As odds estão sujeitas a alterações. Aposte apenas o que pode perder. Menores de 18 anos não podem participar de apostas esportivas. Jogue com responsabilidade.</p>

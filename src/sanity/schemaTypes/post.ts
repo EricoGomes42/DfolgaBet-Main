@@ -63,6 +63,7 @@ export default {
       title: 'Operadora em Destaque',
       type: 'string',
       fieldset: 'bookmakers',
+      hidden: true,
       options: {
         list: [
           {title: '7K', value: '7k'},
@@ -79,14 +80,6 @@ export default {
           {title: 'Vupi', value: 'vupi'},
         ]
       },
-      validation: (Rule: any) => Rule.custom((value: any, context: any) => {
-        if (!value) return true;
-        const promoted = context.document?.promotedBookmakers || [];
-        if (!promoted.includes(value)) {
-          return 'A operadora em destaque precisa estar na lista de Casas de Aposta Promovidas.';
-        }
-        return true;
-      }),
     },
     {
       name: 'sections',
@@ -130,7 +123,6 @@ export default {
           {title: 'Cassino', value: 'Cassino'},
         ],
       },
-      validation: (Rule: any) => Rule.required(),
     },
     {
       name: 'modalidade',
@@ -201,12 +193,13 @@ export default {
       name: 'sources',
       title: 'Fontes e Referências',
       type: 'array',
+      hidden: true,
       of: [
         {
           type: 'object',
           fields: [
             { name: 'title', title: 'Título', type: 'string' },
-            { name: 'url', title: 'URL', type: 'url' },
+            { name: 'url', title: 'URL', type: 'string' },
             { name: 'institution', title: 'Instituição ou publicação', type: 'string' },
             { 
               name: 'type', 
@@ -216,7 +209,7 @@ export default {
                 list: ['Governo', 'Regulador', 'Operadora', 'Desenvolvedora de Jogos', 'Veículo Jornalístico', 'Estudo', 'Outro']
               }
             },
-            { name: 'accessDate', title: 'Data de acesso', type: 'date' },
+            { name: 'accessDate', title: 'Data de acesso', type: 'string' },
             { name: 'observation', title: 'Observação (opcional)', type: 'string' },
           ]
         }

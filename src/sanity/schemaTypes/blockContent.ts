@@ -39,6 +39,25 @@ export default {
     {
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Texto Alternativo',
+          description: 'Importante para SEO e acessibilidade.',
+        },
+        {
+          name: 'caption',
+          type: 'string',
+          title: 'Legenda',
+        },
+        {
+          name: 'href',
+          type: 'url',
+          title: 'URL de destino',
+          description: 'Link opcional ao clicar na imagem',
+        }
+      ]
     },
   ],
 }
