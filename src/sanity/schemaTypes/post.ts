@@ -14,28 +14,6 @@ export default {
   ],
   fields: [
     {
-      name: 'bookmakerKey',
-      title: 'Casa de Aposta Promovida (Legado)',
-      type: 'string',
-      hidden: true,
-      options: {
-        list: [
-          {title: '7K', value: '7k'},
-          {title: 'BetWinner', value: 'betwinner'},
-          {title: 'Cassino', value: 'cassino'},
-          {title: 'EstrelaBet', value: 'estrelabet'},
-          {title: 'Lottoland', value: 'lottoland'},
-          {title: 'MelBet', value: 'melbet'},
-          {title: 'Novibet', value: 'novibet'},
-          {title: 'Sorte Online', value: 'sorte-online'},
-          {title: 'Stake', value: 'stake'},
-          {title: 'Superbet', value: 'superbet'},
-          {title: 'VeraBet', value: 'verabet'},
-          {title: 'Vupi', value: 'vupi'},
-        ]
-      }
-    },
-    {
       name: 'promotedBookmakers',
       title: 'Casas de Aposta Promovidas',
       type: 'array',
